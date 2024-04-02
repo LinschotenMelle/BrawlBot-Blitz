@@ -1,7 +1,7 @@
 import { ApplicationCommandDataResolvable, Client, Collection, ClientEvents } from "discord.js";
 import { CommandType } from "../typings/Command";
 import { globSync } from 'glob';
-import { RegisterCommandsOptions } from "../typings/client";
+import { RegisterCommandsOptions } from "../typings/Client";
 import { Event } from "./Event"
 
 export class ExtendedClient extends Client {
