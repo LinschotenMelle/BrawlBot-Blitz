@@ -13,7 +13,7 @@ export default new Event("interactionCreate", async (interaction) => {
             return interaction.followUp("You have used a non existent command");
         }
 
-        if (interaction.channel?.id !== '1224808943251882003') {
+        if (process.env.TEST_CHANNEL_ID != null && interaction.channel?.id !== process.env.TEST_CHANNEL_ID && process.env.ENV != 'PROD') {
             return interaction.followUp("You do not have permission to use this command in this channel")
         }
 
