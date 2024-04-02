@@ -13,6 +13,10 @@ export default new Event("interactionCreate", async (interaction) => {
             return interaction.followUp("You have used a non existent command");
         }
 
+        if (interaction.channel?.id !== '1224808943251882003') {
+            return interaction.followUp("You do not have permission to use this command in this channel")
+        }
+
         command.run({
             args: interaction.options as CommandInteractionOptionResolver,
             client,
