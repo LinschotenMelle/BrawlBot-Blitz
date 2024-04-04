@@ -6,11 +6,19 @@ export class ErrorMessages {
         throw new Error("ErrorMessages cannot be instantiated.");
     }
 
-    static getDefaultErrorEmbeddedMessage(): EmbedBuilder {
+    static getDefaultErrorEmbeddedMessage(str: string | undefined = undefined): EmbedBuilder {
         return new EmbedBuilder()
         .setColor(ColorCodes.errorRedColor)
         .setTitle('Error')
-        .setDescription('Something went wrong! Try again later...')
+        .setDescription(str ?? 'Something went wrong! Try again later...')
+        .setTimestamp();
+    }
+
+    static getDefaultInvalidTypeEmbeddedMessage(): EmbedBuilder {
+        return new EmbedBuilder()
+        .setColor(ColorCodes.errorRedColor)
+        .setTitle('Error')
+        .setDescription('Invalid tag. Make sure your tag is like the following "#QY8VU02R"')
         .setTimestamp();
     }
 }

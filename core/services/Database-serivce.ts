@@ -1,0 +1,25 @@
+import { AstraDB } from "@datastax/astra-db-ts";
+
+export class DatabaseService {
+    private static _instance = new DatabaseService();
+    public astraDb: AstraDB;
+
+    constructor() {
+        if(DatabaseService._instance){
+            throw new Error("Error: Instantiation failed: Use SingletonClass.getInstance() instead of new.");
+        }
+        DatabaseService._instance = this;
+
+        this.astraDb = new AstraDB(
+            process.env.DATABASE_TOKEN, 
+            "https://80c83502-aa44-41ac-9d9c-a18613385904-us-east-2.apps.astra.datastax.com",
+        )
+    }
+
+    public static get instance(): DatabaseService {
+        if (!DatabaseService._instance) {
+            DatabaseService._instance = new DatabaseService();
+        }
+        return DatabaseService._instance;
+    }    
+}

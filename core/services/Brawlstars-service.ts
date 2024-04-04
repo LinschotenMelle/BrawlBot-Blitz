@@ -1,5 +1,6 @@
-import axios, { AxiosInstance, AxiosResponse } from "axios";
+import axios, { AxiosInstance } from "axios";
 import { BrawlStarsMapDto } from "../dto/Brawlstars/Map.dto";
+import { BrawlStarsPlayer } from "../dto/Brawlstars/Player.dto";
 
 export class BrawlStarsService {
     private static _instance = new BrawlStarsService();
@@ -18,7 +19,10 @@ export class BrawlStarsService {
         });
       }
 
-    public static getInstance(): BrawlStarsService {
+    public static get instance(): BrawlStarsService {
+        if (!BrawlStarsService._instance) {
+            BrawlStarsService._instance = new BrawlStarsService();
+        }
         return BrawlStarsService._instance;
     }
 
@@ -36,9 +40,8 @@ export class BrawlStarsService {
 
     async getRotation(): Promise<BrawlStarsMapDto[]> {
         let retries = 0;
-        const maxRetries = 3;
     
-        while (retries < maxRetries) {
+        while (retries < 2) {
             try {
                 const response = await this.axios.get<BrawlStarsMapDto[]>('/events/rotation');
                 return response?.data ?? [];
@@ -49,5 +52,24 @@ export class BrawlStarsService {
         }
     
         return [];
+    }
+
+    async getProfileByTag(tag: string): Promise<BrawlStarsPlayer | undefined> {
+        let retries = 0;
+        while (retries < 2) {
+            try {
+                const response = await this.axios.get(`/players/${tag}`);
+                return response.data;
+            } catch (e) {
+                if (axios.isAxiosError(e) && e.response?.status === 403) {
+                    await this.initialize();
+                    retries++;
+                } else {
+                    return undefined;
+                }
+            } 
+        }
+    
+        return undefined;
     }
 }
