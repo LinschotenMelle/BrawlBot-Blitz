@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from "axios";
-import { BrawlStarsMapDto } from "../dto/Brawlstars/Map.dto";
-import { BrawlStarsPlayer } from "../dto/Brawlstars/Player.dto";
+import { BrawlStarsMapDto } from "../dto/brawlstars/Map.dto";
+import { BrawlStarsPlayer } from "../dto/brawlstars/Player.dto";
 
 export class BrawlStarsService {
     private static _instance = new BrawlStarsService();

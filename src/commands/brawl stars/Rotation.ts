@@ -34,7 +34,7 @@ import { ErrorMessages } from "../../static/Error";
 import { Converters } from "../../static/Converters";
 import { client } from "../..";
 import moment = require("moment-timezone");
-import { BrawlStarsMapDto } from "../../../core/dto/Brawlstars/Map.dto";
+import { BrawlStarsMapDto } from "../../../core/dto/brawlstars/Map.dto";
 
 function createEmbed(title: string, maps: BrawlStarsMapDto[], isOngoing: boolean) {
 const embed = new EmbedBuilder()
