@@ -3,7 +3,7 @@ export class Converters {
         throw new Error("ColorCodes cannot be instantiated.");
     }
     
-    static capitalize(s: string): string {
+    static capitalizeFirstLetter(s: string): string {
         return s[0].toUpperCase() + s.slice(1);
     }
 }
