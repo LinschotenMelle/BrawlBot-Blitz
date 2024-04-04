@@ -1,75 +1,56 @@
 import { Command } from "../../structures/Command";
-import { BrawlStarsService } from "../../../core/services/Brawlstars-service"
+import { BrawlStarsService } from "../../../core/services/Brawlstars-service";
 import { EmbedBuilder } from "discord.js";
-import { ColorCodes } from "../../static/Theme"
+import { ColorCodes } from "../../static/Theme";
 import { ErrorMessages } from "../../static/Error";
 import { Converters } from "../../static/Converters";
 import { client } from "../..";
 import moment = require("moment");
 
-function convertTimestamp(timestamp: string): Date {
-    const year = timestamp.slice(0, 4);
-    const month = timestamp.slice(4, 6);
-    const day = timestamp.slice(6, 8);
-    const hours = timestamp.slice(9, 11);
-    const minutes = timestamp.slice(11, 13);
-    const seconds = timestamp.slice(13, 15);
+function createEmbed(title: string, maps: any[], isOngoing: boolean) {
+    const embed = new EmbedBuilder()
+        .setColor(ColorCodes.primaryColor)
+        .setTitle(title)
+        .setTimestamp();
 
-    return new Date(`${year}-${month}-${day}T${hours}:${minutes}:${seconds}.000Z`);
+    maps.forEach((map) => {
+        let name = Converters.capitalize(map.event.map);
+        const emoji = client.emojis.cache.find(e => e.name === map.event.mode.toUpperCase());
+        if (emoji) name = `${emoji} ${name}`;
+
+        const date = isOngoing ? convertTimestamp(map.endTime) : convertTimestamp(map.startTime);
+        const formattedDate = moment(date).format('DD MMM HH:mm');
+        const value = isOngoing ? `Until ${formattedDate}` : `Arrives on ${formattedDate}`;
+
+        embed.addFields({
+            name,
+            value,
+            inline: true,
+        });
+    });
+
+    return embed;
+}
+
+function convertTimestamp(timestamp: string): Date {
+    return moment(timestamp, "YYYYMMDDHHmmss").toDate();
 }
 
 export default new Command({
     name: "rotation",
-    description: "Check Brawl Stars Rotion of Maps",
+    description: "Check Brawl Stars Rotation of Maps",
     run: async ({ interaction }) => {
         const brawlStarsMaps = await BrawlStarsService.getInstance().getRotation();
 
         if (brawlStarsMaps.length < 1) {
-            return interaction.followUp({ embeds: [ ErrorMessages.getDefaultErrorEmbeddedMessage() ]});
+            return interaction.followUp({ embeds: [ErrorMessages.getDefaultErrorEmbeddedMessage()] });
         }
 
         const onGoingMaps = brawlStarsMaps.filter((m) => convertTimestamp(m.startTime).getTime() <= Date.now());
         const upComingMaps = brawlStarsMaps.filter((m) => convertTimestamp(m.startTime).getTime() > Date.now());
 
-        const onGoingEmbed = new EmbedBuilder()
-        .setColor(ColorCodes.primaryColor)
-        .setTitle('Ongoing Rotion of Maps')
-        .setTimestamp();
-
-        onGoingMaps.map((map) => {
-            let name = Converters.capitalize(map.event.map);
-            const emoji = client.emojis.cache.find(emoji => emoji.name === map.event.mode.toUpperCase())
-            
-            if (emoji) name = `${emoji} ${name}`;
-
-            const endDate = convertTimestamp(map.endTime);
-            
-            onGoingEmbed.addFields({
-                name: name, 
-                value: `Until ${(moment(endDate)).format('DD MMM HH:mm')}`, 
-                inline: true,
-            });
-        });
-
-        const upComingEmbed = new EmbedBuilder()
-        .setColor(ColorCodes.primaryColor)
-        .setTitle('Upcoming Rotion of Maps')
-        .setTimestamp();
-
-        upComingMaps.map((map) => {
-            let name = Converters.capitalize(map.event.map);
-            const emoji = client.emojis.cache.find(emoji => emoji.name === map.event.mode.toUpperCase())
-            
-            if (emoji) name = `${emoji} ${name}`;
-
-            const startDate = convertTimestamp(map.startTime);
-            
-            upComingEmbed.addFields({
-                name: name, 
-                value: `Arrives on ${(moment(startDate)).format('DD MMM HH:mm')}`, 
-                inline: true,
-            });
-        });
+        const onGoingEmbed = createEmbed('Ongoing Rotation of Maps', onGoingMaps, true);
+        const upComingEmbed = createEmbed('Upcoming Rotation of Maps', upComingMaps, false);
 
         interaction.followUp({ embeds: [onGoingEmbed, upComingEmbed] });
     }
