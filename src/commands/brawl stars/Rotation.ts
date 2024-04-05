@@ -51,6 +51,7 @@ maps.forEach((map) => {
 
     const date = convertTimestamp(isOngoing ? map.endTime : map.startTime);
     const formattedDate = moment(date).format('DD MMM HH:mm');
+
     const value = isOngoing ? `Until ${formattedDate}` : `Arrives on ${formattedDate}`;
 
     embed.addFields({
@@ -73,19 +74,25 @@ export default new Command({
     description: "Check Brawl Stars Rotation of Maps",
     run: async ({ interaction }) => {
         const brawlStarsMaps = await BrawlStarsService.instance.getRotation();
+        var embeds: EmbedBuilder[] = []
 
         if (brawlStarsMaps.length < 1) {
             return interaction.followUp({ embeds: [ErrorMessages.getDefaultErrorEmbeddedMessage()] });
         }
 
+        const currenttime = moment().tz('Europe/Berlin').toDate();
+
         const onGoingMaps = brawlStarsMaps.filter((m) => {
-            return convertTimestamp(m.startTime).getTime() <= Date.now()
+            return convertTimestamp(m.startTime).getTime() <= currenttime.getTime()
         });
-        const upComingMaps = brawlStarsMaps.filter((m) => convertTimestamp(m.startTime).getTime() > Date.now());
+        const upComingMaps = brawlStarsMaps.filter((m) => convertTimestamp(m.startTime).getTime() > currenttime.getTime());
 
-        const onGoingEmbed = createEmbed('Ongoing Rotation of Maps', onGoingMaps, true);
-        const upComingEmbed = createEmbed('Upcoming Rotation of Maps', upComingMaps, false);
+        embeds.push(createEmbed('Ongoing Rotation of Maps', onGoingMaps, true));
+    
+        if (upComingMaps.length > 1) {
+            embeds.push(createEmbed('Upcoming Rotation of Maps', upComingMaps, false));
+        }
 
-        interaction.followUp({ embeds: [onGoingEmbed, upComingEmbed] });
+        interaction.followUp({ embeds: embeds });
     }
 });
