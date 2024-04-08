@@ -31,7 +31,7 @@ export class ExtendedClient extends Client {
     async registerModules() {
         const slashCommands: ApplicationCommandDataResolvable[] = [];
         // Commands
-        const commandFiles = await globSync(`${__dirname}/../commands/*/*{.js,.ts}`);
+        const commandFiles = globSync(`${__dirname}/../commands/*/*{.js,.ts}`);
         commandFiles.forEach(async (filePath) => {
             const command: CommandType = await this.importFile(filePath);
             if (!command.name) return;
@@ -48,7 +48,7 @@ export class ExtendedClient extends Client {
         });
 
         // Event
-         const eventFiles = await globSync(
+         const eventFiles = globSync(
             `${__dirname}/../events/*{.ts,.js}`
         );
         eventFiles.forEach(async (filePath) => {

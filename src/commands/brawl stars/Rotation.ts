@@ -29,12 +29,13 @@
 import { Command } from "../../structures/Command";
 import { BrawlStarsService } from "../../../core/services/Brawlstars-service";
 import { EmbedBuilder } from "discord.js";
-import { ColorCodes, Constants } from "../../static/Theme";
+import { ColorCodes } from "../../static/Theme";
 import { ErrorMessages } from "../../static/Error";
 import { Converters } from "../../static/Converters";
 import { client } from "../..";
 import moment = require("moment-timezone");
 import { BrawlStarsMapDto } from "../../../core/dto/brawlstars/Map.dto";
+import { Constants } from "../../static/Contants";
 
 function createEmbed(title: string, maps: BrawlStarsMapDto[], isOngoing: boolean) {
 const embed = new EmbedBuilder()
