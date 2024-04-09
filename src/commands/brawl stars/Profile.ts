@@ -63,7 +63,7 @@ export class BBEmbedButton {
     }
 }
 
-function paginatedBrawlersEmbed(profile: BrawlStarsPlayer, page: number, pageSize: number, totalPages: number): EmbedBuilder {
+function paginatedBrawlersEmbed(profile: BrawlStarsPlayer, page: number, pageSize: number, totalPages: number, emojis: Emojis): EmbedBuilder {
     const brawlersEmbed = new EmbedBuilder()
         .setColor(ColorCodes.primaryColor)
         .setTitle(`${profile.name} - ${profile.tag}`)
@@ -71,12 +71,16 @@ function paginatedBrawlersEmbed(profile: BrawlStarsPlayer, page: number, pageSiz
         .setFooter({ text: 'Page: ' + (page + 1) + '/' + totalPages })
         .setTimestamp();
 
-    profile.brawlers.sort((a, b) => b.trophies - a.trophies).slice(page * pageSize, page * pageSize + pageSize).forEach(brawler => {
-        brawlersEmbed.addFields({ name: brawler.name, value: `Trophies: ${brawler.trophies}` });
+    profile.brawlers.sort((a, b) => {
+        return Constants.rarity(a.name) - Constants.rarity(b.name)
+    }).slice(page * pageSize, page * pageSize + pageSize).forEach(brawler => {
+        const emoji = client.emojis.cache.find(e => e.name === brawler.name);
+        const name = emoji ? `${emoji} ${brawler.name}`: brawler.name;
+        
+        brawlersEmbed.addFields({ name: name, value: `${emojis.trophy} ${brawler.trophies}/${brawler.highestTrophies}`, inline: true });
     });
 
     return brawlersEmbed;
-
 }
 
 export default new Command({
@@ -116,16 +120,19 @@ export default new Command({
         if (profile.club != undefined && Object.keys(profile.club).length > 0) {
             clubValue = `[${profile.club!.name}](https://brawlify.com/stats/club/${profile.club!.tag.replaceAll('#', '')})`;
         }
+
         const embed = new EmbedBuilder()
         .setColor(ColorCodes.primaryColor)
         .setTitle(`${profile.name} - ${profile.tag}`)
         .setFields(
             { name: `${emojis.trophy} Trophies`, value: `${profile.trophies}/${profile.highestTrophies}` },
             { name: `${emojis.clubs} Club`, value: clubValue },
+            { name: `${emojis.brawlers} Brawlers`, value: `${profile.brawlers.length}/${Constants.rarityMap.size}`},
             { name: `${emojis.soloVictories} Solo Victories`, value: `${profile.soloVictories}`, inline: true },
             { name: `${emojis.duoVictories} Duo Victories`, value: `${profile.duoVictories}`, inline: true },
             { name: `${emojis.threeVsThreeVictories} 3v3 Victories`, value: `${profile["3vs3Victories"]}`, inline: true },
-            { name: 'Experience Level', value: `${profile.expLevel}` },
+            { name: `${emojis.info} Experience Level`, value: `${profile.expLevel}`, inline: true },
+            { name: `${emojis.info} Experience Points`, value: `${profile.expPoints}`, inline: true },
         )
         .setFooter({ text: 'Brawl Stars Profile' })
         .setThumbnail(Constants.logo.name)
@@ -147,7 +154,7 @@ export default new Command({
             });
 
             let page = 0;
-            const pageSize = 25;
+            const pageSize = 24;
             const totalPages = Math.ceil(profile.brawlers.length / pageSize);
             collector.on('collect', async (i) => {
                 const id = brawlersButton.customId.split('_')[0];
@@ -157,21 +164,21 @@ export default new Command({
                 }
 
                 if (i.user.id == interaction.user.id && i.customId === brawlersButton.customId) {
-                    await i.update({ embeds: [paginatedBrawlersEmbed(profile, page, pageSize, totalPages)], components: [new ActionRowBuilder<ButtonBuilder>().addComponents(backButton.button, lessButton.button, moreButton.button)] });
+                    await i.update({ embeds: [paginatedBrawlersEmbed(profile, page, pageSize, totalPages, emojis)], components: [new ActionRowBuilder<ButtonBuilder>().addComponents(backButton.button, lessButton.button, moreButton.button)] });
                 }
                 
                 if (i.user.id == interaction.user.id && i.customId === moreButton.customId) {
                     page++;
                     lessButton.enabled(page != 0);
                     moreButton.enabled(page != totalPages -1);
-                    await i.update({ embeds: [paginatedBrawlersEmbed(profile, page, pageSize, totalPages)], components: [new ActionRowBuilder<ButtonBuilder>().addComponents(backButton.button, lessButton.button, moreButton.button)] });
+                    await i.update({ embeds: [paginatedBrawlersEmbed(profile, page, pageSize, totalPages, emojis)], components: [new ActionRowBuilder<ButtonBuilder>().addComponents(backButton.button, lessButton.button, moreButton.button)] });
                 }
                 
                 if (i.user.id == interaction.user.id && i.customId === lessButton.customId) {
                     page--;
                     lessButton.enabled(page != 0);
                     moreButton.enabled(page != totalPages -1);
-                    await i.update({ embeds: [paginatedBrawlersEmbed(profile, page, pageSize,totalPages)], components: [new ActionRowBuilder<ButtonBuilder>().addComponents(backButton.button, lessButton.button, moreButton.button)] });
+                    await i.update({ embeds: [paginatedBrawlersEmbed(profile, page, pageSize,totalPages, emojis)], components: [new ActionRowBuilder<ButtonBuilder>().addComponents(backButton.button, lessButton.button, moreButton.button)] });
                 }
                 
                 if (i.user.id == interaction.user.id && i.customId === backButton.customId) {

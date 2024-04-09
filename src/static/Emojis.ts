@@ -36,4 +36,12 @@ export class Emojis {
     get threeVsThreeVictories() {
         return this.list.find(e => e.id === "1226636027628879882");
     }
+
+    get brawlers() {
+        return this.list.find(e => e.id === "1227367109936418819");
+    }
+
+    get info() {
+        return this.list.find(e => e.id === "1227367122880172132");
+    }
 }
