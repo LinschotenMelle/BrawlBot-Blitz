@@ -78,7 +78,7 @@ export default new Command({
         var embeds: EmbedBuilder[] = []
 
         if (brawlStarsMaps.length < 1) {
-            return interaction.followUp({ embeds: [ErrorMessages.getDefaultErrorEmbeddedMessage()] });
+            return interaction.followUp({ embeds: [ErrorMessages.getDefaultErrorEmbeddedMessage()], ephemeral: true });
         }
 
         const currenttime = moment().tz('Europe/Berlin').toDate();

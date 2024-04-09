@@ -37,13 +37,13 @@ export default new Command({
     run: async ({ interaction }) => {
         const tag = interaction.options.data[0].value?.toString();
 
-        if (!tag || tag[0] != '#') return interaction.followUp({embeds: [ ErrorMessages.getDefaultInvalidTypeEmbeddedMessage() ]});
+        if (!tag || tag[0] != '#') return interaction.followUp({embeds: [ ErrorMessages.getDefaultInvalidTypeEmbeddedMessage() ], ephemeral: true});
 
         const hashedTag = tag.replace("#", "%23").trim();
         
         const profile = await BrawlStarsService.instance.getProfileByTag(hashedTag);
 
-        if (!profile) return interaction.followUp({embeds: [ErrorMessages.getDefaultErrorEmbeddedMessage(`No player found with tag: ${tag}`)] });
+        if (!profile) return interaction.followUp({embeds: [ErrorMessages.getDefaultErrorEmbeddedMessage(`No player found with tag: ${tag}`)], ephemeral: true });
 
         // Save in DB
         const profiles = await DatabaseService.instance.astraDb.collection("profiles");

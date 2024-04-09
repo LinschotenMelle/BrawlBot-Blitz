@@ -30,7 +30,7 @@ export class Emojis {
     }
 
     get duoVictories() {
-        return this.list.find(e => e.id === "1225177473285754940");
+        return this.list.find(e => e.id === "1225177530567495711");
     }
 
     get threeVsThreeVictories() {

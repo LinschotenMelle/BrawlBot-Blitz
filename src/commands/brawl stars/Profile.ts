@@ -30,15 +30,15 @@ import { Emojis } from "../../static/Emojis";
 import { client } from "../..";
 
 export class BBEmbedButton {
-    private initName!: string;
-    private initTag!: string;
-    private initStyle!: ButtonStyle;
+    private name!: string;
+    private customID!: string;
+    private style!: ButtonStyle;
     private isEnabled!  : boolean;
 
-    constructor(name: string, tag: string, style: ButtonStyle = ButtonStyle.Primary, initialDisabled: boolean = true) {
-        this.initName = name;
-        this.initTag = tag;
-        this.initStyle = style;
+    constructor(name: string, customId: string, style: ButtonStyle = ButtonStyle.Primary, initialDisabled: boolean = true) {
+        this.name = name;
+        this.customID = customId;
+        this.style = style;
         this.isEnabled = initialDisabled;
     }
 
@@ -47,14 +47,14 @@ export class BBEmbedButton {
     }
 
     private get _customId(): string {
-        return `${this.initTag}_${this.initName}`;
+        return `${this.customID}_${this.name}`;
     }
 
     public get button(): ButtonBuilder {
         return new ButtonBuilder()
         .setCustomId(this._customId)
-        .setLabel(this.initName)
-        .setStyle(this.initStyle ?? ButtonStyle.Primary)
+        .setLabel(this.name)
+        .setStyle(this.style ?? ButtonStyle.Primary)
         .setDisabled(!this.isEnabled);
     }
 
@@ -98,25 +98,30 @@ export default new Command({
                 'id': interaction.user.id
             })
 
-            if (!user) return interaction.followUp({ embeds: [ErrorMessages.getDefaultErrorEmbeddedMessage('Your account has not been registered yet...')] });
+            if (!user) return interaction.followUp({ embeds: [ErrorMessages.getDefaultErrorEmbeddedMessage('Your account has not been registered yet...')], ephemeral: true });
 
             tag = user.tag;
         } else {
-            if (tag[0] != '#') return interaction.followUp({embeds: [ErrorMessages.getDefaultInvalidTypeEmbeddedMessage()] });
+            if (tag[0] != '#') return interaction.followUp({embeds: [ErrorMessages.getDefaultInvalidTypeEmbeddedMessage()], ephemeral: true });
             
             tag = tag.replace("#", "%23").trim();
         }
 
         const profile = await BrawlStarsService.instance.getProfileByTag(`${tag}`);
 
-        if (!profile) return interaction.followUp({ embeds: [ErrorMessages.getDefaultErrorEmbeddedMessage()] });
+        if (!profile) return interaction.followUp({ embeds: [ErrorMessages.getDefaultErrorEmbeddedMessage()], ephemeral: true });
 
+        let clubValue = 'Not in a club';
+
+        if (profile.club != undefined && Object.keys(profile.club).length > 0) {
+            clubValue = `[${profile.club!.name}](https://brawlify.com/stats/club/${profile.club!.tag.replaceAll('#', '')})`;
+        }
         const embed = new EmbedBuilder()
         .setColor(ColorCodes.primaryColor)
         .setTitle(`${profile.name} - ${profile.tag}`)
         .setFields(
             { name: `${emojis.trophy} Trophies`, value: `${profile.trophies}/${profile.highestTrophies}` },
-            { name: `${emojis.clubs} Club`, value: `${profile.club ? `[${profile.club!.name}](https://brawlify.com/stats/club/${profile.club!.tag.replaceAll('#', '')})` : 'Not in a club'}` },
+            { name: `${emojis.clubs} Club`, value: clubValue },
             { name: `${emojis.soloVictories} Solo Victories`, value: `${profile.soloVictories}`, inline: true },
             { name: `${emojis.duoVictories} Duo Victories`, value: `${profile.duoVictories}`, inline: true },
             { name: `${emojis.threeVsThreeVictories} 3v3 Victories`, value: `${profile["3vs3Victories"]}`, inline: true },
@@ -125,46 +130,51 @@ export default new Command({
         .setFooter({ text: 'Brawl Stars Profile' })
         .setThumbnail(Constants.logo.name)
         .setTimestamp();
-        
-        
-        /** Buttons */
-        const brawlersButton = new BBEmbedButton('Brawlers', `${tag}`);
-        const backButton = new BBEmbedButton('Back', `${tag}`, ButtonStyle.Danger );
-        const moreButton = new BBEmbedButton('>', `${tag}`, ButtonStyle.Secondary );
-        const lessButton = new BBEmbedButton('<', `${tag}`, ButtonStyle.Primary, false);
-        
-        
-        /** Components */
+    
+        const brawlersButton = new BBEmbedButton('Brawlers', `${interaction.user.id}_${interaction.channelId}_${tag}_${Date.now()}`);
         const profileComponent = new ActionRowBuilder<ButtonBuilder>().addComponents(brawlersButton.button);
+    
+        const message = await interaction.followUp({ embeds: [embed], components: interaction.channel ? [profileComponent] : [], files: [Constants.logo.attachment] });
         
-        
-        interaction.followUp({ embeds: [embed], components: interaction.channel ? [profileComponent] : [], files: [Constants.logo.attachment] });
-        
+        const backButton = new BBEmbedButton('Back', `${interaction.user.id}_${message.id}_${interaction.channelId}_${tag}`, ButtonStyle.Danger );
+        const moreButton = new BBEmbedButton('>', `${interaction.user.id}_${message.id}_${interaction.channelId}_${tag}`, ButtonStyle.Secondary );
+        const lessButton = new BBEmbedButton('<', `${interaction.user.id}_${message.id}_${interaction.channelId}_${tag}`, ButtonStyle.Primary, false);
+
         if (interaction.channel) {
             const collector = interaction.channel.createMessageComponentCollector({
-                componentType: ComponentType.Button
+                componentType: ComponentType.Button,
+                filter: (i) => i.user.id == interaction.user.id,
             });
-            
+
             let page = 0;
             const pageSize = 25;
             const totalPages = Math.ceil(profile.brawlers.length / pageSize);
             collector.on('collect', async (i) => {
-                if (i.customId === brawlersButton.customId) {
+                const id = brawlersButton.customId.split('_')[0];
+                
+                if (i.user.id !== id) {
+                    await i.reply({ content: 'You are not allowed to interact with this message.', ephemeral: true });
+                }
+
+                if (i.user.id == interaction.user.id && i.customId === brawlersButton.customId) {
                     await i.update({ embeds: [paginatedBrawlersEmbed(profile, page, pageSize, totalPages)], components: [new ActionRowBuilder<ButtonBuilder>().addComponents(backButton.button, lessButton.button, moreButton.button)] });
                 }
-                if (i.customId === moreButton.customId) {
+                
+                if (i.user.id == interaction.user.id && i.customId === moreButton.customId) {
                     page++;
                     lessButton.enabled(page != 0);
                     moreButton.enabled(page != totalPages -1);
                     await i.update({ embeds: [paginatedBrawlersEmbed(profile, page, pageSize, totalPages)], components: [new ActionRowBuilder<ButtonBuilder>().addComponents(backButton.button, lessButton.button, moreButton.button)] });
                 }
-                if (i.customId === lessButton.customId) {
+                
+                if (i.user.id == interaction.user.id && i.customId === lessButton.customId) {
                     page--;
                     lessButton.enabled(page != 0);
                     moreButton.enabled(page != totalPages -1);
                     await i.update({ embeds: [paginatedBrawlersEmbed(profile, page, pageSize,totalPages)], components: [new ActionRowBuilder<ButtonBuilder>().addComponents(backButton.button, lessButton.button, moreButton.button)] });
                 }
-                if (i.customId === backButton.customId) {
+                
+                if (i.user.id == interaction.user.id && i.customId === backButton.customId) {
                     await i.update({ embeds: [embed], components: [profileComponent] });
                 }
             });
