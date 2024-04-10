@@ -14,7 +14,7 @@ export class DatabaseService {
 
     this.astraDb = new AstraDB(
       process.env.DATABASE_TOKEN,
-      "https://80c83502-aa44-41ac-9d9c-a18613385904-us-east-2.apps.astra.datastax.com"
+      process.env.DATABASE_URL
     );
   }
 
