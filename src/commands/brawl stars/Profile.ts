@@ -35,6 +35,7 @@ import { Constants } from "../../static/Contants";
 import { BrawlStarsPlayer } from "../../../core/dto/brawlstars/Player.dto";
 import { Emojis } from "../../static/Emojis";
 import { client } from "../..";
+import { Converters } from "../../static/Converters";
 
 export class BBEmbedButton {
   private name!: string;
@@ -94,7 +95,8 @@ function paginatedBrawlersEmbed(
     .slice(page * pageSize, page * pageSize + pageSize)
     .forEach((brawler) => {
       const emoji = client.emojis.cache.find((e) => e.name === brawler.name);
-      const name = emoji ? `${emoji} ${brawler.name}` : brawler.name;
+      const convertedName = Converters.capitalizeFirstLetter(brawler.name);
+      const name = emoji ? `${emoji} ${convertedName}` : convertedName;
 
       brawlersEmbed.addFields({
         name: name,

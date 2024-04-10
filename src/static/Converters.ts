@@ -4,6 +4,11 @@ export class Converters {
   }
 
   static capitalizeFirstLetter(s: string): string {
-    return s[0].toUpperCase() + s.slice(1);
+    const items = s
+      .toLowerCase()
+      .split(/[\s-]+/)
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1));
+
+    return items.join(s.includes("-") ? "-" : " ");
   }
 }
