@@ -1,27 +1,27 @@
 interface Gear {
-    id: number;
-    name: string;
-    level: number;
+  id: number;
+  name: string;
+  level: number;
 }
 
 interface StarPower {
-    id: number;
-    name: string;
+  id: number;
+  name: string;
 }
 
 interface Gadget {
-    id: number;
-    name: string;
+  id: number;
+  name: string;
 }
 
 export class Brawler {
-    id!: number;
-    name!: string;
-    power!: number;
-    rank!: number;
-    trophies!: number;
-    highestTrophies!: number;
-    gears!: Gear[];
-    starPowers!: StarPower[];
-    gadgets!: Gadget[];
+  id!: number;
+  name!: string;
+  power!: number;
+  rank!: number;
+  trophies!: number;
+  highestTrophies!: number;
+  gears!: Gear[];
+  starPowers!: StarPower[];
+  gadgets!: Gadget[];
 }

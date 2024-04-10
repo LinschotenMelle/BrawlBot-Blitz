@@ -1,5 +1,5 @@
 export class BrawlStarsEventDto {
-    id!: string;
-    mode!: string;
-    map!: string;
+  id!: string;
+  mode!: string;
+  map!: string;
 }
