@@ -152,6 +152,7 @@ export default new Command({
     }
 
     const profile = await BrawlStarsService.instance.getProfileByTag(`${tag}`);
+    const brawlers = await BrawlStarsService.instance.getBrawlers();
 
     if (!profile)
       return interaction.followUp({
@@ -181,7 +182,7 @@ export default new Command({
         { name: `${emojis.clubs} Club`, value: clubValue },
         {
           name: `${emojis.brawlers} Brawlers`,
-          value: `${profile.brawlers.length}/`,
+          value: `${profile.brawlers.length}/${brawlers.length}`,
         },
         {
           name: `${emojis.soloVictories} Solo Victories`,

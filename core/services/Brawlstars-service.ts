@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from "axios";
 import { BrawlStarsMapDto } from "../dto/brawlstars/Map.dto";
 import { BrawlStarsPlayer } from "../dto/brawlstars/Player.dto";
+import { Brawler, BrawlerResponse } from "../dto/brawlstars/Brawler.dto";
 
 export class BrawlStarsService {
   private static _instance = new BrawlStarsService();
@@ -52,6 +53,22 @@ export class BrawlStarsService {
           "/events/rotation"
         );
         return response?.data ?? [];
+      } catch (e) {
+        await this.initialize();
+        retries++;
+      }
+    }
+
+    return [];
+  }
+
+  async getBrawlers(): Promise<Brawler[]> {
+    let retries = 0;
+
+    while (retries < 2) {
+      try {
+        const response = await this.axios.get<BrawlerResponse>("/brawlers");
+        return response?.data.items ?? [];
       } catch (e) {
         await this.initialize();
         retries++;

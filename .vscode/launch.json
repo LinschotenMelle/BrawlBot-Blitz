@@ -46,11 +46,11 @@
       }
     },
     {
-      "name": "build:watch",
+      "name": "run:dev",
       "request": "launch",
       "type": "node",
       "runtimeExecutable": "${env:NVM_BIN}/npm",
-      "runtimeArgs": ["run", "build:watch"],
+      "runtimeArgs": ["run", "dev"],
       "presentation": {
         "hidden": true
       }
@@ -64,7 +64,7 @@
         "group": "",
         "order": 1
       },
-      "configurations": ["build:watch", "processor", "server"],
+      "configurations": ["run:dev"],
       "stopAll": true
     }
   ]

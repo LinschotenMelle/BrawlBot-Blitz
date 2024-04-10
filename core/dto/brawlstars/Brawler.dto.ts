@@ -14,6 +14,10 @@ interface Gadget {
   name: string;
 }
 
+export class BrawlerResponse {
+  items!: Brawler[];
+}
+
 export class Brawler {
   id!: number;
   name!: string;
