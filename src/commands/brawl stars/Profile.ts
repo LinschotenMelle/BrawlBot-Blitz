@@ -36,6 +36,8 @@ import { BrawlStarsPlayer } from "../../../core/dto/brawlstars/Player.dto";
 import { Emojis } from "../../static/Emojis";
 import { client } from "../..";
 import { Converters } from "../../static/Converters";
+import { Brawler } from "../../../core/dto/brawlstars/Brawler.dto";
+import { Console } from "console";
 
 export class BBEmbedButton {
   private name!: string;
@@ -76,12 +78,30 @@ export class BBEmbedButton {
   }
 }
 
+function calculateRank(brawler: Brawler): number {
+  // Define the trophy requirements for each rank
+  const trophyRequirements = [
+    0, 10, 20, 30, 40, 60, 80, 100, 120, 140, 160, 180, 220, 260, 300, 340, 380,
+    420, 460, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 1000, 1050,
+    1100, 1150, 1200, 1250,
+  ];
+
+  const v = trophyRequirements.findIndex(
+    (trophies) => brawler.highestTrophies < trophies
+  );
+
+  if (v == -1) {
+    return 35;
+  }
+
+  return v;
+}
+
 function paginatedBrawlersEmbed(
   profile: BrawlStarsPlayer,
   page: number,
   pageSize: number,
-  totalPages: number,
-  emojis: Emojis
+  totalPages: number
 ): EmbedBuilder {
   const brawlersEmbed = new EmbedBuilder()
     .setColor(ColorCodes.primaryColor)
@@ -90,20 +110,32 @@ function paginatedBrawlersEmbed(
     .setFooter({ text: "Page: " + (page + 1) + "/" + totalPages })
     .setTimestamp();
 
-  profile.brawlers
+  const paginatedBralwers = profile.brawlers
     .sort((a, b) => b.trophies - a.trophies)
-    .slice(page * pageSize, page * pageSize + pageSize)
-    .forEach((brawler) => {
-      const emoji = client.emojis.cache.find((e) => e.name === brawler.name);
-      const convertedName = Converters.capitalizeFirstLetter(brawler.name);
-      const name = emoji ? `${emoji} ${convertedName}` : convertedName;
+    .slice(page * pageSize, page * pageSize + pageSize);
 
-      brawlersEmbed.addFields({
-        name: name,
-        value: `${emojis.trophy} ${brawler.trophies}/${brawler.highestTrophies}`,
-        inline: true,
-      });
+  paginatedBralwers.forEach((brawler) => {
+    const brawlerEmoji = client.emojis.cache.find(
+      (e) => e.name === brawler.name.replace(/[ &-.]/g, "")
+    );
+    const convertedName = Converters.capitalizeFirstLetter(brawler.name);
+    const name = brawlerEmoji
+      ? `${brawlerEmoji} ${convertedName}`
+      : convertedName;
+
+    const rankEmoji = client.emojis.cache.find(
+      (e) => e.name === `Rank_${calculateRank(brawler)}`
+    );
+
+    const convertedValue = `${brawler.trophies}/${brawler.highestTrophies}`;
+    const value = rankEmoji ? `${rankEmoji} ${convertedValue}` : convertedValue;
+
+    brawlersEmbed.addFields({
+      name: `${name} (L. ${brawler.power})`,
+      value: value,
+      inline: true,
     });
+  });
 
   return brawlersEmbed;
 }
@@ -241,8 +273,19 @@ export default new Command({
       `${interaction.user.id}_${message.id}_${interaction.channelId}_${tag}`,
       ButtonStyle.Secondary
     );
+    const maxButton = new BBEmbedButton(
+      ">>",
+      `${interaction.user.id}_${message.id}_${interaction.channelId}_${tag}`,
+      ButtonStyle.Secondary
+    );
     const lessButton = new BBEmbedButton(
       "<",
+      `${interaction.user.id}_${message.id}_${interaction.channelId}_${tag}`,
+      ButtonStyle.Primary,
+      false
+    );
+    const minButton = new BBEmbedButton(
+      "<<",
       `${interaction.user.id}_${message.id}_${interaction.channelId}_${tag}`,
       ButtonStyle.Primary,
       false
@@ -273,19 +316,40 @@ export default new Command({
         ) {
           await i.update({
             embeds: [
-              paginatedBrawlersEmbed(
-                profile,
-                page,
-                pageSize,
-                totalPages,
-                emojis
-              ),
+              paginatedBrawlersEmbed(profile, page, pageSize, totalPages),
             ],
             components: [
               new ActionRowBuilder<ButtonBuilder>().addComponents(
                 backButton.button,
+                minButton.button,
                 lessButton.button,
-                moreButton.button
+                moreButton.button,
+                maxButton.button
+              ),
+            ],
+          });
+        }
+
+        if (
+          i.user.id == interaction.user.id &&
+          i.customId === minButton.customId
+        ) {
+          page = 0;
+          minButton.enabled(false);
+          lessButton.enabled(false);
+          moreButton.enabled(true);
+          maxButton.enabled(true);
+          await i.update({
+            embeds: [
+              paginatedBrawlersEmbed(profile, page, pageSize, totalPages),
+            ],
+            components: [
+              new ActionRowBuilder<ButtonBuilder>().addComponents(
+                backButton.button,
+                minButton.button,
+                lessButton.button,
+                moreButton.button,
+                maxButton.button
               ),
             ],
           });
@@ -296,23 +360,21 @@ export default new Command({
           i.customId === moreButton.customId
         ) {
           page++;
+          minButton.enabled(page != 0);
           lessButton.enabled(page != 0);
           moreButton.enabled(page != totalPages - 1);
+          maxButton.enabled(page != totalPages - 1);
           await i.update({
             embeds: [
-              paginatedBrawlersEmbed(
-                profile,
-                page,
-                pageSize,
-                totalPages,
-                emojis
-              ),
+              paginatedBrawlersEmbed(profile, page, pageSize, totalPages),
             ],
             components: [
               new ActionRowBuilder<ButtonBuilder>().addComponents(
                 backButton.button,
+                minButton.button,
                 lessButton.button,
-                moreButton.button
+                moreButton.button,
+                maxButton.button
               ),
             ],
           });
@@ -323,23 +385,46 @@ export default new Command({
           i.customId === lessButton.customId
         ) {
           page--;
+          minButton.enabled(page != 0);
           lessButton.enabled(page != 0);
           moreButton.enabled(page != totalPages - 1);
+          maxButton.enabled(page != totalPages - 1);
           await i.update({
             embeds: [
-              paginatedBrawlersEmbed(
-                profile,
-                page,
-                pageSize,
-                totalPages,
-                emojis
-              ),
+              paginatedBrawlersEmbed(profile, page, pageSize, totalPages),
             ],
             components: [
               new ActionRowBuilder<ButtonBuilder>().addComponents(
                 backButton.button,
+                minButton.button,
                 lessButton.button,
-                moreButton.button
+                moreButton.button,
+                maxButton.button
+              ),
+            ],
+          });
+        }
+
+        if (
+          i.user.id == interaction.user.id &&
+          i.customId === maxButton.customId
+        ) {
+          page = totalPages - 1;
+          minButton.enabled(true);
+          lessButton.enabled(true);
+          moreButton.enabled(false);
+          maxButton.enabled(false);
+          await i.update({
+            embeds: [
+              paginatedBrawlersEmbed(profile, page, pageSize, totalPages),
+            ],
+            components: [
+              new ActionRowBuilder<ButtonBuilder>().addComponents(
+                backButton.button,
+                minButton.button,
+                lessButton.button,
+                moreButton.button,
+                maxButton.button
               ),
             ],
           });
