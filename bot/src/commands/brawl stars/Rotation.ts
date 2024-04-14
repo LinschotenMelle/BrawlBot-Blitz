@@ -36,6 +36,7 @@ import { client } from "../..";
 import moment = require("moment-timezone");
 import { BrawlStarsMapDto } from "../../../core/dto/brawlstars/Map.dto";
 import { Constants } from "../../static/Contants";
+import { CommandTypes } from "../../../core/enums/CommandType";
 
 function createEmbed(
   title: string,
@@ -81,6 +82,7 @@ function convertTimestamp(timestamp: string): Date {
 export default new Command({
   name: "rotation",
   description: "Check Brawl Stars Rotation of Maps",
+  category: CommandTypes.BRAWL_STARS,
   run: async ({ interaction }) => {
     const brawlStarsMaps = await BrawlStarsService.instance.getRotation();
     var embeds: EmbedBuilder[] = [];

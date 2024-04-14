@@ -24,10 +24,12 @@ import { ErrorMessages } from "../../static/Error";
 import { BrawlStarsService } from "../../../core/services/Brawlstars-service";
 import { DatabaseService } from "../../../core/services/Database-serivce";
 import { ColorCodes } from "../../static/Theme";
+import { CommandTypes } from "../../../core/enums/CommandType";
 
 export default new Command({
   name: "save",
   description: "Set your Brawl Stars Tag",
+  category: CommandTypes.BRAWL_STARS,
   options: [
     {
       name: "tag",

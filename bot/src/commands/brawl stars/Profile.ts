@@ -32,116 +32,14 @@ import { ErrorMessages } from "../../static/Error";
 import { Command } from "../../structures/Command";
 import { ColorCodes } from "../../static/Theme";
 import { Constants } from "../../static/Contants";
-import { BrawlStarsPlayer } from "../../../core/dto/brawlstars/Player.dto";
 import { Emojis } from "../../static/Emojis";
 import { client } from "../..";
-import { Converters } from "../../static/Converters";
-import { Brawler } from "../../../core/dto/brawlstars/Brawler.dto";
-import { Console } from "console";
-
-export class BBEmbedButton {
-  private name!: string;
-  private customID!: string;
-  private style!: ButtonStyle;
-  private isEnabled!: boolean;
-
-  constructor(
-    name: string,
-    customId: string,
-    style: ButtonStyle = ButtonStyle.Primary,
-    initialDisabled: boolean = true
-  ) {
-    this.name = name;
-    this.customID = customId;
-    this.style = style;
-    this.isEnabled = initialDisabled;
-  }
-
-  enabled(isEnabled: boolean = true): void {
-    this.isEnabled = isEnabled;
-  }
-
-  private get _customId(): string {
-    return `${this.customID}_${this.name}`;
-  }
-
-  public get button(): ButtonBuilder {
-    return new ButtonBuilder()
-      .setCustomId(this._customId)
-      .setLabel(this.name)
-      .setStyle(this.style ?? ButtonStyle.Primary)
-      .setDisabled(!this.isEnabled);
-  }
-
-  public get customId(): string {
-    return this._customId;
-  }
-}
-
-function calculateRank(brawler: Brawler): number {
-  // Define the trophy requirements for each rank
-  const trophyRequirements = [
-    0, 10, 20, 30, 40, 60, 80, 100, 120, 140, 160, 180, 220, 260, 300, 340, 380,
-    420, 460, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 1000, 1050,
-    1100, 1150, 1200, 1250,
-  ];
-
-  const v = trophyRequirements.findIndex(
-    (trophies) => brawler.highestTrophies < trophies
-  );
-
-  if (v == -1) {
-    return 35;
-  }
-
-  return v;
-}
-
-function paginatedBrawlersEmbed(
-  profile: BrawlStarsPlayer,
-  page: number,
-  pageSize: number,
-  totalPages: number
-): EmbedBuilder {
-  const brawlersEmbed = new EmbedBuilder()
-    .setColor(ColorCodes.primaryColor)
-    .setTitle(`${profile.name} - ${profile.tag}`)
-    .setThumbnail(Constants.logo.name)
-    .setFooter({ text: "Page: " + (page + 1) + "/" + totalPages })
-    .setTimestamp();
-
-  const paginatedBralwers = profile.brawlers
-    .sort((a, b) => b.trophies - a.trophies)
-    .slice(page * pageSize, page * pageSize + pageSize);
-
-  paginatedBralwers.forEach((brawler) => {
-    const brawlerEmoji = client.emojis.cache.find(
-      (e) => e.name === brawler.name.replace(/[ &-.]/g, "")
-    );
-    const convertedName = Converters.capitalizeFirstLetter(brawler.name);
-    const name = brawlerEmoji
-      ? `${brawlerEmoji} ${convertedName}`
-      : convertedName;
-
-    const rankEmoji = client.emojis.cache.find(
-      (e) => e.name === `Rank_${calculateRank(brawler)}`
-    );
-
-    const convertedValue = `${brawler.trophies}/${brawler.highestTrophies}`;
-    const value = rankEmoji ? `${rankEmoji} ${convertedValue}` : convertedValue;
-
-    brawlersEmbed.addFields({
-      name: `${name} (L. ${brawler.power})`,
-      value: value,
-      inline: true,
-    });
-  });
-
-  return brawlersEmbed;
-}
+import { BBEmbedButton } from "../../../core/classes/embed-button";
+import { CommandTypes } from "../../../core/enums/CommandType";
 
 export default new Command({
   name: "profile",
+  category: CommandTypes.BRAWL_STARS,
   options: [
     {
       name: "tag",
@@ -300,6 +198,7 @@ export default new Command({
       let page = 0;
       const pageSize = 24;
       const totalPages = Math.ceil(profile.brawlers.length / pageSize);
+      const brawlStarsService = BrawlStarsService.instance;
       collector.on("collect", async (i) => {
         const id = brawlersButton.customId.split("_")[0];
 
@@ -316,7 +215,12 @@ export default new Command({
         ) {
           await i.update({
             embeds: [
-              paginatedBrawlersEmbed(profile, page, pageSize, totalPages),
+              brawlStarsService.paginatedBrawlersEmbed(
+                profile,
+                page,
+                pageSize,
+                totalPages
+              ),
             ],
             components: [
               new ActionRowBuilder<ButtonBuilder>().addComponents(
@@ -341,7 +245,12 @@ export default new Command({
           maxButton.enabled(true);
           await i.update({
             embeds: [
-              paginatedBrawlersEmbed(profile, page, pageSize, totalPages),
+              brawlStarsService.paginatedBrawlersEmbed(
+                profile,
+                page,
+                pageSize,
+                totalPages
+              ),
             ],
             components: [
               new ActionRowBuilder<ButtonBuilder>().addComponents(
@@ -366,7 +275,12 @@ export default new Command({
           maxButton.enabled(page != totalPages - 1);
           await i.update({
             embeds: [
-              paginatedBrawlersEmbed(profile, page, pageSize, totalPages),
+              brawlStarsService.paginatedBrawlersEmbed(
+                profile,
+                page,
+                pageSize,
+                totalPages
+              ),
             ],
             components: [
               new ActionRowBuilder<ButtonBuilder>().addComponents(
@@ -391,7 +305,12 @@ export default new Command({
           maxButton.enabled(page != totalPages - 1);
           await i.update({
             embeds: [
-              paginatedBrawlersEmbed(profile, page, pageSize, totalPages),
+              brawlStarsService.paginatedBrawlersEmbed(
+                profile,
+                page,
+                pageSize,
+                totalPages
+              ),
             ],
             components: [
               new ActionRowBuilder<ButtonBuilder>().addComponents(
@@ -416,7 +335,12 @@ export default new Command({
           maxButton.enabled(false);
           await i.update({
             embeds: [
-              paginatedBrawlersEmbed(profile, page, pageSize, totalPages),
+              brawlStarsService.paginatedBrawlersEmbed(
+                profile,
+                page,
+                pageSize,
+                totalPages
+              ),
             ],
             components: [
               new ActionRowBuilder<ButtonBuilder>().addComponents(

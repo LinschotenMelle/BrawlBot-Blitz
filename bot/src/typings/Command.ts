@@ -1,3 +1,4 @@
+import { CommandTypes } from "../../core/enums/CommandType";
 import {
   ChatInputApplicationCommandData,
   CommandInteraction,
@@ -31,4 +32,5 @@ type RunFunction = (options: RunOptions) => any;
 export type CommandType = {
   userPermission?: PermissionResolvable[];
   run: RunFunction;
+  category: CommandTypes;
 } & ChatInputApplicationCommandData;
