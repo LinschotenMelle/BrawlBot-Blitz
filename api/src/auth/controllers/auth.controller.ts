@@ -1,11 +1,14 @@
-import { Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Redirect, Res, UseGuards } from '@nestjs/common';
 import { Routes } from '../../utils/constants';
 import { AuthenticatedGuard, DiscordAuthGuard } from '../utils/Guards';
 import { Response } from 'express';
 import { AuthUser } from '../../utils/decorators';
 import { User } from '../../utils/typeorm/entities/User';
+import { ApiOAuth2, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @Controller(Routes.AUTH)
+@ApiTags('Auth')
+@ApiOAuth2([])
 export class AuthController {
   @Get('login')
   @UseGuards(DiscordAuthGuard)
@@ -16,12 +19,13 @@ export class AuthController {
   @Get('redirect')
   @UseGuards(DiscordAuthGuard)
   redirect(@Res() res: Response) {
-    res.redirect(`${process.env.CORS_ORIGIN}/menu`);
+     res.redirect(`${process.env.CORS_ORIGIN}/menu`);
   }
 
   @Get('me')
   @UseGuards(AuthenticatedGuard)
-  me(@AuthUser() user: User) {
+  @ApiResponse({ type: User })
+  me(@AuthUser() user: User): User {
     return user;
   }
 

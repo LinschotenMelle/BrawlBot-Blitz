@@ -5,14 +5,16 @@ import { TypeormStore } from 'connect-typeorm';
 import { Session } from './utils/typeorm/entities/Session';
 import * as passport from 'passport';
 import { DataSource } from 'typeorm';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
+  const prefix = 'api';
   const app = await NestFactory.create(AppModule);
 
   const dataSource = app.get<DataSource>('DataSource');
 
   const sessionRepository = dataSource.getRepository(Session);
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix(prefix);
 
   app.use(
     session({
@@ -25,6 +27,15 @@ async function bootstrap() {
       store: new TypeormStore().connect(sessionRepository),
     }),
   );
+
+  const options = new DocumentBuilder()
+    .addCookieAuth('connect.sid')
+    .setTitle('Nest-js Swagger Example API')
+    .setDescription('Swagger Example API API description')
+    .setVersion('1.0')
+    .build();
+  const document = SwaggerModule.createDocument(app, options);
+  SwaggerModule.setup(`${prefix}/docs`, app, document);
 
   app.enableCors({
     origin: process.env.CORS_ORIGIN,
