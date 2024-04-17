@@ -27,6 +27,7 @@
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/swagger": "^7.3.1",
     "@nestjs/typeorm": "^10.0.2",
+    "axios": "^1.6.8",
     "connect-typeorm": "^2.0.0",
     "express-session": "^1.18.0",
     "mysql2": "^3.9.4",

@@ -1,4 +1,11 @@
-import { Controller, Get, Post, Redirect, Res, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Redirect,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { Routes } from '../../utils/constants';
 import { AuthenticatedGuard, DiscordAuthGuard } from '../utils/Guards';
 import { Response } from 'express';
@@ -19,7 +26,7 @@ export class AuthController {
   @Get('redirect')
   @UseGuards(DiscordAuthGuard)
   redirect(@Res() res: Response) {
-     res.redirect(`${process.env.CORS_ORIGIN}/menu`);
+    res.redirect(`${process.env.CORS_ORIGIN}/dashboard`);
   }
 
   @Get('me')
