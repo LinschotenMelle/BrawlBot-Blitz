@@ -1,6 +1,10 @@
 import { FaDiscord } from "react-icons/fa";
 
 export const LoginPage = () => {
+  const redirect = () => {
+    window.location.href = "http://localhost:3001/api/auth/login";
+  };
+
   return (
     <>
       <div
@@ -13,8 +17,8 @@ export const LoginPage = () => {
           transform: "translate(-50%, -50%)",
         }}
       >
-        <a
-          href=""
+        <button
+          onClick={redirect}
           style={{
             backgroundColor: "#7289DA",
             color: "white",
@@ -28,7 +32,7 @@ export const LoginPage = () => {
         >
           <FaDiscord size={20} style={{ marginRight: 10 }} />
           Login with Discord
-        </a>
+        </button>
       </div>
     </>
   );
