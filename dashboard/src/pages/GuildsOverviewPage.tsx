@@ -3,7 +3,7 @@ import { useFetchGuilds } from "../utils/hooks/useFetchGuilds";
 import { FaChevronRight, FaDiscord } from "react-icons/fa";
 import { useState } from "react";
 
-function GuildsPage() {
+function GuildsOverviewPage() {
   const { guilds, loading } = useFetchGuilds();
   const [hoveredGuildId, setHoveredGuildId] = useState<string | null>(null);
 
@@ -102,4 +102,4 @@ function GuildsPage() {
   );
 }
 
-export default GuildsPage;
+export default GuildsOverviewPage;

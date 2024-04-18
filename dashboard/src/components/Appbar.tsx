@@ -14,11 +14,11 @@ import { User } from "../utils/types";
 
 const settings = ["Logout"];
 
-interface ResponsiveAppBarProps {
+interface IResponsiveAppBarProps {
   user: User;
 }
 
-export function ResponsiveAppBar({ user }: ResponsiveAppBarProps) {
+export function ResponsiveAppBar({ user }: IResponsiveAppBarProps) {
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
   );

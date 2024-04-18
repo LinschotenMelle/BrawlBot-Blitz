@@ -1,8 +1,9 @@
 import { Route, Routes } from "react-router-dom";
 import { LoginPage } from "./pages/LoginPage";
 import { useFetchUser } from "./utils/hooks/useFetchUser";
-import GuildsPage from "./pages/GuildsPage";
+import GuildsOverviewPage from "./pages/GuildsOverviewPage";
 import { ResponsiveAppBar } from "./components/Appbar";
+import GuildDetailPage from "./pages/GuildDetailsPage";
 
 function App() {
   const { user, err } = useFetchUser();
@@ -18,7 +19,11 @@ function App() {
         </Routes>
         <Routes>
           <Route path="/" element={<LoginPage />} />
-          <Route path="/dashboard" element={<GuildsPage />} />
+          <Route path="/dashboard" element={<GuildsOverviewPage />} />
+          <Route
+            path="/dashboard/guild/:guildId"
+            element={<GuildDetailPage />}
+          />
         </Routes>
       </>
     );
