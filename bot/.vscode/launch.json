@@ -46,7 +46,7 @@
       }
     },
     {
-      "name": "run:dev",
+      "name": "Discord Bot",
       "request": "launch",
       "type": "node",
       "runtimeExecutable": "${env:NVM_BIN}/npm",
@@ -54,18 +54,6 @@
       "presentation": {
         "hidden": true
       }
-    }
-  ],
-  "compounds": [
-    {
-      "name": "Launch Discord Bot",
-      "presentation": {
-        "hidden": false,
-        "group": "",
-        "order": 1
-      },
-      "configurations": ["run:dev"],
-      "stopAll": true
     }
   ]
 }

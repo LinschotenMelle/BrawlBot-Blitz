@@ -28,6 +28,8 @@ export const LoginPage = () => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
+            border: "none",
+            cursor: "pointer",
           }}
         >
           <FaDiscord size={20} style={{ marginRight: 10 }} />

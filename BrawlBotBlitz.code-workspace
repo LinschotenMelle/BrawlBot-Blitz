@@ -1,17 +1,33 @@
 {
-	"folders": [
-		{
-			"path": "bot"
-		},
-		{
-			"path": "dashboard"
-		},
-		{
-			"path": "common"
-		},
-		{
-			"path": "api"
-		}
-	],
-	"settings": {}
+  "folders": [
+    {
+      "path": "bot"
+    },
+    {
+      "path": "dashboard"
+    },
+    {
+      "path": "common"
+    },
+    {
+      "path": "api"
+    }
+  ],
+  "launch": {
+    "version": "0.2.0",
+    "compounds": [
+      {
+        "name": "Launch all",
+        "configurations": ["Discord Bot", "API", "Dashboard"]
+      }
+    ]
+  },
+  "settings": {
+    "java.project.sourcePaths": [
+      "${workspaceFolder}/bot",
+      "${workspaceFolder}/dashboard",
+      "${workspaceFolder}/common",
+      "${workspaceFolder}/api"
+    ]
+  }
 }

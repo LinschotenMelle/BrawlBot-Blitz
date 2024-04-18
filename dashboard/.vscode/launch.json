@@ -46,11 +46,11 @@
       }
     },
     {
-      "name": "API",
+      "name": "Dashboard",
       "request": "launch",
       "type": "node",
       "runtimeExecutable": "${env:NVM_BIN}/npm",
-      "runtimeArgs": ["run", "start:dev"],
+      "runtimeArgs": ["run", "start"],
       "presentation": {
         "hidden": true
       }
