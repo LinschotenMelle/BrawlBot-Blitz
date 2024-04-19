@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getGuilds } from "../api";
-import { PartialGuild } from "../types";
+import { PartialGuild } from "common/types/Guild";
 
 export function useFetchGuilds() {
   const [guilds, setGuilds] = useState<PartialGuild[]>();

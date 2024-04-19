@@ -10,26 +10,34 @@ import Avatar from "@mui/material/Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
-import { User } from "../utils/types";
+import { useLogoutUser } from "../utils/hooks/useFetchUser";
+import { User } from "common/types/User";
 
 const settings = ["Logout"];
 
 interface IResponsiveAppBarProps {
-  user: User;
+  user?: User;
 }
 
 export function ResponsiveAppBar({ user }: IResponsiveAppBarProps) {
+  const { logout } = useLogoutUser();
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
   );
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
+    console.log(event.currentTarget);
   };
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
+  function handleLogoutClick() {
+    logout();
+    setAnchorElUser(null);
+  }
 
   return (
     <AppBar
@@ -45,7 +53,7 @@ export function ResponsiveAppBar({ user }: IResponsiveAppBarProps) {
             variant="h6"
             noWrap
             component="a"
-            href="/dashboard"
+            href={user ? "/dashboard" : "/"}
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
@@ -79,38 +87,38 @@ export function ResponsiveAppBar({ user }: IResponsiveAppBarProps) {
               BrawlBot Blitz
             </Typography>
           </Box>
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar
-                  alt="Melle Sharp"
-                  src={`https://cdn.discordapp.com/avatars/${user.discordId}/${user.avatar}.webp`}
-                />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: "45px" }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+          {user && (
+            <Box sx={{ flexGrow: 0 }}>
+              <Tooltip title="Open settings">
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar
+                    alt="Melle Sharp"
+                    src={`https://cdn.discordapp.com/avatars/${user.discordId}/${user.avatar}.webp`}
+                  />
+                </IconButton>
+              </Tooltip>
+              <Menu
+                sx={{ mt: "45px" }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                <MenuItem key="Logout" onClick={handleLogoutClick}>
+                  <Typography textAlign="center">Logout</Typography>
                 </MenuItem>
-              ))}
-            </Menu>
-          </Box>
+              </Menu>
+            </Box>
+          )}
         </Toolbar>
       </Container>
     </AppBar>

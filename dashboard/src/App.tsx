@@ -12,10 +12,7 @@ function App() {
     return (
       <>
         <Routes>
-          <Route
-            path="/dashboard/*"
-            element={<ResponsiveAppBar user={user} />}
-          />
+          <Route path="*" element={<ResponsiveAppBar user={user} />} />
         </Routes>
         <Routes>
           <Route path="/" element={<LoginPage />} />
@@ -29,9 +26,14 @@ function App() {
     );
 
   return (
-    <Routes>
-      <Route path="/" element={<LoginPage />} />
-    </Routes>
+    <>
+      <Routes>
+        <Route path="*" element={<ResponsiveAppBar />} />
+      </Routes>
+      <Routes>
+        <Route path="/" element={<LoginPage />} />
+      </Routes>
+    </>
   );
 }
 

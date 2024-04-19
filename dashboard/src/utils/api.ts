@@ -1,5 +1,6 @@
 import axios from "axios";
-import { PartialGuild, User } from "./types";
+import { User } from "common/types/User";
+import { PartialGuild } from "common/types/Guild";
 
 export const getAuthStatus = () =>
   axios.get<User>("http://localhost:3001/api/auth/me", {
@@ -18,3 +19,6 @@ export const getGuildDetails = (guildId: string) =>
       withCredentials: true,
     }
   );
+
+export const postLogout = () =>
+  axios.post("http://localhost:3001/api/auth/logout");

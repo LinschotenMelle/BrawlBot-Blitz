@@ -6,3 +6,15 @@ export type UserDetails = {
   discriminator: string;
   avatar: string | null;
 };
+
+export type User = {
+  id: string;
+  discordId: string;
+  avatar: string;
+  username: string;
+};
+
+export type UpdateUserDetails = {
+  accessToken: string;
+  refreshToken: string;
+};

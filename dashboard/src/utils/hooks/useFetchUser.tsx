@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { getAuthStatus } from "../api";
-import { User } from "../types";
+import { getAuthStatus, postLogout } from "../api";
+import { User } from "common/types/User";
 
 export function useFetchUser() {
   const [user, setUser] = useState<User>();
@@ -20,4 +20,14 @@ export function useFetchUser() {
   }, []);
 
   return { user, err, loading };
+}
+
+export function useLogoutUser() {
+  const logout = () => {
+    postLogout().finally(() => {
+      setTimeout(() => {}, 1000);
+    });
+  };
+
+  return { logout };
 }

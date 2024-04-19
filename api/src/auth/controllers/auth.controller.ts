@@ -1,11 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Redirect,
-  Res,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
 import { Routes } from '../../utils/constants';
 import { AuthenticatedGuard, DiscordAuthGuard } from '../utils/Guards';
 import { Response } from 'express';
@@ -37,8 +30,10 @@ export class AuthController {
   }
 
   @Post('logout')
-  @UseGuards(AuthenticatedGuard)
-  logout() {
-    return 'logout';
+  logout(@Res() res: Response) {
+    console.log('logout');
+    res.clearCookie('connect.sid');
+    console.log(res.cookie('connect.sid', ''));
+    res.redirect(process.env.CORS_ORIGIN);
   }
 }

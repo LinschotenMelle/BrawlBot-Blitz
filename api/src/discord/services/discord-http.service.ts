@@ -1,28 +1,30 @@
 import { Injectable } from '@nestjs/common';
 import { IDiscordHttpService } from '../interfaces/discord-http';
-import axios from 'axios';
-import { PartialGuild } from '../../utils/types';
+import axios, { Axios } from 'axios';
+import { PartialGuild } from 'common/types/Guild';
 
 @Injectable()
 export class DiscordHttpService implements IDiscordHttpService {
-  fetchBotGuilds() {
-    return axios.get<PartialGuild[]>(
-      'https://discord.com/api/users/@me/guilds',
-      {
-        headers: {
-          Authorization: `Bot ${process.env.DISCORD_TOKEN}`,
-        },
+  private readonly axios: Axios;
+
+  constructor() {
+    this.axios = axios.create({
+      baseURL: 'https://discord.com/api',
+      headers: {
+        Authorization: `Bot ${process.env.DISCORD_TOKEN}`,
       },
-    );
+    });
   }
+
+  fetchBotGuilds() {
+    return this.axios.get<PartialGuild[]>('/users/@me/guilds');
+  }
+
   fetchUserGuilds(accessToken: string) {
-    return axios.get<PartialGuild[]>(
-      'https://discord.com/api/users/@me/guilds',
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
+    return this.axios.get<PartialGuild[]>('/users/@me/guilds', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
       },
-    );
+    });
   }
 }

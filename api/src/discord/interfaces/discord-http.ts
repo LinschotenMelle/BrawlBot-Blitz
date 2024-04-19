@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios';
-import { PartialGuild } from '../../utils/types';
+import { PartialGuild } from 'common/types/Guild';
 
 export interface IDiscordHttpService {
   fetchUserGuilds(accessToken: string): Promise<AxiosResponse<PartialGuild[]>>;
