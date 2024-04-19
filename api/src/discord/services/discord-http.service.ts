@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { IDiscordHttpService } from '../interfaces/discord-http';
 import axios, { Axios } from 'axios';
-import { PartialGuild } from 'common/types/Guild';
+import { Guild, PartialGuild } from 'common/types/Guild';
 
 @Injectable()
 export class DiscordHttpService implements IDiscordHttpService {
@@ -26,5 +26,9 @@ export class DiscordHttpService implements IDiscordHttpService {
         Authorization: `Bearer ${accessToken}`,
       },
     });
+  }
+
+  fetchGuildDetails(guildId: string) {
+    return this.axios.get<Guild>(`/guilds/${guildId}`);
   }
 }

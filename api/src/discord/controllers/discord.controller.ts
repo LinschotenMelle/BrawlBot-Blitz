@@ -1,4 +1,4 @@
-import { Controller, Get, Inject, UseGuards } from '@nestjs/common';
+import { Controller, Get, Inject, Param, UseGuards } from '@nestjs/common';
 import { Routes, Services } from '../../utils/constants';
 import { IDiscordService } from '../interfaces/discord';
 import { AuthUser } from '../../utils/decorators';
@@ -16,5 +16,11 @@ export class DiscordController {
   @UseGuards(AuthenticatedGuard)
   getGuilds(@AuthUser() user: User) {
     return this.discordService.getActiveGuilds(user);
+  }
+
+  @Get('/guilds/:guildId')
+  @UseGuards(AuthenticatedGuard)
+  getGuildDetails(@Param('guildId') guildId: string) {
+    return this.discordService.getGuildDetails(guildId);
   }
 }

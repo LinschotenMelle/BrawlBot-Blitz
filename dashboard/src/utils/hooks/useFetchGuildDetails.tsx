@@ -1,25 +1,19 @@
 import { useEffect, useState } from "react";
-import { getGuildDetails } from "../api";
-import { PartialGuild } from "common/types/Guild";
+import { Api } from "../api";
+import { Guild } from "common/types/Guild";
 
-export function useFetchGuilds(guildId: string) {
-  const [guild, setGuild] = useState<PartialGuild[]>();
+export function useFetchGuildDetails(guildId: string) {
+  const [guild, setGuild] = useState<Guild>();
   const [err, setErr] = useState<string>();
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setLoading(true);
-    getGuildDetails(guildId)
+    Api.instance
+      .getGuildDetails(guildId)
       .then(({ data }) => setGuild(data))
-      .catch((err) => {
-        console.error(err);
-        return setErr(err);
-      })
-      .finally(() => {
-        setTimeout(() => {
-          setLoading(false);
-        }, 1000);
-      });
+      .catch((err) => setErr(err))
+      .finally(() => setLoading(false));
   }, []);
 
   return { guild, err, loading };

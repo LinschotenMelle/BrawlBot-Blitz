@@ -29,4 +29,9 @@ export class DiscordService implements IDiscordService {
       return Number(b.isActive) - Number(a.isActive);
     });
   }
+
+  async getGuildDetails(guildId: string) {
+    const response = await this.discordHttpService.fetchGuildDetails(guildId);
+    return response.data;
+  }
 }

@@ -1,13 +1,34 @@
 import { Container, Typography } from "@mui/material";
 import { useParams } from "react-router-dom";
+import { useFetchGuildDetails } from "../utils/hooks/useFetchGuildDetails";
 
 function GuildDetailPage() {
   const { guildId } = useParams();
 
+  const { guild, err, loading } = useFetchGuildDetails(guildId ?? "");
+
+  if (loading) {
+    return (
+      <Container maxWidth="xl">
+        <Typography variant="h6">Loading guilds...</Typography>
+      </Container>
+    );
+  }
+
+  if (!guild || err) {
+    return (
+      <>
+        <Container maxWidth="xl">
+          <Typography variant="h6">Guild not found</Typography>
+        </Container>
+      </>
+    );
+  }
+
   return (
     <>
       <Container maxWidth="xl">
-        <Typography variant="h6">Guild: {guildId}</Typography>
+        <Typography variant="h6">{guild.name}</Typography>
       </Container>
     </>
   );

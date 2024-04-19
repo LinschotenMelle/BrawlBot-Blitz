@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getAuthStatus, postLogout } from "../api";
+import { Api } from "../api";
 import { User } from "common/types/User";
 
 export function useFetchUser() {
@@ -9,7 +9,8 @@ export function useFetchUser() {
 
   useEffect(() => {
     setLoading(true);
-    getAuthStatus()
+    Api.instance
+      .getAuthStatus()
       .then(({ data }) => setUser(data))
       .catch((err) => setErr(err))
       .finally(() => {
@@ -24,9 +25,7 @@ export function useFetchUser() {
 
 export function useLogoutUser() {
   const logout = () => {
-    postLogout().finally(() => {
-      setTimeout(() => {}, 1000);
-    });
+    Api.instance.postLogout();
   };
 
   return { logout };

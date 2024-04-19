@@ -1,24 +1,38 @@
-import axios from "axios";
+import axios, { Axios } from "axios";
 import { User } from "common/types/User";
-import { PartialGuild } from "common/types/Guild";
+import { Guild, PartialGuild } from "common/types/Guild";
 
-export const getAuthStatus = () =>
-  axios.get<User>("http://localhost:3001/api/auth/me", {
-    withCredentials: true,
-  });
+export class Api {
+  private static _instance = new Api();
+  private readonly axios: Axios;
 
-export const getGuilds = () =>
-  axios.get<PartialGuild[]>("http://localhost:3001/api/discord/guilds", {
-    withCredentials: true,
-  });
-
-export const getGuildDetails = (guildId: string) =>
-  axios.get<PartialGuild[]>(
-    `http://localhost:3001/api/discord/guild/${guildId}`,
-    {
-      withCredentials: true,
+  constructor() {
+    if (Api._instance) {
+      throw new Error(
+        "Error: Instantiation failed: Use Api.getInstance() instead of new."
+      );
     }
-  );
+    Api._instance = this;
 
-export const postLogout = () =>
-  axios.post("http://localhost:3001/api/auth/logout");
+    this.axios = axios.create({
+      baseURL: "http://localhost:3001/api",
+      withCredentials: true,
+    });
+  }
+
+  public static get instance(): Api {
+    if (!Api._instance) {
+      Api._instance = new Api();
+    }
+    return Api._instance;
+  }
+
+  getAuthStatus = () => this.axios.get<User>("/auth/me");
+
+  postLogout = () => this.axios.post("/auth/logout");
+
+  getGuilds = () => this.axios.get<PartialGuild[]>("/discord/guilds");
+
+  getGuildDetails = (guildId: string) =>
+    this.axios.get<Guild>(`/discord/guilds/${guildId}`);
+}

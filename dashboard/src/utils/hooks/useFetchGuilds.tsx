@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getGuilds } from "../api";
+import { Api } from "../api";
 import { PartialGuild } from "common/types/Guild";
 
 export function useFetchGuilds() {
@@ -9,17 +9,11 @@ export function useFetchGuilds() {
 
   useEffect(() => {
     setLoading(true);
-    getGuilds()
+    Api.instance
+      .getGuilds()
       .then(({ data }) => setGuilds(data))
-      .catch((err) => {
-        console.error(err);
-        return setErr(err);
-      })
-      .finally(() => {
-        setTimeout(() => {
-          setLoading(false);
-        }, 1000);
-      });
+      .catch((err) => setErr(err))
+      .finally(() => setLoading(false));
   }, []);
 
   return { guilds, err, loading };
