@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Api } from "../api";
 import { Guild } from "common/types/Guild";
+import { GuildChannel } from "common/types/GuildChannel";
 
 export function useFetchGuildDetails(guildId: string) {
   const [guild, setGuild] = useState<Guild>();
@@ -17,4 +18,17 @@ export function useFetchGuildDetails(guildId: string) {
   }, []);
 
   return { guild, err, loading };
+}
+
+export function useFetchGuildChannels(guildId: string) {
+  const [channels, setGuild] = useState<GuildChannel[]>();
+
+  useEffect(() => {
+    Api.instance
+      .getGuildChannels(guildId)
+      .then(({ data }) => setGuild(data))
+      .catch((err) => {});
+  }, []);
+
+  return { channels };
 }

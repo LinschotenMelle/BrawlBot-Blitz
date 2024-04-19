@@ -3,6 +3,7 @@ import { IDiscordHttpService } from '../interfaces/discord-http';
 import { Services } from '../../utils/constants';
 import { IDiscordService } from '../interfaces/discord';
 import { User } from '../../utils/typeorm/entities/User';
+import { PartialGuild } from '../mapper/discord';
 
 @Injectable()
 export class DiscordService implements IDiscordService {
@@ -11,7 +12,7 @@ export class DiscordService implements IDiscordService {
     private readonly discordHttpService: IDiscordHttpService,
   ) {}
 
-  async getActiveGuilds(user: User) {
+  async getActiveGuilds(user: User): Promise<PartialGuild[]> {
     const { data: userGuilds } = await this.discordHttpService.fetchUserGuilds(
       user.accessToken,
     );
@@ -32,6 +33,12 @@ export class DiscordService implements IDiscordService {
 
   async getGuildDetails(guildId: string) {
     const response = await this.discordHttpService.fetchGuildDetails(guildId);
+    return response.data;
+  }
+
+  async getGuildChannels(guildId: string) {
+    const response = await this.discordHttpService.fetchGuildChannels(guildId);
+    console.log(response.data);
     return response.data;
   }
 }

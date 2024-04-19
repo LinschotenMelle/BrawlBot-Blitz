@@ -1,6 +1,7 @@
 import axios, { Axios } from "axios";
 import { User } from "common/types/User";
 import { Guild, PartialGuild } from "common/types/Guild";
+import { GuildChannel } from "common/types/GuildChannel";
 
 export class Api {
   private static _instance = new Api();
@@ -35,4 +36,7 @@ export class Api {
 
   getGuildDetails = (guildId: string) =>
     this.axios.get<Guild>(`/discord/guilds/${guildId}`);
+
+  getGuildChannels = (guildId: string) =>
+    this.axios.get<GuildChannel[]>(`/discord/guilds/${guildId}/channels`);
 }

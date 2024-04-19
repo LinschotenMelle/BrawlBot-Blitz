@@ -1,11 +1,15 @@
 import { Container, Typography } from "@mui/material";
 import { useParams } from "react-router-dom";
-import { useFetchGuildDetails } from "../utils/hooks/useFetchGuildDetails";
+import {
+  useFetchGuildChannels,
+  useFetchGuildDetails,
+} from "../utils/hooks/useFetchGuildDetails";
 
 function GuildDetailPage() {
   const { guildId } = useParams();
 
   const { guild, err, loading } = useFetchGuildDetails(guildId ?? "");
+  const { channels } = useFetchGuildChannels(guildId ?? "");
 
   if (loading) {
     return (
@@ -29,6 +33,9 @@ function GuildDetailPage() {
     <>
       <Container maxWidth="xl">
         <Typography variant="h6">{guild.name}</Typography>
+        {channels?.map((channel) => (
+          <Typography key={channel.id}>{channel.name}</Typography>
+        ))}
       </Container>
     </>
   );
