@@ -1,8 +1,10 @@
-import { Provider, Session } from '@nestjs/common';
+import { Provider } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { GuildConfiguration } from './entities/GuildConfiguration';
 import { User } from './entities/User';
+import { Session } from './entities/Session';
+import { YoutubeChannel } from './entities/YoutubeChannel';
 
 export const DataSourceProvider: Provider = {
   provide: 'DataSource',
@@ -22,4 +24,4 @@ export const DataSourceProvider: Provider = {
   inject: [ConfigService],
 };
 
-export const entities = [GuildConfiguration, User, Session];
+export const entities = [GuildConfiguration, User, Session, YoutubeChannel];

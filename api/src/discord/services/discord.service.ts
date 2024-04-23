@@ -38,7 +38,6 @@ export class DiscordService implements IDiscordService {
 
   async getGuildChannels(guildId: string) {
     const response = await this.discordHttpService.fetchGuildChannels(guildId);
-    console.log(response.data);
     return response.data;
   }
 }

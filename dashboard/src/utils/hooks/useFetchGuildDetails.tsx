@@ -21,12 +21,12 @@ export function useFetchGuildDetails(guildId: string) {
 }
 
 export function useFetchGuildChannels(guildId: string) {
-  const [channels, setGuild] = useState<GuildChannel[]>();
+  const [channels, setChannels] = useState<GuildChannel[]>();
 
   useEffect(() => {
     Api.instance
       .getGuildChannels(guildId)
-      .then(({ data }) => setGuild(data))
+      .then(({ data }) => setChannels(data))
       .catch((err) => {});
   }, []);
 

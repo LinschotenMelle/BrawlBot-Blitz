@@ -7,6 +7,7 @@ import { UserModule } from './user/user.module';
 import { PassportModule } from '@nestjs/passport';
 import { DataSourceOptions } from 'typeorm';
 import { DiscordModule } from './discord/discord.module';
+import { YoutubeModule } from './youtube/youtube.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { DiscordModule } from './discord/discord.module';
     AuthModule,
     UserModule,
     DiscordModule,
+    YoutubeModule,
   ],
   controllers: [],
   providers: [DataSourceProvider],

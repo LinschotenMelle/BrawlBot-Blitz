@@ -2,31 +2,37 @@ import { Injectable } from '@nestjs/common';
 import { IDiscordHttpService } from '../interfaces/discord-http';
 import axios, { Axios } from 'axios';
 import { Guild } from 'common/types/Guild';
-import { AxiosCacheInstance, setupCache } from 'axios-cache-interceptor/dev';
+import { AxiosCacheInstance, setupCache } from 'axios-cache-interceptor';
 import { GuildChannel } from 'common/types/GuildChannel';
 import { PartialGuild } from '../mapper/discord';
 
 @Injectable()
 export class DiscordHttpService implements IDiscordHttpService {
-  private readonly axios: AxiosCacheInstance;
+  private readonly userAxios: AxiosCacheInstance;
+  private readonly botAxios: AxiosCacheInstance;
 
   constructor() {
-    const instance = axios.create({
-      baseURL: 'https://discord.com/api',
-      headers: {
-        Authorization: `Bot ${process.env.DISCORD_TOKEN}`,
-      },
-    });
-
-    this.axios = setupCache(instance);
+    this.userAxios = setupCache(
+      axios.create({
+        baseURL: 'https://discord.com/api',
+      }),
+    );
+    this.botAxios = setupCache(
+      axios.create({
+        baseURL: 'https://discord.com/api',
+        headers: {
+          Authorization: `Bot ${process.env.DISCORD_TOKEN}`,
+        },
+      }),
+    );
   }
 
   fetchBotGuilds() {
-    return this.axios.get<PartialGuild[]>('/users/@me/guilds');
+    return this.botAxios.get<PartialGuild[]>('/users/@me/guilds');
   }
 
   fetchUserGuilds(accessToken: string) {
-    return this.axios.get<PartialGuild[]>('/users/@me/guilds', {
+    return this.userAxios.get<PartialGuild[]>('/users/@me/guilds', {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -34,10 +40,10 @@ export class DiscordHttpService implements IDiscordHttpService {
   }
 
   fetchGuildDetails(guildId: string) {
-    return this.axios.get<Guild>(`/guilds/${guildId}`);
+    return this.botAxios.get<Guild>(`/guilds/${guildId}`);
   }
 
   fetchGuildChannels(guildId: string) {
-    return this.axios.get<GuildChannel[]>(`/guilds/${guildId}/channels`);
+    return this.botAxios.get<GuildChannel[]>(`/guilds/${guildId}/channels`);
   }
 }

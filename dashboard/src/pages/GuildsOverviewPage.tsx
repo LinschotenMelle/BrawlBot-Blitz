@@ -6,6 +6,7 @@ import { useState } from "react";
 function GuildsOverviewPage() {
   const { guilds, loading } = useFetchGuilds();
   const [hoveredGuildId, setHoveredGuildId] = useState<string | null>(null);
+  const state = useState<boolean>(false);
 
   const inviteNewServer = () => {
     window.location.href =

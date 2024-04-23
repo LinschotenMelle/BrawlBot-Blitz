@@ -27,7 +27,6 @@ export function ResponsiveAppBar({ user }: IResponsiveAppBarProps) {
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
-    console.log(event.currentTarget);
   };
 
   const handleCloseUserMenu = () => {

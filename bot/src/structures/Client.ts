@@ -3,15 +3,16 @@ import {
   Client,
   Collection,
   ClientEvents,
+  ActivityType,
 } from "discord.js";
 import { CommandType } from "../typings/Command";
 import { globSync } from "glob";
 import { RegisterCommandsOptions } from "../typings/Client";
 import { Event } from "./Event";
+import { client } from "..";
 
 export class ExtendedClient extends Client {
   commands: Collection<string, CommandType> = new Collection();
-
   constructor() {
     super({ intents: 32767 });
   }
@@ -46,10 +47,15 @@ export class ExtendedClient extends Client {
     });
 
     this.on("ready", () => {
-      this.registerCommands({
-        commands: slashCommands,
-        guildId: process.env.GUILD_ID,
-      });
+      // Register commands
+      const commandsArray = Array.from(this.commands.values());
+      setInterval(() => {
+        const randomCommand =
+          commandsArray[Math.floor(Math.random() * commandsArray.length)];
+        client.user?.setActivity(`/${randomCommand.name}`, {
+          type: ActivityType.Playing,
+        });
+      }, 30000);
     });
 
     // Event

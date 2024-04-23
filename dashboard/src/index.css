@@ -13,3 +13,38 @@ body {
   right: 50%;
   transform: translate(-50%, -50%);
 }
+.collapsible-card {
+  border-radius: 8px;
+  background-color: #2b3240;
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.2);
+  padding: 0px 15px;
+  overflow: hidden;
+}
+.header {
+  height: auto;
+  padding: 20px 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.content {
+  transition: height 0.4s ease;
+  overflow: hidden;
+}
+
+input,
+select,
+textarea {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+textarea {
+  resize: none;
+  height: 50px;
+}

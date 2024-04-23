@@ -31,9 +31,7 @@ export class AuthController {
 
   @Post('logout')
   logout(@Res() res: Response) {
-    console.log('logout');
     res.clearCookie('connect.sid');
-    console.log(res.cookie('connect.sid', ''));
     res.redirect(process.env.CORS_ORIGIN);
   }
 }
