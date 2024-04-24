@@ -10,6 +10,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { GuildChannel } from "common/types/GuildChannel";
 import { Role } from "common/types/Role";
+import { useFetchYoutubeData } from "../utils/hooks/useFetchYoutube";
 
 function GuildDetailPage() {
   const { guildId } = useParams();
@@ -18,6 +19,7 @@ function GuildDetailPage() {
   const { channels } = useFetchGuildChannels(guildId ?? "");
 
   // Youtube form
+  const { ytData } = useFetchYoutubeData(guildId ?? "");
   const [youtubeActive, setYoutubeActive] = useState<boolean>(false);
   const { register, handleSubmit } = useForm();
 
@@ -86,6 +88,15 @@ function GuildDetailPage() {
                 <input
                   {...register("id", { required: true })}
                   placeholder="Youtube Channel ID"
+                  value={ytData?.channelId}
+                />
+                <label htmlFor="id">
+                  <Typography variant="body1">Youtube API Key</Typography>
+                </label>
+                <input
+                  {...register("key", { required: true })}
+                  placeholder="Youtube Api Key"
+                  value={ytData?.apiKey}
                 />
                 <label htmlFor="channelId">
                   <Typography variant="body1">Text Channel</Typography>
@@ -93,39 +104,53 @@ function GuildDetailPage() {
                 <select {...register("channelId")}>
                   {channels.map((e: GuildChannel) => {
                     return (
-                      <option key={e.id} value={e.id}>
+                      <option
+                        key={e.id}
+                        value={e.id}
+                        defaultValue={ytData?.guildChannelId}
+                      >
                         {e.name}
                       </option>
                     );
                   })}
                 </select>
-                <label htmlFor="title">
-                  <Typography variant="body1">Title</Typography>
-                </label>
-                <input
-                  {...register("title", { required: true })}
-                  placeholder="Title"
-                />
-                <label htmlFor="message">
-                  <Typography variant="body1">Message</Typography>
-                </label>
-                <textarea
-                  {...register("message", { required: true })}
-                  placeholder="Message"
-                />
                 <label htmlFor="channelId">
                   <Typography variant="body1">Role</Typography>
                 </label>
-                <select {...register("channelId")}>
+                <select {...register("roleId")}>
                   {guild.roles.map((e: Role) => {
                     return (
-                      <option key={e.id} value={e.id}>
+                      <option
+                        key={e.id}
+                        value={e.id}
+                        defaultValue={ytData?.roleId}
+                      >
                         {e.name}
                       </option>
                     );
                   })}
                 </select>
-                <input type="submit" />
+                <input
+                  type="hidden"
+                  value={guildId}
+                  {...register("guild_id", { required: true })}
+                />
+                <input
+                  type="hidden"
+                  value={youtubeActive.toString()}
+                  {...register("active", { required: true })}
+                />
+                <input
+                  style={{
+                    marginTop: "20px",
+                    padding: "10px",
+                    color: "white",
+                    backgroundColor: "#DE7456",
+                    border: "none",
+                    borderRadius: "5px",
+                  }}
+                  type="submit"
+                />
               </form>
             </>
           }

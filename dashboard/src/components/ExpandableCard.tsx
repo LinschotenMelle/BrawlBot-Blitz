@@ -47,7 +47,7 @@ export function ExpandableCard({
         <div
           className="content"
           style={{
-            height: toggle ? "500px" : "0px",
+            height: toggle ? "38vh" : "0px",
             overflow: "hidden",
           }}
         >

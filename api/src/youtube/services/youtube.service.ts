@@ -24,4 +24,10 @@ export class YoutubeService implements IYoutubeService {
       console.error(e);
     }
   }
+
+  async getChannel(guildId: string): Promise<YoutubeChannel> {
+    return this.youtubeRepository.findOneBy({
+      guildId: guildId,
+    });
+  }
 }

@@ -6,6 +6,7 @@ import { Session } from './utils/typeorm/entities/Session';
 import * as passport from 'passport';
 import { DataSource } from 'typeorm';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const prefix = 'api';
@@ -16,9 +17,11 @@ async function bootstrap() {
   const sessionRepository = dataSource.getRepository(Session);
   app.setGlobalPrefix(prefix);
 
+  const configService = app.get(ConfigService);
+
   app.use(
     session({
-      secret: process.env.COOKIE_SECRET,
+      secret: configService.getOrThrow('COOKIE_SECRET'),
       resave: false,
       saveUninitialized: false,
       cookie: {
@@ -33,19 +36,23 @@ async function bootstrap() {
     .setTitle('Nest-js Swagger Example API')
     .setDescription('Swagger Example API API description')
     .setVersion('1.0')
+    .addGlobalParameters({
+      name: 'token',
+      in: 'header',
+    })
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup(`${prefix}/docs`, app, document);
 
   app.enableCors({
-    origin: process.env.CORS_ORIGIN,
+    origin: configService.getOrThrow('CORS_ORIGIN'),
     credentials: true,
   });
   app.use(passport.initialize());
   app.use(passport.session());
 
   try {
-    await app.listen(process.env.PORT || 3001);
+    await app.listen(configService.get('PORT') || 3001);
     console.log(`Server is running on: ${await app.getUrl()}`);
   } catch (e) {
     console.error(e);

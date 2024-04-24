@@ -14,6 +14,9 @@ export class YoutubeService {
 
     this.apiAxios = axios.create({
       baseURL: "http://localhost:3001/api/youtube",
+      headers: {
+        token: process.env.TOKEN,
+      },
     });
   }
 
@@ -21,7 +24,7 @@ export class YoutubeService {
     const serviceInstance = new YoutubeService();
     setInterval(async () => {
       await serviceInstance.search();
-    }, 0.5 * 60 * 1000);
+    }, 15 * 60 * 1000);
   }
 
   private async search(): Promise<void> {
