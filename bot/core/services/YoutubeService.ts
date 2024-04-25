@@ -4,6 +4,8 @@ import { EmbedBuilder, NewsChannel, TextChannel } from "discord.js";
 import { YoutubeChannel } from "../../core/dto/youtube/YoutubeChannel.dto";
 
 export class YoutubeService {
+  private static instance?: YoutubeService;
+
   private readonly apiAxios: AxiosInstance;
   private readonly axios: AxiosInstance;
 
@@ -20,8 +22,11 @@ export class YoutubeService {
     });
   }
 
-  static initialize(): void {
+  static async initialize(): Promise<void> {
+    if (this.instance) throw Error("YoutubeService already initialized");
+
     const serviceInstance = new YoutubeService();
+    this.instance = serviceInstance;
     setInterval(async () => {
       await serviceInstance.search();
     }, 15 * 60 * 1000);
@@ -79,10 +84,12 @@ export class YoutubeService {
         .setImage(latestVideo.snippet.thumbnails.high.url)
         .setURL(`https://www.youtube.com/watch?v=${latestVideo.id.videoId}`);
 
-      const role = guild?.roles.cache.find((r) => r.id === channel.roleId);
+      const role =
+        guild!.roles.cache.find((r) => r.id === channel.roleId) ??
+        guild!.roles.everyone;
 
       selectedchannel.send({
-        content: `${role}` ?? "@everyone",
+        content: `${role} ${latestVideo.snippet.channelTitle} heeft zojuist "${latestVideo.snippet.title}" geüpload op YouTube! Bekijk het hier: https://www.youtube.com/watch?v=${latestVideo.id.videoId}`,
         embeds: [embed],
       });
 
@@ -91,7 +98,7 @@ export class YoutubeService {
           latestVideoDateTime: latestVideo.snippet.publishedAt,
         });
       } catch (e) {
-        console.error(e);
+        // NOOP
       }
     }
   }
