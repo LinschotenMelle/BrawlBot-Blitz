@@ -8,6 +8,7 @@ import { PassportModule } from '@nestjs/passport';
 import { DataSourceOptions } from 'typeorm';
 import { DiscordModule } from './discord/discord.module';
 import { YoutubeModule } from './youtube/youtube.module';
+import { OpenaiModule } from './openai/openai.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { YoutubeModule } from './youtube/youtube.module';
     UserModule,
     DiscordModule,
     YoutubeModule,
+    OpenaiModule,
   ],
   controllers: [],
   providers: [DataSourceProvider],

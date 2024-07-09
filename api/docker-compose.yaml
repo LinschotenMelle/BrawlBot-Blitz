@@ -1,0 +1,42 @@
+version: '1'
+
+services:
+  nestjs:
+    build: ./
+    container_name: brawl_bot_api
+    environment:
+      - COOKIE_SECRET="iq9JeYxL3vQ7kWdKMznDX9ZdGcrxwAgNXxF/WJ7yN0k="
+      - DISCORD_TOKEN=MTIyNDgwNDcwMzEwNDQwNTU5NQ.Gb4nMx.MLk05X-kBiwVpdyOkAzYYbofneqNmoccl4sJZc
+      - DISCORD_CLIENT_ID=1224804703104405595
+      - DISCORD_CLIENT_SECRET=vODhZMJfGqJPdOgYCTGsnoFYzzxjq1v8
+      - DISCORD_REDIRECT_URL=http://localhost:3000/api/auth/redirect
+      - POSTGRES_HOST=localhost
+      - POSTGRES_PORT=5433
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=schippers
+      - POSTGRES_DB=postgres
+      - CORS_ORIGIN=http://localhost:3001
+    ports:
+      - '3000:3000'
+    depends_on:
+      - postgres
+    networks:
+      - api_network
+
+  postgres:
+    image: postgres:13
+    container_name: brawl_bot_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: schippers
+      POSTGRES_DB: postgres
+    ports:
+      - '5433:5432'
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    networks:
+      - api_network
+
+networks:
+  api_network:
+    driver: bridge

@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { IDiscordHttpService } from '../interfaces/discord-http';
-import axios, { Axios } from 'axios';
-import { Guild } from 'common/types/Guild';
+import axios from 'axios';
 import { AxiosCacheInstance, setupCache } from 'axios-cache-interceptor';
-import { GuildChannel } from 'common/types/GuildChannel';
 import { PartialGuild } from '../mapper/discord';
+import { Guild } from '../../utils/types/Guild';
+import { GuildChannel } from '../../utils/types/GuildChannel';
 
 @Injectable()
 export class DiscordHttpService implements IDiscordHttpService {

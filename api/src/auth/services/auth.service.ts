@@ -2,8 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { IUserService } from '../../user/interfaces/user';
 import { Services } from '../../utils/constants';
 import { IAuthService } from '../interfaces/auth';
-import { UserDetails } from 'common/types/User';
 import { User } from '../../utils/typeorm/entities/User';
+import { UserDetails } from '../../utils/types/User';
 
 @Injectable()
 export class AuthService implements IAuthService {

@@ -27,16 +27,16 @@
  */
 
 import { Command } from "../../structures/Command";
-import { BrawlStarsService } from "../../../core/services/Brawlstars-service";
+import { BrawlStarsService } from "../../core/services/Brawlstars-service";
 import { EmbedBuilder } from "discord.js";
 import { ColorCodes } from "../../static/Theme";
 import { ErrorMessages } from "../../static/Error";
 import { Converters } from "../../static/Converters";
 import { client } from "../..";
 import moment = require("moment-timezone");
-import { BrawlStarsMapDto } from "../../../core/dto/brawlstars/Map.dto";
+import { BrawlStarsMapDto } from "../../core/dto/brawlstars/Map.dto";
 import { Constants } from "../../static/Contants";
-import { CommandTypes } from "../../../core/enums/CommandType";
+import { CommandTypes } from "../../core/enums/CommandType";
 
 function createEmbed(
   title: string,

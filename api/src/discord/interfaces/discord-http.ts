@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios';
-import { Guild } from 'common/types/Guild';
-import { GuildChannel } from 'common/types/GuildChannel';
 import { PartialGuild } from '../mapper/discord';
+import { Guild } from '../../utils/types/Guild';
+import { GuildChannel } from '../../utils/types/GuildChannel';
 
 export interface IDiscordHttpService {
   fetchUserGuilds(accessToken: string): Promise<AxiosResponse<PartialGuild[]>>;

@@ -1,4 +1,4 @@
-import { CommandTypes } from "../../core/enums/CommandType";
+import { CommandTypes } from "../core/enums/CommandType";
 import {
   ChatInputApplicationCommandData,
   CommandInteraction,

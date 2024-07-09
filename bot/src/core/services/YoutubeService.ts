@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from "axios";
-import { client } from "../../src";
+import { client } from "../..";
 import { EmbedBuilder, NewsChannel, TextChannel } from "discord.js";
-import { YoutubeChannel } from "../../core/dto/youtube/YoutubeChannel.dto";
+import { YoutubeChannel } from "../dto/youtube/YoutubeChannel.dto";
 
 export class YoutubeService {
   private static instance?: YoutubeService;
@@ -15,7 +15,7 @@ export class YoutubeService {
     });
 
     this.apiAxios = axios.create({
-      baseURL: "http://localhost:3001/api/youtube",
+      baseURL: "http://3.72.88.201:3001/api/youtube",
       headers: {
         token: process.env.TOKEN,
       },
@@ -80,9 +80,12 @@ export class YoutubeService {
           name: latestVideo.snippet.channelTitle,
           url: `https://www.youtube.com/channel/${latestVideo.snippet.channelId}`,
         })
-        .setDescription(latestVideo.snippet.description)
         .setImage(latestVideo.snippet.thumbnails.high.url)
         .setURL(`https://www.youtube.com/watch?v=${latestVideo.id.videoId}`);
+
+      if (latestVideo.snippet.description) {
+        embed.setDescription(latestVideo.snippet.description);
+      }
 
       const role =
         guild!.roles.cache.find((r) => r.id === channel.roleId) ??

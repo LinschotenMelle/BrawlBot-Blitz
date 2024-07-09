@@ -4,6 +4,7 @@ import {
   Get,
   Inject,
   Param,
+  Post,
   Put,
   UseGuards,
 } from '@nestjs/common';
@@ -11,7 +12,11 @@ import { Routes, Services } from '../../utils/constants';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { IYoutubeService } from '../interfaces/youtube';
 import { YoutubeChannel } from '../../utils/entities/YoutubeChannel';
-import { TokenGuard } from '../../auth/utils/Guards';
+import { AuthenticatedGuard, TokenGuard } from '../../auth/utils/Guards';
+import {
+  MultipleAuthorizeGuard,
+  MultipleGuardsReferences,
+} from '../../auth/utils/MultipleGuardsReference';
 
 @Controller(Routes.YOUTUBE)
 @ApiTags('YouTube')
@@ -20,6 +25,13 @@ export class YoutubeController {
     @Inject(Services.YOUTUBE_SERVICE)
     private readonly youtubeService: IYoutubeService,
   ) {}
+
+  @Post()
+  @ApiResponse({ type: YoutubeChannel })
+  @UseGuards(MultipleAuthorizeGuard)
+  async createChannel(@Body() youtubeChannel: YoutubeChannel) {
+    return this.youtubeService.createChannel(youtubeChannel);
+  }
 
   @Get('/channels')
   @ApiResponse({ type: [YoutubeChannel] })
@@ -30,7 +42,8 @@ export class YoutubeController {
   }
 
   @Get(':guildId')
-  @UseGuards(TokenGuard)
+  @MultipleGuardsReferences(AuthenticatedGuard, TokenGuard)
+  @UseGuards(MultipleAuthorizeGuard)
   async getChannel(@Param('guildId') guildId: string) {
     return this.youtubeService.getChannel(guildId);
   }

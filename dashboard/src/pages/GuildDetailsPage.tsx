@@ -6,7 +6,7 @@ import {
 } from "../utils/hooks/useFetchGuildDetails";
 import { ExpandableCard } from "../components/ExpandableCard";
 import { FaYoutube } from "react-icons/fa";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { GuildChannel } from "common/types/GuildChannel";
 import { Role } from "common/types/Role";
@@ -23,7 +23,13 @@ function GuildDetailPage() {
   const [youtubeActive, setYoutubeActive] = useState<boolean>(false);
   const { register, handleSubmit } = useForm();
 
-  if (loading) {
+  useEffect(() => {
+    if (ytData) {
+      setYoutubeActive(ytData.isActive);
+    }
+  }, [ytData]);
+
+  if (loading && !guild) {
     return (
       <Container maxWidth="xl">
         <Typography variant="h6">Loading guilds...</Typography>
@@ -101,14 +107,13 @@ function GuildDetailPage() {
                 <label htmlFor="channelId">
                   <Typography variant="body1">Text Channel</Typography>
                 </label>
-                <select {...register("channelId")}>
+                <select
+                  {...register("channelId")}
+                  defaultValue={ytData?.guildChannelId}
+                >
                   {channels.map((e: GuildChannel) => {
                     return (
-                      <option
-                        key={e.id}
-                        value={e.id}
-                        defaultValue={ytData?.guildChannelId}
-                      >
+                      <option key={e.id} value={e.id}>
                         {e.name}
                       </option>
                     );
@@ -117,14 +122,10 @@ function GuildDetailPage() {
                 <label htmlFor="channelId">
                   <Typography variant="body1">Role</Typography>
                 </label>
-                <select {...register("roleId")}>
+                <select {...register("roleId")} defaultValue={ytData?.roleId}>
                   {guild.roles.map((e: Role) => {
                     return (
-                      <option
-                        key={e.id}
-                        value={e.id}
-                        defaultValue={ytData?.roleId}
-                      >
+                      <option key={e.id} value={e.id}>
                         {e.name}
                       </option>
                     );

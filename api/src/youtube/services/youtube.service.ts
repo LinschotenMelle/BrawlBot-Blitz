@@ -11,6 +11,10 @@ export class YoutubeService implements IYoutubeService {
     private readonly youtubeRepository: Repository<YoutubeChannel>,
   ) {}
 
+  async createChannel(youtubeChannel: YoutubeChannel): Promise<YoutubeChannel> {
+    return this.youtubeRepository.save(youtubeChannel);
+  }
+
   async getChannels(): Promise<YoutubeChannel[]> {
     return this.youtubeRepository.find();
   }

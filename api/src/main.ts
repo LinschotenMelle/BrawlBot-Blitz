@@ -7,6 +7,7 @@ import * as passport from 'passport';
 import { DataSource } from 'typeorm';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
+import { OpenAI } from 'openai';
 
 async function bootstrap() {
   const prefix = 'api';

@@ -32,6 +32,6 @@ export class TokenGuard implements CanActivate {
       return true;
     }
 
-    throw new UnauthorizedException('Invalid token');
+    return false;
   }
 }

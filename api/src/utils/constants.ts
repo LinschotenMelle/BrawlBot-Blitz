@@ -3,6 +3,7 @@ export enum Routes {
   USER = 'user',
   DISCORD = 'discord',
   YOUTUBE = 'youtube',
+  OPENAI = 'openai',
 }
 
 export enum Services {
@@ -11,4 +12,5 @@ export enum Services {
   DISCORD_SERVICE = 'DISCORD_SERVICE',
   DISCORD_HTTP_SERVICE = 'DISCORD_HTTP_SERVICE',
   YOUTUBE_SERVICE = 'YOUTUBE_SERVICE',
+  OPENAI_SERVICE = 'OPENAI_SERVICE',
 }

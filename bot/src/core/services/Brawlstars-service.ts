@@ -3,10 +3,10 @@ import { BrawlStarsMapDto } from "../dto/brawlstars/Map.dto";
 import { BrawlStarsPlayer } from "../dto/brawlstars/Player.dto";
 import { Brawler, BrawlerResponse } from "../dto/brawlstars/Brawler.dto";
 import { EmbedBuilder } from "discord.js";
-import { ColorCodes } from "../../src/static/Theme";
-import { Constants } from "../../src/static/Contants";
-import { client } from "../../src";
-import { Converters } from "../../src/static/Converters";
+import { ColorCodes } from "../../static/Theme";
+import { Constants } from "../../static/Contants";
+import { client } from "../..";
+import { Converters } from "../../static/Converters";
 
 export class BrawlStarsService {
   private static _instance = new BrawlStarsService();

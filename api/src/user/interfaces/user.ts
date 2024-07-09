@@ -1,5 +1,5 @@
 import { User } from '../../utils/typeorm/entities/User';
-import { UpdateUserDetails, UserDetails } from 'common/types/User';
+import { UpdateUserDetails, UserDetails } from '../../utils/types/User';
 
 export interface IUserService {
   createUser(details: UserDetails): Promise<User>;

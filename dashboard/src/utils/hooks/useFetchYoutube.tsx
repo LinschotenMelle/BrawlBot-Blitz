@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Api } from "../api";
 import { YoutubeChannel } from "common/types/YoutubeChannel";
-import { FieldValues } from "react-hook-form";
 
 export function useFetchYoutubeData(guildId: string) {
   const [ytData, setGuilds] = useState<YoutubeChannel>();

@@ -1,5 +1,5 @@
 import { Switch } from "@mui/material";
-import { Dispatch, ReactNode, SetStateAction, useState } from "react";
+import { Dispatch, Fragment, ReactNode, SetStateAction, useState } from "react";
 
 interface IExpandableCardInterface {
   title: ReactNode;
@@ -36,12 +36,15 @@ export function ExpandableCard({
             }}
           >
             {title}
-            <Switch
-              value={value}
-              onChange={async (_, isActive) => {
-                setState(isActive);
-              }}
-            />
+            <Fragment>
+              {value}
+              <Switch
+                checked={value}
+                onChange={async (_, isActive) => {
+                  setState(isActive);
+                }}
+              />
+            </Fragment>
           </div>
         </div>
         <div

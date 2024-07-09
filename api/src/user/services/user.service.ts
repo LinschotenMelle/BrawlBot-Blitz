@@ -3,7 +3,8 @@ import { IUserService } from '../interfaces/user';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../../utils/typeorm/entities/User';
 import { Repository } from 'typeorm';
-import { UserDetails, UpdateUserDetails } from 'common/types/User';
+import { UserDetails } from '../../utils/types/User';
+import { UpdateUserDetails } from '../../utils/types/UpdateUserDetails';
 
 @Injectable()
 export class UserService implements IUserService {

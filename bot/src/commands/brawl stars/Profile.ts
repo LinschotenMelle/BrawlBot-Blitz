@@ -26,16 +26,16 @@ import {
   ComponentType,
   EmbedBuilder,
 } from "discord.js";
-import { BrawlStarsService } from "../../../core/services/Brawlstars-service";
-import { DatabaseService } from "../../../core/services/Database-serivce";
+import { BrawlStarsService } from "../../core/services/Brawlstars-service";
+import { DatabaseService } from "../../core/services/Database-serivce";
 import { ErrorMessages } from "../../static/Error";
 import { Command } from "../../structures/Command";
 import { ColorCodes } from "../../static/Theme";
 import { Constants } from "../../static/Contants";
 import { Emojis } from "../../static/Emojis";
 import { client } from "../..";
-import { BBEmbedButton } from "../../../core/classes/embed-button";
-import { CommandTypes } from "../../../core/enums/CommandType";
+import { BBEmbedButton } from "../../core/classes/embed-button";
+import { CommandTypes } from "../../core/enums/CommandType";
 
 export default new Command({
   name: "profile",
