@@ -15,6 +15,9 @@ export class HttpService {
 
     this.axios = axios.create({
       baseURL: process.env.HTTP_API_URL,
+      headers: {
+        token: process.env.TOKEN,
+      },
     });
   }
 
@@ -27,5 +30,9 @@ export class HttpService {
 
   async get<T>(url: string): Promise<T> {
     return (await this.axios.get<T>(url)).data;
+  }
+
+  async post<T>(url: string, body: any): Promise<T> {
+    return (await this.axios.post<T>(url, body)).data;
   }
 }

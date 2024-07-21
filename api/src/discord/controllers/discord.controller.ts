@@ -1,10 +1,20 @@
-import { Controller, Get, Inject, Param, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Inject,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { Routes, Services } from '../../utils/constants';
 import { IDiscordService } from '../interfaces/discord';
 import { AuthUser } from '../../utils/decorators';
 import { User } from '../../utils/typeorm/entities/User';
-import { AuthenticatedGuard } from '../../auth/utils/Guards';
-import { ApiOAuth2, ApiTags } from '@nestjs/swagger';
+import { AuthenticatedGuard, TokenGuard } from '../../auth/utils/Guards';
+import { ApiOAuth2, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { CreateMemberCount } from '../../utils/types/CreateMemberCount';
+import { GuildMemberCount } from '../../utils/entities/GuildMemberCount';
 
 @Controller(Routes.DISCORD)
 @ApiTags('Discord')
@@ -31,5 +41,28 @@ export class DiscordController {
   @UseGuards(AuthenticatedGuard)
   getGuildChannels(@Param('guildId') guildId: string) {
     return this.discordService.getGuildChannels(guildId);
+  }
+
+  @Get('/guilds/:guildId/welcome-message')
+  @UseGuards(TokenGuard)
+  getWelcomeMessage(@Param('guildId') guildId: string) {
+    return this.discordService.getWelcomeMessage(guildId);
+  }
+
+  @Post('/guilds/:guildId/member-count')
+  @ApiResponse({ type: GuildMemberCount })
+  @UseGuards(TokenGuard)
+  postMemberCount(
+    @Param('guildId') guildId: string,
+    @Body() { channelId }: CreateMemberCount,
+  ) {
+    return this.discordService.postMemberCount(guildId, channelId);
+  }
+
+  @Get('/guilds/:guildId/member-count')
+  @ApiResponse({ type: GuildMemberCount })
+  @UseGuards(TokenGuard)
+  getMemberCount(@Param('guildId') guildId: string) {
+    return this.discordService.getMemberCount(guildId);
   }
 }

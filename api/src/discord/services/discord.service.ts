@@ -11,7 +11,6 @@ export class DiscordService implements IDiscordService {
     @Inject(Services.DISCORD_HTTP_SERVICE)
     private readonly discordHttpService: IDiscordHttpService,
   ) {}
-
   async getActiveGuilds(user: User): Promise<PartialGuild[]> {
     const { data: userGuilds } = await this.discordHttpService.fetchUserGuilds(
       user.accessToken,
@@ -39,5 +38,17 @@ export class DiscordService implements IDiscordService {
   async getGuildChannels(guildId: string) {
     const response = await this.discordHttpService.fetchGuildChannels(guildId);
     return response.data;
+  }
+
+  async getWelcomeMessage(guildId: string) {
+    return this.discordHttpService.getWelcomeMessage(guildId);
+  }
+
+  async postMemberCount(guildId: string, channelId: string) {
+    return this.discordHttpService.postMemberCount(guildId, channelId);
+  }
+
+  async getMemberCount(guildId: string) {
+    return this.discordHttpService.getMemberCount(guildId);
   }
 }

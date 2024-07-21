@@ -47,6 +47,10 @@ export class ExtendedClient extends Client {
     });
 
     this.on("ready", () => {
+      this.registerCommands({
+        commands: slashCommands,
+        guildId: process.env.GUILD_ID,
+      });
       // Register commands
       const commandsArray = Array.from(this.commands.values());
       setInterval(() => {

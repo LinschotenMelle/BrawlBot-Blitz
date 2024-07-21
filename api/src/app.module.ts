@@ -9,6 +9,7 @@ import { DataSourceOptions } from 'typeorm';
 import { DiscordModule } from './discord/discord.module';
 import { YoutubeModule } from './youtube/youtube.module';
 import { OpenaiModule } from './openai/openai.module';
+import { AuthenticatedGuard, TokenGuard } from './auth/utils/Guards';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { OpenaiModule } from './openai/openai.module';
       envFilePath: '.env',
       isGlobal: true,
     }),
+
     PassportModule.register({ session: true }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
