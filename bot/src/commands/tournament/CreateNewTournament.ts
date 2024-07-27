@@ -7,6 +7,7 @@ import {
   Message,
   PermissionFlagsBits,
   TextChannel,
+  ThreadAutoArchiveDuration,
 } from "discord.js";
 import { CommandTypes } from "../../core/enums/CommandType";
 import { Command } from "../../structures/Command";
@@ -98,7 +99,11 @@ export default new Command({
           permissionOverwrites: [
             {
               id: guild.roles.everyone.id,
-              deny: [PermissionFlagsBits.ViewChannel],
+              deny: [
+                PermissionFlagsBits.ViewChannel,
+                PermissionFlagsBits.CreatePublicThreads,
+                PermissionFlagsBits.CreatePrivateThreads,
+              ],
             },
           ],
         });
@@ -133,10 +138,18 @@ export default new Command({
           embeds: [embed],
         });
 
-        const formattedDate = moment(
-          endDateRegister?.toString(),
-          "DD-MM HH:mm"
-        );
+        var formattedDate = moment(endDateRegister?.toString(), "DD-MM HH:mm");
+
+        if (!formattedDate.isValid()) {
+          await createdChannel.send({
+            content: "Invalid date format. Please provide a valid format.",
+          });
+          return;
+        }
+
+        if (formattedDate.isBefore(Date.now())) {
+          formattedDate = formattedDate.add(1, "year");
+        }
 
         if (endDateRegister) {
           try {
@@ -182,10 +195,32 @@ export default new Command({
           }
         }
 
-        const seconds = moment(formattedDate).diff(Date.now(), "seconds");
+        // Create a thread for the admin notes
+        await createdChannel.threads.create({
+          name: "Admin Notes",
+          autoArchiveDuration: ThreadAutoArchiveDuration.OneWeek,
+          type: ChannelType.PrivateThread,
+        });
+
+        // Create a thread for the tournament rules
+        const rulesThread = await createdChannel.threads.create({
+          name: "Rules",
+          autoArchiveDuration: ThreadAutoArchiveDuration.OneWeek,
+          type: ChannelType.PublicThread,
+        });
+        await rulesThread.setLocked(true);
+
+        // Create a thread that show the teams
+        const teamsThread = await createdChannel.threads.create({
+          name: "Teams",
+          autoArchiveDuration: ThreadAutoArchiveDuration.OneWeek,
+          type: ChannelType.PublicThread,
+          invitable: false,
+        });
+        await teamsThread.setLocked(true);
+
         const channelCollector = createdChannel.createMessageCollector({
           filter: (i) => !i.author.bot,
-          time: seconds * 1000,
         });
 
         if (!channelCollector) return;
@@ -236,6 +271,17 @@ export default new Command({
 
             msg.member?.send({
               embeds: [registeryEmbed],
+            });
+
+            const teamEmbed = new EmbedBuilder()
+              .setTitle(`#${registeredUsers.length} ${teamName}`)
+              .setColor(ColorCodes.primaryColor)
+              .setDescription(
+                `${user1?.name} - ${user1?.tag}\n${user2?.name} - ${user2?.tag}`
+              );
+
+            teamsThread.send({
+              embeds: [teamEmbed],
             });
           } catch (ex: Error | any) {
             Sentry.captureException(ex);
