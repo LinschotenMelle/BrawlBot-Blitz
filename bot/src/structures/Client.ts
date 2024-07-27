@@ -4,17 +4,26 @@ import {
   Collection,
   ClientEvents,
   ActivityType,
+  GatewayIntentBits,
 } from "discord.js";
 import { CommandType } from "../typings/Command";
 import { globSync } from "glob";
 import { RegisterCommandsOptions } from "../typings/Client";
 import { Event } from "./Event";
 import { client } from "..";
+import { registerFont } from "canvas";
+import path = require("path");
 
 export class ExtendedClient extends Client {
   commands: Collection<string, CommandType> = new Collection();
   constructor() {
-    super({ intents: 32767 });
+    super({
+      intents: [
+        32767,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent,
+      ],
+    });
   }
 
   start() {
