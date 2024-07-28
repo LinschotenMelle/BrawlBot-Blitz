@@ -64,7 +64,6 @@ export default new Command({
     try {
       const name = interaction.options.get("name")?.value;
       const role = interaction.options.get("role")?.value;
-
       const endDateRegister =
         interaction.options.get("end-date-register")?.value;
 
@@ -73,235 +72,123 @@ export default new Command({
           "Please provide a description for the tournament. Type `skip` to skip this step.",
       });
 
-      const collector = interaction.channel?.createMessageCollector({
-        filter: (i) => i.author.id === interaction.user.id,
-        max: 1,
+      const descResponse = await collectMessage(interaction);
+      const desc = descResponse.content;
+      await descResponse.delete();
+
+      const guild = client.guilds.cache.get(interaction.guildId ?? "");
+      if (!guild) {
+        await interaction.followUp({
+          content: "Guild not found.",
+          ephemeral: true,
+        });
+        return;
+      }
+
+      const category = await guild.channels.create({
+        name: name?.toString() ?? "Tournament",
+        type: ChannelType.GuildCategory,
+        permissionOverwrites: [
+          {
+            id: guild.roles.everyone.id,
+            deny: [
+              PermissionFlagsBits.ViewChannel,
+              PermissionFlagsBits.CreatePublicThreads,
+              PermissionFlagsBits.CreatePrivateThreads,
+            ],
+          },
+        ],
       });
 
-      if (!collector) return;
+      const createdChannel = await guild.channels.create({
+        name: name?.toString() ?? "Tournament",
+        type: ChannelType.GuildText,
+        parent: category.id,
+      });
 
-      collector.on("collect", async (response) => {
-        const desc = response.content;
+      const registeredUsers: RegisteredTeam[] = [];
+      const embed = new EmbedBuilder()
+        .setTitle(name?.toString() ?? "Tournament")
+        .addFields({
+          name: `Total Registered Teams: ${registeredUsers.length}`,
+          value:
+            "Register below by sending 2 different attachments with your tags.",
+        })
+        .setColor(ColorCodes.primaryColor)
+        .setTimestamp()
+        .setFooter({ text: `Tournament created by ${interaction.user.tag}` });
 
-        const guild = client.guilds.cache.get(interaction.guildId ?? "");
+      if (desc.toLowerCase() !== "skip") {
+        embed.setDescription(desc);
+      }
 
-        if (!guild) {
-          await interaction.followUp({
-            content: "Guild not found.",
-            ephemeral: true,
-          });
-          return;
-        }
+      const introductionMessage = await createdChannel.send({
+        content: `<@&${role}>`,
+        embeds: [embed],
+      });
 
-        const category = await guild.channels.create({
-          name: name?.toString() ?? "Tournament",
-          type: ChannelType.GuildCategory,
-          permissionOverwrites: [
-            {
-              id: guild.roles.everyone.id,
-              deny: [
-                PermissionFlagsBits.ViewChannel,
-                PermissionFlagsBits.CreatePublicThreads,
-                PermissionFlagsBits.CreatePrivateThreads,
-              ],
-            },
-          ],
+      let formattedDate = moment(endDateRegister?.toString(), "DD-MM HH:mm");
+
+      if (!formattedDate.isValid()) {
+        await createdChannel.send({
+          content: "Invalid date format. Please provide a valid format.",
         });
+        return;
+      }
 
-        const createdChannel = await guild.channels.create({
-          name: name?.toString() ?? "Tournament",
-          type: ChannelType.GuildText,
-          parent: category.id,
-        });
+      if (formattedDate.isBefore(Date.now())) {
+        formattedDate = formattedDate.add(1, "year");
+      }
 
-        collector?.dispose(response);
-
-        const registeredUsers: RegisteredTeam[] = [];
-
-        const embed = new EmbedBuilder()
-          .setTitle(name?.toString() ?? "Tournament")
-          .addFields({
-            name: `Total Registered Teams: ${registeredUsers.length}`,
-            value:
-              "Register below by sending 2 different attachments with your tags.",
-          })
-          .setColor(ColorCodes.primaryColor)
-          .setTimestamp()
-          .setFooter({ text: `Tournament created by ${interaction.user.tag}` });
-
-        if (desc.toLowerCase() !== "skip") {
-          embed.setDescription(desc);
-        }
-
-        const introductionMessage = await createdChannel.send({
-          content: `<@&${role}>`,
-          embeds: [embed],
-        });
-
-        var formattedDate = moment(endDateRegister?.toString(), "DD-MM HH:mm");
-
-        if (!formattedDate.isValid()) {
-          await createdChannel.send({
-            content: "Invalid date format. Please provide a valid format.",
-          });
-          return;
-        }
-
-        if (formattedDate.isBefore(Date.now())) {
-          formattedDate = formattedDate.add(1, "year");
-        }
-
-        if (endDateRegister) {
-          try {
-            await createTimer(
-              formattedDate,
-              createdChannel,
-              guild,
-              async () => {
-                if (registeredUsers.length < 2) {
-                  await createdChannel.send({
-                    content: "Not enough teams registered.",
-                  });
-                  return;
-                }
-
-                const buffer = await createBracket(
-                  name?.toString() ?? "Tournament",
-                  registeredUsers,
-                  interaction.user.tag,
-                  endDateRegister.toString()
-                );
-
-                const bracket = new AttachmentBuilder(buffer, {
-                  name: "bracket.png",
-                });
-
-                const bracketEmbed = new EmbedBuilder()
-                  .setTitle("Regitrations have ended!!")
-                  .setColor(ColorCodes.primaryColor)
-                  .setDescription("The tournament bracket is ready.");
-
-                createdChannel.send({
-                  embeds: [bracketEmbed],
-                });
-                createdChannel.send({
-                  files: [bracket],
-                });
-              }
-            );
-          } catch (ex: Error | any) {
-            console.log("hier komt ie in");
-            Sentry.captureException(ex);
-          }
-        }
-
-        // Create a thread for the admin notes
-        await createdChannel.threads.create({
-          name: "Admin Notes",
-          autoArchiveDuration: ThreadAutoArchiveDuration.OneWeek,
-          type: ChannelType.PrivateThread,
-        });
-
-        // Create a thread for the tournament rules
-        const rulesThread = await createdChannel.threads.create({
-          name: "Rules",
-          autoArchiveDuration: ThreadAutoArchiveDuration.OneWeek,
-          type: ChannelType.PublicThread,
-        });
-        await rulesThread.setLocked(true);
-
-        // Create a thread that show the teams
-        const teamsThread = await createdChannel.threads.create({
-          name: "Teams",
-          autoArchiveDuration: ThreadAutoArchiveDuration.OneWeek,
-          type: ChannelType.PublicThread,
-          invitable: false,
-        });
-        await teamsThread.setLocked(true);
-
-        const channelCollector = createdChannel.createMessageCollector({
-          filter: (i) => !i.author.bot,
-        });
-
-        if (!channelCollector) return;
-
-        channelCollector.on("collect", async (msg) => {
-          try {
-            const [teamName, member1, member2] = validateParams(
-              msg,
-              guild,
-              registeredUsers
-            );
-
-            const [tag1, tag2] = await validateAttachments(
-              msg,
-              registeredUsers
-            );
-
-            const user1 = await BrawlStarsService.instance.getProfileByTag(
-              `%23${tag1}`
-            );
-
-            const user2 = await BrawlStarsService.instance.getProfileByTag(
-              `%23${tag2}`
-            );
-
-            if (!user1 || !user2) {
-              throw new Error("One of the users has not been found.");
+      if (endDateRegister) {
+        try {
+          await createTimer(formattedDate, createdChannel, guild, async () => {
+            if (registeredUsers.length < 2) {
+              await createdChannel.send({
+                content: "Not enough teams registered.",
+              });
+              return;
             }
 
-            registeredUsers.push({ teamName, member1, user1, member2, user2 });
+            const buffer = await createBracket(
+              name?.toString() ?? "Tournament",
+              registeredUsers,
+              interaction.user.tag,
+              endDateRegister.toString()
+            );
 
-            embed.setFields({
-              name: `Total Registered Teams: ${registeredUsers.length}`,
-              value:
-                "Register below by sending 2 different attachments with your tags.",
+            const bracket = new AttachmentBuilder(buffer, {
+              name: "bracket.png",
             });
 
-            introductionMessage.edit({
-              embeds: [embed],
-            });
-
-            const registeryEmbed = new EmbedBuilder()
-              .setTitle("Registered")
+            const bracketEmbed = new EmbedBuilder()
+              .setTitle("Registrations have ended!!")
               .setColor(ColorCodes.primaryColor)
-              .setDescription(
-                `${user1?.name} and ${user2?.name} have been registered.`
-              );
+              .setDescription("The tournament bracket is ready.");
 
-            msg.member?.send({
-              embeds: [registeryEmbed],
+            await createdChannel.send({
+              embeds: [bracketEmbed],
             });
-
-            const teamEmbed = new EmbedBuilder()
-              .setTitle(`#${registeredUsers.length} ${teamName}`)
-              .setColor(ColorCodes.primaryColor)
-              .setDescription(
-                `${user1?.name} - ${user1?.tag}\n${user2?.name} - ${user2?.tag}`
-              );
-
-            teamsThread.send({
-              embeds: [teamEmbed],
+            await createdChannel.send({
+              files: [bracket],
             });
-          } catch (ex: Error | any) {
-            Sentry.captureException(ex);
-            const errorEmbed = new EmbedBuilder()
-              .setColor(ColorCodes.errorRedColor)
-              .setTitle("Error")
-              .setDescription(ex.message);
+          });
+        } catch (ex: Error | any) {
+          Sentry.captureException(ex);
+        }
+      }
 
-            msg.member?.send({
-              embeds: [errorEmbed],
-            });
-          }
+      await createThreads(createdChannel);
+      await handleTeamRegistrations(
+        createdChannel,
+        guild,
+        registeredUsers,
+        embed,
+        introductionMessage
+      );
 
-          msg.delete();
-        });
-
-        await interaction.channel?.messages.delete(response.id);
-        interaction.editReply({
-          content: `Tournament created successfully. Check <#${createdChannel.id}>`,
-        });
+      await interaction.editReply({
+        content: `Tournament created successfully. Check <#${createdChannel.id}>`,
       });
     } catch (ex: Error | any) {
       Sentry.captureException(ex);
@@ -309,26 +196,15 @@ export default new Command({
   },
 });
 
-async function recognizeImage(url: string): Promise<string> {
-  const response = await axios.get<ImageToTextResponse>(
-    process.env.IMAGE_TO_TEXT_API_URL ?? "",
-    {
-      params: {
-        url: url,
-      },
-      headers: {
-        apikey: process.env.IMAGE_TO_TEXT_API_KEY,
-      },
-    }
-  );
-  const imageAnnotations = response.data.annotations;
-
-  var index = 0;
-  imageAnnotations.forEach((text, i) => {
-    if (text.includes("#")) index = i;
+async function collectMessage(interaction: any): Promise<Message> {
+  const filter = (response: Message) =>
+    response.author.id === interaction.user.id;
+  const collected = await interaction.channel.awaitMessages({
+    filter,
+    max: 1,
+    time: 30000,
   });
-
-  return imageAnnotations[index + 1];
+  return collected.first();
 }
 
 async function createTimer(
@@ -367,13 +243,131 @@ async function createTimer(
         await channel.permissionOverwrites.edit(guild.roles.everyone.id, {
           SendMessages: false,
         });
-        onTimerEnded();
+        await onTimerEnded();
         clearInterval(intervalId);
       }
     }, 1000);
   } catch (ex: Error | any) {
     Sentry.captureException(ex);
   }
+}
+
+async function createThreads(createdChannel: TextChannel): Promise<void> {
+  await createdChannel.threads.create({
+    name: "Admin Notes",
+    autoArchiveDuration: ThreadAutoArchiveDuration.OneWeek,
+    type: ChannelType.PrivateThread,
+  });
+
+  const rulesThread = await createdChannel.threads.create({
+    name: "Rules",
+    autoArchiveDuration: ThreadAutoArchiveDuration.OneWeek,
+    type: ChannelType.PublicThread,
+  });
+  await rulesThread.setLocked(true);
+
+  const teamsThread = await createdChannel.threads.create({
+    name: "Teams",
+    autoArchiveDuration: ThreadAutoArchiveDuration.OneWeek,
+    type: ChannelType.PublicThread,
+    invitable: false,
+  });
+  await teamsThread.setLocked(true);
+}
+
+async function handleTeamRegistrations(
+  createdChannel: TextChannel,
+  guild: Guild,
+  registeredUsers: RegisteredTeam[],
+  embed: EmbedBuilder,
+  introductionMessage: Message
+): Promise<void> {
+  const filter = (msg: Message) => !msg.author.bot;
+  const collector = createdChannel.createMessageCollector({ filter });
+
+  collector.on("collect", async (msg: Message) => {
+    try {
+      const [teamName, member1, member2] = validateParams(
+        msg,
+        guild,
+        registeredUsers
+      );
+      const [tag1, tag2] = await validateAttachments(msg, registeredUsers);
+
+      const user1 = await BrawlStarsService.instance.getProfileByTag(
+        `%23${tag1}`
+      );
+      const user2 = await BrawlStarsService.instance.getProfileByTag(
+        `%23${tag2}`
+      );
+
+      if (!user1 || !user2) {
+        throw new Error("One of the users has not been found.");
+      }
+
+      registeredUsers.push({ teamName, member1, user1, member2, user2 });
+
+      embed.setFields({
+        name: `Total Registered Teams: ${registeredUsers.length}`,
+        value:
+          "Register below by sending 2 different attachments with your tags.",
+      });
+
+      await introductionMessage.edit({ embeds: [embed] });
+
+      const registeryEmbed = new EmbedBuilder()
+        .setTitle("Registered")
+        .setColor(ColorCodes.primaryColor)
+        .setDescription(
+          `${user1?.name} and ${user2?.name} have been registered.`
+        );
+
+      await msg.member?.send({ embeds: [registeryEmbed] });
+
+      const teamEmbed = new EmbedBuilder()
+        .setTitle(`#${registeredUsers.length} ${teamName}`)
+        .setColor(ColorCodes.primaryColor)
+        .setDescription(
+          `${user1?.name} - ${user1?.tag}\n${user2?.name} - ${user2?.tag}`
+        );
+
+      await createdChannel.threads.cache
+        .find((thread) => thread.name === "Teams")
+        ?.send({ embeds: [teamEmbed] });
+    } catch (ex: Error | any) {
+      Sentry.captureException(ex);
+      const errorEmbed = new EmbedBuilder()
+        .setColor(ColorCodes.errorRedColor)
+        .setTitle("Error")
+        .setDescription(ex.message);
+
+      await msg.member?.send({ embeds: [errorEmbed] });
+    }
+
+    await msg.delete();
+  });
+}
+
+async function recognizeImage(url: string): Promise<string> {
+  const response = await axios.get<ImageToTextResponse>(
+    process.env.IMAGE_TO_TEXT_API_URL ?? "",
+    {
+      params: {
+        url: url,
+      },
+      headers: {
+        apikey: process.env.IMAGE_TO_TEXT_API_KEY,
+      },
+    }
+  );
+  const imageAnnotations = response.data.annotations;
+
+  var index = 0;
+  imageAnnotations.forEach((text, i) => {
+    if (text.includes("#")) index = i;
+  });
+
+  return imageAnnotations[index + 1];
 }
 
 function validateParams(
@@ -437,7 +431,6 @@ async function validateAttachments(
   }
 
   const tag1 = await recognizeImage(firstAttachment.url);
-
   const tag2 = await recognizeImage(secondAttachment.url);
 
   if (tag1 === tag2) {
@@ -491,7 +484,7 @@ async function createBracket(
   const canvas = createCanvas(0, 0);
   const ctx = canvas.getContext("2d");
 
-  const shuffedArray = shuffleArray(teams);
+  const shuffledArray = shuffleArray(teams);
   const longestName = teams.sort(
     (a, b) => b.teamName.length - a.teamName.length
   )[0].teamName;
@@ -573,9 +566,9 @@ async function createBracket(
   }
 
   ctx.font = `14px "HelveticaNeue"`;
-  for (var i = 0; i < shuffedArray.length; i++) {
+  for (var i = 0; i < shuffledArray.length; i++) {
     ctx.fillText(
-      shuffedArray[i].teamName,
+      shuffledArray[i].teamName,
       10,
       20 + i * (rectHeight + spacing),
       rectWidth
