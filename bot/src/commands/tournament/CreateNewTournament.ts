@@ -66,6 +66,7 @@ export default new Command({
         { name: "Solo", value: 1 },
         { name: "Duo", value: 2 },
         { name: "Team", value: 3 },
+        { name: "Club", value: 5 },
       ],
     },
     {
