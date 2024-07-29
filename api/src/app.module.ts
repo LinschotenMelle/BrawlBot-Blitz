@@ -9,7 +9,6 @@ import { DataSourceOptions } from 'typeorm';
 import { DiscordModule } from './discord/discord.module';
 import { YoutubeModule } from './youtube/youtube.module';
 import { OpenaiModule } from './openai/openai.module';
-import { AuthenticatedGuard, TokenGuard } from './auth/utils/Guards';
 
 @Module({
   imports: [
