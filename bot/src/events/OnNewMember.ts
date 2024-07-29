@@ -11,7 +11,7 @@ export default new Event("guildMemberAdd", async (member) => {
     );
 
     if (!welcome) {
-      return console.log("Channel ID not found!");
+      return;
     }
 
     const logChannel = member.guild.channels.cache.find(
@@ -19,7 +19,7 @@ export default new Event("guildMemberAdd", async (member) => {
     );
 
     if (!logChannel || !(logChannel instanceof TextChannel)) {
-      return console.log("Log channel not found!");
+      return;
     }
 
     const canvas = new Canvas(1024, 500);

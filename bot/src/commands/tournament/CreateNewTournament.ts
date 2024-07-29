@@ -8,30 +8,28 @@ import {
   PermissionFlagsBits,
   TextChannel,
   ThreadAutoArchiveDuration,
+  ThreadChannel,
 } from "discord.js";
 import { CommandTypes } from "../../core/enums/CommandType";
 import { Command } from "../../structures/Command";
 import { ColorCodes } from "../../static/Theme";
 import { client } from "../..";
 import { Constants } from "../../static/Contants";
-import axios from "axios";
-import { BrawlStarsService } from "../../core/services/Brawlstars-service";
 import { BrawlStarsPlayer } from "../../core/dto/brawlstars/Player.dto";
 import moment = require("moment");
 import humanizeDuration = require("humanize-duration");
-import { createCanvas, loadImage, registerFont } from "canvas";
 import * as Sentry from "@sentry/browser";
-
-interface ImageToTextResponse {
-  annotations: string[];
-}
+import { handleTeamRegistrations } from "./CreateNewTournament.collector";
+import { createBracket } from "./CreateNewTournament.bracket";
 
 export class RegisteredTeam {
   public teamName!: string;
-  public member1!: string;
-  public user1!: BrawlStarsPlayer;
-  public member2!: string;
-  public user2!: BrawlStarsPlayer;
+  public members!: RegisteredUser[];
+}
+
+export class RegisteredUser {
+  public member!: string;
+  public user!: BrawlStarsPlayer;
 }
 
 export default new Command({
@@ -59,6 +57,30 @@ export default new Command({
       type: ApplicationCommandOptionType.String,
       required: true,
     },
+    {
+      name: "type-team",
+      description: "Type of team for the tournament",
+      type: ApplicationCommandOptionType.Integer,
+      required: true,
+      choices: [
+        { name: "Solo", value: 1 },
+        { name: "Duo", value: 2 },
+        { name: "Team", value: 3 },
+      ],
+    },
+    {
+      name: "max-teams",
+      description: "Max amount of teams that can participate",
+      type: ApplicationCommandOptionType.Integer,
+      required: false,
+      choices: [
+        { name: "2", value: 2 },
+        { name: "4", value: 4 },
+        { name: "8", value: 8 },
+        { name: "16", value: 16 },
+        { name: "32", value: 32 },
+      ],
+    },
   ],
   run: async ({ interaction }) => {
     try {
@@ -67,10 +89,14 @@ export default new Command({
       const endDateRegister =
         interaction.options.get("end-date-register")?.value;
 
+      const maxTeams = interaction.options.get("max-members")?.value;
+
       await interaction.editReply({
         content:
           "Please provide a description for the tournament. Type `skip` to skip this step.",
       });
+
+      const membersPerTeam = interaction.options.get("type-team")?.value;
 
       const descResponse = await collectMessage(interaction);
       const desc = descResponse.content;
@@ -111,8 +137,7 @@ export default new Command({
         .setTitle(name?.toString() ?? "Tournament")
         .addFields({
           name: `Total Registered Teams: ${registeredUsers.length}`,
-          value:
-            "Register below by sending 2 different attachments with your tags.",
+          value: "Register below by sending attachments with your tags.",
         })
         .setColor(ColorCodes.primaryColor)
         .setTimestamp()
@@ -178,13 +203,16 @@ export default new Command({
         }
       }
 
-      await createThreads(createdChannel);
+      const teamsThread = await createThreads(createdChannel);
       await handleTeamRegistrations(
         createdChannel,
         guild,
         registeredUsers,
         embed,
-        introductionMessage
+        introductionMessage,
+        teamsThread,
+        Number.parseInt(membersPerTeam?.toString() ?? ""),
+        Number.parseInt(maxTeams?.toString() ?? "")
       );
 
       await interaction.editReply({
@@ -252,7 +280,9 @@ async function createTimer(
   }
 }
 
-async function createThreads(createdChannel: TextChannel): Promise<void> {
+async function createThreads(
+  createdChannel: TextChannel
+): Promise<ThreadChannel<boolean>> {
   await createdChannel.threads.create({
     name: "Admin Notes",
     autoArchiveDuration: ThreadAutoArchiveDuration.OneWeek,
@@ -273,435 +303,6 @@ async function createThreads(createdChannel: TextChannel): Promise<void> {
     invitable: false,
   });
   await teamsThread.setLocked(true);
-}
 
-async function handleTeamRegistrations(
-  createdChannel: TextChannel,
-  guild: Guild,
-  registeredUsers: RegisteredTeam[],
-  embed: EmbedBuilder,
-  introductionMessage: Message
-): Promise<void> {
-  const filter = (msg: Message) => !msg.author.bot;
-  const collector = createdChannel.createMessageCollector({ filter });
-
-  collector.on("collect", async (msg: Message) => {
-    try {
-      const [teamName, member1, member2] = validateParams(
-        msg,
-        guild,
-        registeredUsers
-      );
-      const [tag1, tag2] = await validateAttachments(msg, registeredUsers);
-
-      const user1 = await BrawlStarsService.instance.getProfileByTag(
-        `%23${tag1}`
-      );
-      const user2 = await BrawlStarsService.instance.getProfileByTag(
-        `%23${tag2}`
-      );
-
-      if (!user1 || !user2) {
-        throw new Error("One of the users has not been found.");
-      }
-
-      registeredUsers.push({ teamName, member1, user1, member2, user2 });
-
-      embed.setFields({
-        name: `Total Registered Teams: ${registeredUsers.length}`,
-        value:
-          "Register below by sending 2 different attachments with your tags.",
-      });
-
-      await introductionMessage.edit({ embeds: [embed] });
-
-      const registeryEmbed = new EmbedBuilder()
-        .setTitle("Registered")
-        .setColor(ColorCodes.primaryColor)
-        .setDescription(
-          `${user1?.name} and ${user2?.name} have been registered.`
-        );
-
-      await msg.member?.send({ embeds: [registeryEmbed] });
-
-      const teamEmbed = new EmbedBuilder()
-        .setTitle(`#${registeredUsers.length} ${teamName}`)
-        .setColor(ColorCodes.primaryColor)
-        .setDescription(
-          `${user1?.name} - ${user1?.tag}\n${user2?.name} - ${user2?.tag}`
-        );
-
-      await createdChannel.threads.cache
-        .find((thread) => thread.name === "Teams")
-        ?.send({ embeds: [teamEmbed] });
-    } catch (ex: Error | any) {
-      Sentry.captureException(ex);
-      const errorEmbed = new EmbedBuilder()
-        .setColor(ColorCodes.errorRedColor)
-        .setTitle("Error")
-        .setDescription(ex.message);
-
-      await msg.member?.send({ embeds: [errorEmbed] });
-    }
-
-    await msg.delete();
-  });
-}
-
-async function recognizeImage(url: string): Promise<string> {
-  const response = await axios.get<ImageToTextResponse>(
-    process.env.IMAGE_TO_TEXT_API_URL ?? "",
-    {
-      params: {
-        url: url,
-      },
-      headers: {
-        apikey: process.env.IMAGE_TO_TEXT_API_KEY,
-      },
-    }
-  );
-  const imageAnnotations = response.data.annotations;
-
-  var index = 0;
-  imageAnnotations.forEach((text, i) => {
-    if (text.includes("#")) index = i;
-  });
-
-  return imageAnnotations[index + 1];
-}
-
-function validateParams(
-  msg: Message,
-  guild: Guild,
-  registeredUsers: RegisteredTeam[]
-): string[] {
-  const text = msg.content;
-
-  const member1 = msg.member;
-  const member2Text = text.substring(0, text.indexOf(" ") - 1);
-  const member2Id = member2Text.substring(2, member2Text.length);
-  const member2 = guild.members.cache.find((member) => member.id === member2Id);
-
-  const teamName = text.substring(text.indexOf(" ") + 1);
-
-  if (!teamName || !member1 || !member2) {
-    throw new Error(
-      "Invalid text format. Please provide a valid format.\n Example: `<@Member2> TeamName`"
-    );
-  }
-
-  if (
-    registeredUsers.find(
-      (u) => u.member1 === member1?.id || u.member2 === member1?.id
-    ) ||
-    registeredUsers.find(
-      (u) => u.member1 === member2?.id || u.member2 === member2?.id
-    )
-  ) {
-    throw new Error("One of the discord users has already been registered.");
-  }
-
-  if (registeredUsers.find((u) => u.teamName === teamName)) {
-    throw new Error("Team name already exists. Choose a unique name.");
-  }
-
-  if (member1?.id === member2?.id) {
-    throw new Error("Members should be different.");
-  }
-
-  if (member1.user.bot || member2.user.bot) {
-    throw new Error("Bots are not allowed to participate.");
-  }
-
-  return [teamName, member1?.id, member2?.id];
-}
-
-async function validateAttachments(
-  msg: Message,
-  registeredUsers: RegisteredTeam[]
-): Promise<string[]> {
-  const [firstAttachment, secondAttachment] = Array.from(
-    msg.attachments.values()
-  );
-
-  if (msg.attachments.size < 2) {
-    throw new Error(
-      "Please provide 2 different attachments. The text in the attachments should be different."
-    );
-  }
-
-  const tag1 = await recognizeImage(firstAttachment.url);
-  const tag2 = await recognizeImage(secondAttachment.url);
-
-  if (tag1 === tag2) {
-    throw new Error(
-      "Please provide 2 different attachments. The text in the attachments should be different."
-    );
-  }
-
-  if (
-    registeredUsers.find((u) => u.user1.tag === tag1 || u.user2.tag === tag1) ||
-    registeredUsers.find((u) => u.user1.tag === tag2 || u.user2.tag === tag2)
-  ) {
-    throw new Error("One of the users has already been registered.");
-  }
-
-  return [tag1, tag2];
-}
-
-function calculateTotalColumns(teamsLength: number, initialTeams: number) {
-  let totalColumns = initialTeams;
-  while (totalColumns < teamsLength) {
-    totalColumns *= 2;
-  }
-  return totalColumns;
-}
-
-function shuffleArray(array: RegisteredTeam[]): RegisteredTeam[] {
-  for (var i = array.length - 1; i > 0; i--) {
-    var j = Math.floor(Math.random() * (i + 1));
-    var temp = array[i];
-    array[i] = array[j];
-    array[j] = temp;
-  }
-
-  return array;
-}
-
-async function createBracket(
-  title: string,
-  teams: RegisteredTeam[],
-  creator: string,
-  time: string
-): Promise<Buffer> {
-  registerFont(require("@canvas-fonts/helveticaneue"), {
-    family: "HelveticaNeue",
-  });
-  const initialTeams = 2;
-  const totalColumns = calculateTotalColumns(teams.length, initialTeams);
-  const totalRounds = Math.log2(totalColumns) + 1;
-
-  const canvas = createCanvas(0, 0);
-  const ctx = canvas.getContext("2d");
-
-  const shuffledArray = shuffleArray(teams);
-  const longestName = teams.sort(
-    (a, b) => b.teamName.length - a.teamName.length
-  )[0].teamName;
-
-  // Draw the rectangles
-  const rectWidth =
-    longestName.length * 10 <= 180 ? 180 : longestName.length * 10;
-  const rectHeight = 30;
-  const spacing = 20;
-  const lineWidth = 1;
-  const bottomBarHeight = 30;
-
-  const totalWidth = (rectWidth + spacing) * totalRounds * 1.5;
-  canvas.width = totalWidth;
-  canvas.height =
-    totalColumns * (rectHeight + spacing) -
-    spacing +
-    (bottomBarHeight + spacing);
-
-  ctx.fillStyle = "#f3f4f5";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  // Stroked triangle
-  ctx.fillStyle = "#fff";
-  const triangleWidth =
-    totalRounds - 2 == 0
-      ? canvas.height / totalRounds
-      : canvas.height / (totalRounds - 2);
-  ctx.beginPath();
-  ctx.moveTo(canvas.width, canvas.height - bottomBarHeight);
-  ctx.lineTo(canvas.width - triangleWidth, canvas.height - bottomBarHeight);
-  ctx.lineTo(canvas.width, canvas.height - bottomBarHeight - triangleWidth);
-  ctx.closePath();
-  ctx.fill();
-
-  var fontSize = 30;
-  if (teams.length <= 2) {
-    fontSize = 20;
-  }
-  ctx.fillStyle = "#000";
-  ctx.font = `${fontSize}px "HelveticaNeue"`;
-  ctx.fillText(
-    title,
-    totalWidth - title.length * (fontSize / 2),
-    fontSize,
-    totalWidth
-  );
-  ctx.fillStyle = "#008E4F";
-  ctx.fillRect(totalWidth - 6, 4, totalWidth, fontSize);
-
-  for (var i = 0; i < totalColumns; i++) {
-    ctx.fillStyle = "#D8D9D9";
-    ctx.fillRect(0, i * (rectHeight + spacing), rectWidth, rectHeight);
-    ctx.fillStyle = "#000";
-    ctx.fillRect(0, i * (rectHeight + spacing), 6, rectHeight);
-
-    // Lines
-    ctx.fillRect(
-      rectWidth,
-      i * (rectHeight + spacing) + rectHeight / 2,
-      spacing * lineWidth,
-      lineWidth
-    );
-    if (i % 2 == 0) {
-      ctx.fillRect(
-        rectWidth + spacing * lineWidth,
-        i * (rectHeight + spacing) + rectHeight / 2,
-        lineWidth,
-        (rectHeight + spacing) / 2
-      );
-    } else {
-      ctx.fillRect(
-        rectWidth + spacing * lineWidth,
-        i * (rectHeight + spacing) + rectHeight / 2 + lineWidth,
-        lineWidth,
-        -(rectHeight + spacing) / 2
-      );
-    }
-  }
-
-  ctx.font = `14px "HelveticaNeue"`;
-  for (var i = 0; i < shuffledArray.length; i++) {
-    ctx.fillText(
-      shuffledArray[i].teamName,
-      10,
-      20 + i * (rectHeight + spacing),
-      rectWidth
-    );
-  }
-
-  var totalPerRound = totalColumns / 2;
-  var y = 2;
-  var y2 = 0;
-  for (var i = 0; i < totalRounds - 1; i++) {
-    for (var j = 0; j < totalPerRound; j++) {
-      // Line
-      ctx.fillStyle = "#000";
-      ctx.fillRect(
-        (1.5 * i + 1.5) * (rectWidth + spacing) - spacing * 5,
-        (y * j + (y2 + 0.5)) * (rectHeight + spacing) + rectHeight / 2,
-        spacing * 5,
-        lineWidth
-      );
-      if (1 != totalPerRound) {
-        ctx.fillRect(
-          (1.5 * i + 1.5) * (rectWidth + spacing) + rectWidth,
-          (y * j + (y2 + 0.5)) * (rectHeight + spacing) + rectHeight / 2,
-          spacing * lineWidth,
-          lineWidth
-        );
-        if (j % 2 == 0) {
-          ctx.fillRect(
-            (1.5 * i + 1.5) * (rectWidth + spacing) +
-              rectWidth +
-              spacing * lineWidth,
-            (y * j + (y2 + 0.5)) * (rectHeight + spacing) + rectHeight / 2,
-            lineWidth,
-            (rectHeight + spacing) * (y2 + 1)
-          );
-        } else {
-          ctx.fillRect(
-            (1.5 * i + 1.5) * (rectWidth + spacing) +
-              rectWidth +
-              spacing * lineWidth,
-            (y * j + (y2 + 0.5)) * (rectHeight + spacing) +
-              rectHeight / 2 +
-              lineWidth,
-            lineWidth,
-            -(rectHeight + spacing) * (y2 + 1)
-          );
-        }
-      }
-      // Rectangle
-      ctx.fillStyle = "#D8D9D9";
-      ctx.fillRect(
-        (1.5 * i + 1.5) * (rectWidth + spacing),
-        (y * j + (y2 + 0.5)) * (rectHeight + spacing),
-        rectWidth,
-        rectHeight
-      );
-      if (i % 2 == 0) {
-        ctx.fillStyle = "#008E4F";
-      } else {
-        ctx.fillStyle = "#000";
-      }
-      ctx.fillRect(
-        (1.5 * i + 1.5) * (rectWidth + spacing),
-        (y * j + (y2 + 0.5)) * (rectHeight + spacing),
-        6,
-        rectHeight
-      );
-    }
-    totalPerRound /= 2;
-    y *= 2;
-    if (y2 == 0) {
-      y2 = 1;
-    } else {
-      y2 = y2 + y2 + 1;
-    }
-  }
-
-  const trophyImage = await loadImage(
-    "https://images.emojiterra.com/google/noto-emoji/unicode-15.1/bw/128px/1f3c6.png"
-  );
-
-  var size = trophyImage.width;
-
-  if (totalColumns <= 4) {
-    size = 60;
-  }
-  if (totalColumns <= 2) {
-    size = 30;
-  }
-
-  var math = totalRounds;
-  if (totalColumns == 8) {
-    math = 5;
-  }
-
-  ctx.drawImage(
-    trophyImage,
-    (totalWidth / totalRounds) * (totalRounds - 1) + (rectWidth - size) / 2,
-    (totalColumns / 2 - 1) * (rectHeight + spacing) +
-      (rectHeight - size) +
-      rectHeight * math,
-    size,
-    size
-  );
-
-  // Bottom bar
-  ctx.fillStyle = "#000";
-  ctx.fillRect(
-    0,
-    canvas.height - bottomBarHeight,
-    canvas.width,
-    bottomBarHeight
-  );
-  ctx.fillStyle = "#008E4F";
-  ctx.fillRect(
-    canvas.width - triangleWidth,
-    canvas.height - bottomBarHeight,
-    triangleWidth,
-    bottomBarHeight
-  );
-  ctx.beginPath();
-  ctx.moveTo(canvas.width - triangleWidth + 1, canvas.height);
-  ctx.lineTo(canvas.width - triangleWidth + 1, canvas.height - bottomBarHeight);
-  ctx.lineTo(canvas.width - triangleWidth - 30, canvas.height);
-  ctx.closePath();
-  ctx.fill();
-  ctx.fillStyle = "#fff";
-  ctx.fillText(
-    `Made by: ${creator} - Created at: ${time}`,
-    4,
-    canvas.height - 10,
-    canvas.width
-  );
-
-  return canvas.toBuffer();
+  return teamsThread;
 }

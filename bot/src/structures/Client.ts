@@ -11,7 +11,6 @@ import { globSync } from "glob";
 import { RegisterCommandsOptions } from "../typings/Client";
 import { Event } from "./Event";
 import { client } from "..";
-import { registerFont } from "canvas";
 import path = require("path");
 
 export class ExtendedClient extends Client {
@@ -47,9 +46,13 @@ export class ExtendedClient extends Client {
     const slashCommands: ApplicationCommandDataResolvable[] = [];
     // Commands
     const commandFiles = globSync(`${__dirname}/../commands/*/*{.js,.ts}`);
+    commandFiles.filter(
+      (commandFile) => !commandFile.endsWith("*.utils{.js,.ts}")
+    );
     commandFiles.forEach(async (filePath) => {
-      const command: CommandType = await this.importFile(filePath);
-      if (!command.name) return;
+      const command = await this.importFile(filePath);
+
+      if (!command?.name) return;
 
       this.commands.set(command.name, command);
       slashCommands.push(command);
