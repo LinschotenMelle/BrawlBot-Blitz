@@ -3,4 +3,5 @@ export enum CommandTypes {
   INFO = "Info",
   OTHER = "Other",
   MEMBER_COUNT = "Member Count",
+  OPENAI = "OpenAI",
 }

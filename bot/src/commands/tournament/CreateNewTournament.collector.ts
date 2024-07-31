@@ -10,6 +10,7 @@ import { BrawlStarsService } from "../../core/services/Brawlstars-service";
 import { ColorCodes } from "../../static/Theme";
 import axios from "axios";
 import * as Sentry from "@sentry/browser";
+import { Moment } from "moment";
 
 interface ImageToTextResponse {
   annotations: string[];
@@ -47,8 +48,10 @@ function validateParams(
 
   const memberIds = text
     .split(" ")
-    .slice(0, totalMembersPerTeam)
+    .slice(0, totalMembersPerTeam - 1)
     .map((mention) => mention.replace(/\D/g, ""));
+
+  memberIds.push(msg.author.id);
 
   if (memberIds.length !== totalMembersPerTeam) {
     throw new Error(`Please mention exactly ${totalMembersPerTeam} members.`);
@@ -60,7 +63,10 @@ function validateParams(
     throw new Error("One of the mentioned users is not found in this guild.");
   }
 
-  const teamName = text.split(" ").slice(totalMembersPerTeam).join(" ");
+  const teamName = text
+    .split(" ")
+    .slice(totalMembersPerTeam - 1)
+    .join(" ");
 
   if (!teamName) {
     throw new Error("Please provide a team name.");
@@ -123,10 +129,17 @@ export async function handleTeamRegistrations(
   introductionMessage: Message,
   teamsThread: ThreadChannel<boolean>,
   totalMembersPerTeam: number,
-  maxTeams: number | undefined
+  maxTeams: number | undefined,
+  dateTime: Moment,
+  onTimerEnded: () => Promise<void>
 ): Promise<void> {
   const filter = (msg: Message) => !msg.author.bot;
-  const collector = createdChannel.createMessageCollector({ filter });
+  const time = dateTime.diff(Date.now(), "milliseconds");
+  console.log(time);
+  const collector = createdChannel.createMessageCollector({
+    filter,
+    time,
+  });
 
   collector.on("collect", async (msg: Message) => {
     try {
@@ -204,4 +217,6 @@ export async function handleTeamRegistrations(
 
     await msg.delete();
   });
+
+  collector.on("end", async () => onTimerEnded());
 }

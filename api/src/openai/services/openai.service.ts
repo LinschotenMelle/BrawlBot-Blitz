@@ -15,15 +15,13 @@ export class OpenaiService {
     try {
       const image = await this.openai.images.generate({
         model: 'dall-e-3',
-        prompt: 'a white siamese cat',
+        prompt: prompt,
         size: '1024x1024',
         quality: 'standard',
         n: 1,
       });
 
-      console.log(image.created);
-
-      return image;
+      return image.data[0];
     } catch (error) {
       console.error(error);
     }

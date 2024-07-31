@@ -90,7 +90,7 @@ export default new Command({
       const endDateRegister =
         interaction.options.get("end-date-register")?.value;
 
-      const maxTeams = interaction.options.get("max-members")?.value;
+      const maxTeams = interaction.options.get("max-teams")?.value;
 
       await interaction.editReply({
         content:
@@ -167,41 +167,15 @@ export default new Command({
       }
 
       if (endDateRegister) {
-        try {
-          await createTimer(formattedDate, createdChannel, guild, async () => {
-            if (registeredUsers.length < 2) {
-              await createdChannel.send({
-                content: "Not enough teams registered.",
-              });
-              return;
-            }
+        const timer = new EmbedBuilder();
+        timer.setTitle(
+          `Registration ends at: ${formattedDate.toLocaleString()}`
+        );
+        timer.setThumbnail(Constants.timer.name);
 
-            const buffer = await createBracket(
-              name?.toString() ?? "Tournament",
-              registeredUsers,
-              interaction.user.tag,
-              endDateRegister.toString()
-            );
-
-            const bracket = new AttachmentBuilder(buffer, {
-              name: "bracket.png",
-            });
-
-            const bracketEmbed = new EmbedBuilder()
-              .setTitle("Registrations have ended!!")
-              .setColor(ColorCodes.primaryColor)
-              .setDescription("The tournament bracket is ready.");
-
-            await createdChannel.send({
-              embeds: [bracketEmbed],
-            });
-            await createdChannel.send({
-              files: [bracket],
-            });
-          });
-        } catch (ex: Error | any) {
-          Sentry.captureException(ex);
-        }
+        await createdChannel.send({
+          embeds: [timer],
+        });
       }
 
       const teamsThread = await createThreads(createdChannel);
@@ -213,7 +187,17 @@ export default new Command({
         introductionMessage,
         teamsThread,
         Number.parseInt(membersPerTeam?.toString() ?? ""),
-        Number.parseInt(maxTeams?.toString() ?? "")
+        Number.parseInt(maxTeams?.toString() ?? ""),
+        formattedDate,
+        async () => {
+          sendBracket(
+            name?.toString(),
+            registeredUsers,
+            interaction,
+            endDateRegister?.toString(),
+            createdChannel
+          );
+        }
       );
 
       await interaction.editReply({
@@ -306,4 +290,42 @@ async function createThreads(
   await teamsThread.setLocked(true);
 
   return teamsThread;
+}
+
+async function sendBracket(
+  name: string | undefined,
+  registeredUsers: RegisteredTeam[],
+  interaction: any,
+  endDateRegister: string | undefined,
+  createdChannel: TextChannel
+) {
+  if (registeredUsers.length < 2) {
+    await createdChannel.send({
+      content: "Not enough teams registered.",
+    });
+    return;
+  }
+
+  const buffer = await createBracket(
+    name?.toString() ?? "Tournament",
+    registeredUsers,
+    interaction.user.tag,
+    endDateRegister?.toString() ?? ""
+  );
+
+  const bracket = new AttachmentBuilder(buffer, {
+    name: "bracket.png",
+  });
+
+  const bracketEmbed = new EmbedBuilder()
+    .setTitle("Registrations have ended!!")
+    .setColor(ColorCodes.primaryColor)
+    .setDescription("The tournament bracket is ready.");
+
+  await createdChannel.send({
+    embeds: [bracketEmbed],
+  });
+  await createdChannel.send({
+    files: [bracket],
+  });
 }
