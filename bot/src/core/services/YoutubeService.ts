@@ -2,23 +2,15 @@ import axios, { AxiosInstance } from "axios";
 import { client } from "../..";
 import { EmbedBuilder, NewsChannel, TextChannel } from "discord.js";
 import { YoutubeChannel } from "../dto/youtube/YoutubeChannel.dto";
+import { HttpService } from "./HttpService";
 
 export class YoutubeService {
   private static instance?: YoutubeService;
-
-  private readonly apiAxios: AxiosInstance;
   private readonly axios: AxiosInstance;
 
   constructor() {
     this.axios = axios.create({
       baseURL: "https://www.googleapis.com/youtube/v3",
-    });
-
-    this.apiAxios = axios.create({
-      baseURL: "http://3.72.88.201:3001/api/youtube",
-      headers: {
-        token: process.env.TOKEN,
-      },
     });
   }
 
@@ -36,8 +28,10 @@ export class YoutubeService {
     let activeChannels: YoutubeChannel[] = [];
 
     try {
-      const response = await this.apiAxios.get<YoutubeChannel[]>("/channels");
-      activeChannels = response.data;
+      const response = await HttpService.instance.get<YoutubeChannel[]>(
+        "/youtube/channels"
+      );
+      activeChannels = response;
     } catch (e) {
       return;
     }
@@ -97,7 +91,7 @@ export class YoutubeService {
       });
 
       try {
-        await this.apiAxios.put(`/channels/${channel.guildId}`, {
+        await HttpService.instance.put(`/youtube/channels/${channel.guildId}`, {
           latestVideoDateTime: latestVideo.snippet.publishedAt,
         });
       } catch (e) {
