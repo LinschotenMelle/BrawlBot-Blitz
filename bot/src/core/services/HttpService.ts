@@ -35,4 +35,8 @@ export class HttpService {
   async post<T>(url: string, body: any): Promise<T> {
     return (await this.axios.post<T>(url, body)).data;
   }
+
+  async put<T>(url: string, body: any): Promise<T> {
+    return (await this.axios.put<T>(url, body)).data;
+  }
 }

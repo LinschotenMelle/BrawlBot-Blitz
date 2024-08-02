@@ -11,7 +11,7 @@ interface OpenAIResponse {
 export default new Command({
   name: "create-image",
   description: "Create your own image using OpenAI's DALL-E model",
-  category: CommandTypes.OPENAI,
+  category: CommandTypes.OTHER,
   options: [
     {
       name: "prompt",
@@ -30,6 +30,10 @@ export default new Command({
       });
     }
 
+    await interaction.editReply(
+      "Generating the image, this may take a few seconds..."
+    );
+
     const response = await HttpService.instance.post<OpenAIResponse>(
       "/openai/generate-image",
       {
@@ -45,13 +49,14 @@ export default new Command({
 
     const embed = new EmbedBuilder()
       .setImage(response.url)
-      .setTitle(`Generated Image: ${prompt}`)
+      .setTitle(`Generated Image: '${prompt}'`)
       .setColor(ColorCodes.primaryColor)
       .setFooter({
         text: "Powered by OpenAI",
       });
 
     await interaction.editReply({
+      content: null,
       embeds: [embed],
     });
   },

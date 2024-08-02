@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { DiscordController } from './controllers/discord.controller';
-import { DiscordService } from './services/discord.service';
+import { DiscordController } from './discord.controller';
+import { DiscordService } from './discord.service';
 import { Services } from '../utils/constants';
-import { DiscordHttpService } from './services/discord-http.service';
+import { DiscordHttpService } from './discord-http.service';
 import { WelcomeMessage } from '../utils/entities/WelcomeMessage';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthenticatedGuard, TokenGuard } from '../auth/utils/Guards';

@@ -22,9 +22,14 @@ import { ApplicationCommandOptionType, EmbedBuilder } from "discord.js";
 import { Command } from "../../structures/Command";
 import { ErrorMessages } from "../../static/Error";
 import { BrawlStarsService } from "../../core/services/Brawlstars-service";
-import { DatabaseService } from "../../core/services/Database-serivce";
 import { ColorCodes } from "../../static/Theme";
 import { CommandTypes } from "../../core/enums/CommandType";
+import { HttpService } from "../../core/services/HttpService";
+
+export interface BrawlStarsUser {
+  user_id: string;
+  tag: string;
+}
 
 export default new Command({
   name: "save",
@@ -61,28 +66,20 @@ export default new Command({
         ephemeral: true,
       });
 
-    // Save in DB
-    const profiles = await DatabaseService.instance.astraDb.collection(
-      "profiles"
-    );
-    const userProfile = await profiles.findOne({
-      id: interaction.user.id,
-    });
+    const userProfile = await HttpService.instance.get<
+      BrawlStarsUser | undefined
+    >(`/brawl-stars/profile/${interaction.user.id}`);
 
     if (!userProfile) {
-      await profiles.insertOne({
-        id: interaction.user.id,
+      await HttpService.instance.post("/brawl-stars/save", {
+        user_id: interaction.user.id,
         tag: hashedTag,
       });
     } else {
-      await profiles.updateOne(
-        {
-          id: interaction.user.id,
-        },
-        {
-          $set: { tag: hashedTag },
-        }
-      );
+      await HttpService.instance.put("/brawl-stars/update", {
+        user_id: interaction.user.id,
+        tag: hashedTag,
+      });
     }
 
     const embed = new EmbedBuilder()

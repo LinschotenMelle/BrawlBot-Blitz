@@ -7,6 +7,7 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 import { YoutubeChannel } from '../entities/YoutubeChannel';
 import { WelcomeMessage } from '../entities/WelcomeMessage';
 import { GuildMemberCount } from '../entities/GuildMemberCount';
+import { BrawlStarsUser } from '../entities/BrawlStarsUser';
 
 export const DataSourceProvider: Provider = {
   provide: 'DataSource',
@@ -33,4 +34,5 @@ export const entities = [
   YoutubeChannel,
   WelcomeMessage,
   GuildMemberCount,
+  BrawlStarsUser,
 ];

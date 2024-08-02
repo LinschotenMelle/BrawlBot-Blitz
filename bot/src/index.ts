@@ -1,12 +1,18 @@
 require("dotenv").config();
 import * as Sentry from "@sentry/browser";
 import { ExtendedClient } from "./structures/Client";
+import DiscordAnalytics from "discord-analytics/discordjs";
 
 Sentry.init({
-  dsn: "https://bddb328dbb2ec515cb81fc6087ad2a63@o4507673082331136.ingest.de.sentry.io/4507673085673552",
+  dsn: process.env.SENTRY_DSN,
   integrations: [],
   tracesSampleRate: 1.0,
   profilesSampleRate: 1.0,
 });
 export const client = new ExtendedClient();
+export const analytics = new DiscordAnalytics({
+  client: client,
+  apiToken: process.env.ANALYTICS_TOKEN ?? "",
+  sharded: false,
+});
 client.start();

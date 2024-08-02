@@ -7,14 +7,14 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { Routes, Services } from '../../utils/constants';
-import { IDiscordService } from '../interfaces/discord';
-import { AuthUser } from '../../utils/decorators';
-import { User } from '../../utils/typeorm/entities/User';
-import { AuthenticatedGuard, TokenGuard } from '../../auth/utils/Guards';
+import { Routes, Services } from '../utils/constants';
+import { AuthUser } from '../utils/decorators';
+import { User } from '../utils/typeorm/entities/User';
+import { AuthenticatedGuard, TokenGuard } from '../auth/utils/Guards';
 import { ApiOAuth2, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { CreateMemberCount } from '../../utils/types/CreateMemberCount';
-import { GuildMemberCount } from '../../utils/entities/GuildMemberCount';
+import { CreateMemberCount } from '../utils/types/CreateMemberCount';
+import { GuildMemberCount } from '../utils/entities/GuildMemberCount';
+import { IDiscordService } from './discord.service';
 
 @Controller(Routes.DISCORD)
 @ApiTags('Discord')

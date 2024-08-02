@@ -206,7 +206,6 @@ export async function handleTeamRegistrations(
 
       await teamsThread.send({ embeds: [teamEmbed] });
     } catch (ex: Error | any) {
-      Sentry.captureException(ex);
       const errorEmbed = new EmbedBuilder()
         .setColor(ColorCodes.errorRedColor)
         .setTitle("Error")

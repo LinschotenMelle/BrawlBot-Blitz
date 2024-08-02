@@ -27,7 +27,6 @@ import {
   EmbedBuilder,
 } from "discord.js";
 import { BrawlStarsService } from "../../core/services/Brawlstars-service";
-import { DatabaseService } from "../../core/services/Database-serivce";
 import { ErrorMessages } from "../../static/Error";
 import { Command } from "../../structures/Command";
 import { ColorCodes } from "../../static/Theme";
@@ -36,6 +35,8 @@ import { Emojis } from "../../static/Emojis";
 import { client } from "../..";
 import { BBEmbedButton } from "../../core/classes/embed-button";
 import { CommandTypes } from "../../core/enums/CommandType";
+import { HttpService } from "../../core/services/HttpService";
+import { BrawlStarsUser } from "./Save";
 
 export default new Command({
   name: "profile",
@@ -54,13 +55,9 @@ export default new Command({
     let tag = interaction.options.get("tag")?.value?.toString();
 
     if (!tag) {
-      const profiles = await DatabaseService.instance.astraDb.collection(
-        "profiles"
+      const user = await HttpService.instance.get<BrawlStarsUser | undefined>(
+        `/brawl-stars/profile/${interaction.user.id}`
       );
-
-      const user = await profiles.findOne({
-        id: interaction.user.id,
-      });
 
       if (!user)
         return interaction.followUp({

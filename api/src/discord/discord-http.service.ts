@@ -1,14 +1,23 @@
 import { Injectable } from '@nestjs/common';
-import { IDiscordHttpService } from '../interfaces/discord-http';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { AxiosCacheInstance, setupCache } from 'axios-cache-interceptor';
-import { PartialGuild } from '../mapper/discord';
-import { Guild } from '../../utils/types/Guild';
-import { GuildChannel } from '../../utils/types/GuildChannel';
-import { WelcomeMessage } from '../../utils/entities/WelcomeMessage';
+import { PartialGuild } from '../utils/types/discord';
+import { Guild } from '../utils/types/Guild';
+import { GuildChannel } from '../utils/types/GuildChannel';
+import { WelcomeMessage } from '../utils/entities/WelcomeMessage';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { GuildMemberCount } from '../../utils/entities/GuildMemberCount';
+import { GuildMemberCount } from '../utils/entities/GuildMemberCount';
+
+export interface IDiscordHttpService {
+  fetchUserGuilds(accessToken: string): Promise<AxiosResponse<PartialGuild[]>>;
+  fetchBotGuilds(): Promise<AxiosResponse<PartialGuild[]>>;
+  fetchGuildDetails(guildId: string): Promise<AxiosResponse<Guild>>;
+  fetchGuildChannels(guildId: string): Promise<AxiosResponse<GuildChannel[]>>;
+  getWelcomeMessage(guildId: string): Promise<WelcomeMessage>;
+  postMemberCount(guildId: string, channelId: string): Promise<void>;
+  getMemberCount(guildId: string): Promise<GuildMemberCount>;
+}
 
 @Injectable()
 export class DiscordHttpService implements IDiscordHttpService {

@@ -5,13 +5,13 @@ import {
   ClientEvents,
   ActivityType,
   GatewayIntentBits,
+  IntentsBitField,
 } from "discord.js";
 import { CommandType } from "../typings/Command";
 import { globSync } from "glob";
 import { RegisterCommandsOptions } from "../typings/Client";
 import { Event } from "./Event";
-import { client } from "..";
-import path = require("path");
+import { analytics, client } from "..";
 
 export class ExtendedClient extends Client {
   commands: Collection<string, CommandType> = new Collection();
@@ -19,6 +19,7 @@ export class ExtendedClient extends Client {
     super({
       intents: [
         32767,
+        IntentsBitField.Flags.Guilds,
         GatewayIntentBits.GuildMessages,
         GatewayIntentBits.MessageContent,
       ],
@@ -27,6 +28,7 @@ export class ExtendedClient extends Client {
 
   start() {
     this.registerModules();
+    analytics.trackEvents();
     this.login(process.env.TOKEN);
   }
 
@@ -46,9 +48,7 @@ export class ExtendedClient extends Client {
     const slashCommands: ApplicationCommandDataResolvable[] = [];
     // Commands
     const commandFiles = globSync(`${__dirname}/../commands/*/*{.js,.ts}`);
-    commandFiles.filter(
-      (commandFile) => !commandFile.endsWith("*.utils{.js,.ts}")
-    );
+
     commandFiles.forEach(async (filePath) => {
       const command = await this.importFile(filePath);
 

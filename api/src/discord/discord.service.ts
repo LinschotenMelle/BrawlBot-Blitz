@@ -1,9 +1,20 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { IDiscordHttpService } from '../interfaces/discord-http';
-import { Services } from '../../utils/constants';
-import { IDiscordService } from '../interfaces/discord';
-import { User } from '../../utils/typeorm/entities/User';
-import { PartialGuild } from '../mapper/discord';
+import { Services } from '../utils/constants';
+import { User } from '../utils/typeorm/entities/User';
+import { PartialGuild } from '../utils/types/discord';
+import { GuildMemberCount } from '../utils/entities/GuildMemberCount';
+import { GuildChannel } from '../utils/types/GuildChannel';
+import { WelcomeMessage } from '../utils/entities/WelcomeMessage';
+import { IDiscordHttpService } from './discord-http.service';
+
+export interface IDiscordService {
+  getActiveGuilds(user: User): Promise<PartialGuild[]>;
+  getGuildDetails(guildId: string): Promise<PartialGuild>;
+  getGuildChannels(guildId: string): Promise<GuildChannel[]>;
+  getWelcomeMessage(guildId: string): Promise<WelcomeMessage>;
+  postMemberCount(guildId: string, channelId: string): Promise<void>;
+  getMemberCount(guildId: string): Promise<GuildMemberCount>;
+}
 
 @Injectable()
 export class DiscordService implements IDiscordService {

@@ -1,5 +1,5 @@
 import { CommandInteractionOptionResolver, Permissions } from "discord.js";
-import { client } from "..";
+import { analytics, client } from "..";
 import { Event } from "../structures/Event";
 import { ExtendedInteraction } from "../typings/Command";
 import * as Sentry from "@sentry/browser";

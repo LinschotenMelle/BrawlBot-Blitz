@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionType, ChannelType } from "discord.js";
+import { ChannelType, PermissionFlagsBits } from "discord.js";
 import { CommandTypes } from "../../core/enums/CommandType";
 import { Command } from "../../structures/Command";
 import { HttpService } from "../../core/services/HttpService";
@@ -6,7 +6,8 @@ import { HttpService } from "../../core/services/HttpService";
 export default new Command({
   name: "set-member-count",
   description: "Set member count channel",
-  category: CommandTypes.MEMBER_COUNT,
+  category: CommandTypes.INFO,
+  userPermission: [PermissionFlagsBits.ManageGuild],
   run: async ({ interaction }) => {
     const guild = interaction.guild;
 

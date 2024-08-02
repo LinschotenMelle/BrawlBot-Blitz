@@ -4,6 +4,7 @@ export enum Routes {
   DISCORD = 'discord',
   YOUTUBE = 'youtube',
   OPENAI = 'openai',
+  BRAWL_STARS = 'brawl-stars',
 }
 
 export enum Services {
@@ -13,4 +14,5 @@ export enum Services {
   DISCORD_HTTP_SERVICE = 'DISCORD_HTTP_SERVICE',
   YOUTUBE_SERVICE = 'YOUTUBE_SERVICE',
   OPENAI_SERVICE = 'OPENAI_SERVICE',
+  BRAWL_STARS_SERVICE = 'BRAWL_STARS_SERVICE',
 }

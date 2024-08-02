@@ -1,7 +1,6 @@
 import {
   ActionRowBuilder,
   ButtonBuilder,
-  ButtonStyle,
   ComponentType,
   EmbedBuilder,
 } from "discord.js";
@@ -17,7 +16,7 @@ export default new Command({
   category: CommandTypes.OTHER,
   run: async ({ interaction }) => {
     const commandButtons = Object.values(CommandTypes).map((type) => {
-      return new BBEmbedButton(type.toString(), type.toString());
+      return new BBEmbedButton(type.toString(), interaction.id);
     });
 
     // Limit buttons to 5
@@ -37,19 +36,19 @@ export default new Command({
       .setTitle("Help")
       .setTimestamp();
 
-    interaction.followUp({ embeds: [embed], components: [component] });
-
-    const backButton = new BBEmbedButton("Back", "Back", ButtonStyle.Danger);
+    await interaction.followUp({ embeds: [embed], components: [component] });
 
     if (interaction.channel) {
       const collector = interaction.channel.createMessageComponentCollector({
         componentType: ComponentType.Button,
         filter: (i) => i.user.id == interaction.user.id,
+        time: 30000,
+        max: 1,
       });
 
-      collector.on("collect", (i) => {
+      collector.on("collect", async (buttonInteraction) => {
         const buttonPressed = commandButtons.find(
-          (cb) => cb.customId == i.customId
+          (cb) => cb.customId == buttonInteraction.customId
         );
 
         const id = buttonPressed?.customId.split("_")[0];
@@ -58,17 +57,30 @@ export default new Command({
           const commandEmbed = new EmbedBuilder()
             .setColor(ColorCodes.primaryColor)
             .setTitle(id)
+            .setFooter({
+              text: "⚠️ indicates that you do not have permission to use this command",
+            })
             .setTimestamp();
 
           const commands = client.commands.filter((c) => c.category == id);
           commands.map((m) => {
+            var name = `/${m.name}`;
+            if (
+              m.userPermission &&
+              !interaction.memberPermissions?.has(m.userPermission)
+            ) {
+              name = "⚠️ " + name;
+            }
             commandEmbed.addFields({
-              name: `/${m.name}`,
+              name: name,
               value: m.description,
             });
           });
 
-          i.update({ embeds: [commandEmbed], components: [] });
+          await buttonInteraction.update({
+            embeds: [commandEmbed],
+            components: [],
+          });
         }
       });
     }

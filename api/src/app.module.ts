@@ -9,6 +9,7 @@ import { DataSourceOptions } from 'typeorm';
 import { DiscordModule } from './discord/discord.module';
 import { YoutubeModule } from './youtube/youtube.module';
 import { OpenaiModule } from './openai/openai.module';
+import { BrawlStarsModule } from './brawl-stars/brawl-stars.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { OpenaiModule } from './openai/openai.module';
     DiscordModule,
     YoutubeModule,
     OpenaiModule,
+    BrawlStarsModule,
   ],
   controllers: [],
   providers: [DataSourceProvider],
