@@ -1,14 +1,26 @@
 import { AttachmentBuilder, TextChannel, VoiceChannel } from "discord.js";
 import { Event } from "../structures/Event";
 import { Canvas, loadImage } from "canvas";
-import { HttpService } from "../core/services/HttpService";
-import { WelcomeMessage } from "../core/dto/discord/WelcomeMessage";
+import {
+  discordControllerGetMemberCount,
+  discordControllerGetWelcomeMessage,
+} from "../client";
 
 export default new Event("guildMemberAdd", async (member) => {
   try {
-    const welcome = await HttpService.instance.get<WelcomeMessage>(
-      `/discord/guilds/${member.guild.id}/welcome-message`
-    );
+    const [response, response2] = await Promise.all([
+      discordControllerGetWelcomeMessage({
+        path: {
+          guildId: member.guild.id,
+        },
+      }),
+      discordControllerGetMemberCount({
+        path: {
+          guildId: member.guild.id,
+        },
+      }),
+    ]);
+    const welcome = response.data;
 
     if (!welcome) {
       return;
@@ -27,7 +39,6 @@ export default new Event("guildMemberAdd", async (member) => {
 
     const font = "sans-serif";
     const font_color = "#ffffff";
-    const bg_color = "#000000";
     const title = `${member.user.username} has joined the server`;
     const subtitle = `${member.guild.name} now has ${member.guild.memberCount} members!`;
 
@@ -66,9 +77,7 @@ export default new Event("guildMemberAdd", async (member) => {
       files: [card],
     });
 
-    const memberCount = await HttpService.instance.get<WelcomeMessage>(
-      `/discord/guilds/${member.guild.id}/member-count`
-    );
+    const memberCount = response2.data;
 
     const memberCountChannel = member.guild.channels.cache.find(
       (channel) => channel.id == memberCount.channelId

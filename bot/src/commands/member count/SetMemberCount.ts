@@ -1,7 +1,7 @@
 import { ChannelType, PermissionFlagsBits } from "discord.js";
 import { CommandTypes } from "../../core/enums/CommandType";
 import { Command } from "../../structures/Command";
-import { HttpService } from "../../core/services/HttpService";
+import { discordControllerPostMemberCount } from "../../client";
 
 export default new Command({
   name: "set-member-count",
@@ -26,10 +26,14 @@ export default new Command({
           ],
         })
         .then(async (channel) => {
-          await HttpService.instance.post(
-            `/discord/guilds/${guild.id}/member-count`,
-            { channelId: channel.id }
-          );
+          await discordControllerPostMemberCount({
+            path: {
+              guildId: guild.id,
+            },
+            body: {
+              channelId: channel.id,
+            },
+          });
         });
 
       await interaction.followUp({

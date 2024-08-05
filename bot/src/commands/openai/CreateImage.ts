@@ -4,10 +4,6 @@ import { Command } from "../../structures/Command";
 import { ColorCodes } from "../../static/Theme";
 import { openaiControllerCreateImage } from "../../client";
 
-interface OpenAIResponse {
-  url: string;
-}
-
 export default new Command({
   name: "create-image",
   description: "Create your own image using OpenAI's DALL-E model",

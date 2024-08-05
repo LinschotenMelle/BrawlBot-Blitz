@@ -35,8 +35,6 @@ import { Emojis } from "../../static/Emojis";
 import { discordClient } from "../..";
 import { BBEmbedButton } from "../../core/classes/embed-button";
 import { CommandTypes } from "../../core/enums/CommandType";
-import { HttpService } from "../../core/services/HttpService";
-import { BrawlStarsUser } from "./Save";
 import { brawlStarsControllerGetProfile } from "../../client";
 
 export default new Command({

@@ -2,7 +2,10 @@ import axios, { AxiosInstance } from "axios";
 import { discordClient } from "../..";
 import { EmbedBuilder, NewsChannel, TextChannel } from "discord.js";
 import { YoutubeChannel } from "../dto/youtube/YoutubeChannel.dto";
-import { HttpService } from "./HttpService";
+import {
+  youtubeControllerGetChannels,
+  youtubeControllerUpdateChannel,
+} from "../../client";
 
 export class YoutubeService {
   private static instance?: YoutubeService;
@@ -28,10 +31,8 @@ export class YoutubeService {
     let activeChannels: YoutubeChannel[] = [];
 
     try {
-      const response = await HttpService.instance.get<YoutubeChannel[]>(
-        "/youtube/channels"
-      );
-      activeChannels = response;
+      const response = await youtubeControllerGetChannels();
+      activeChannels = response.data;
     } catch (e) {
       return;
     }
@@ -91,8 +92,13 @@ export class YoutubeService {
       });
 
       try {
-        await HttpService.instance.put(`/youtube/channels/${channel.guildId}`, {
-          latestVideoDateTime: latestVideo.snippet.publishedAt,
+        await youtubeControllerUpdateChannel({
+          path: {
+            guildId: channel.guildId,
+          },
+          body: {
+            latestVideoDateTime: latestVideo.snippet.published,
+          },
         });
       } catch (e) {
         // NOOP

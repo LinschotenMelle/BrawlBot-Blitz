@@ -24,7 +24,11 @@ import { ErrorMessages } from "../../static/Error";
 import { BrawlStarsService } from "../../core/services/Brawlstars-service";
 import { ColorCodes } from "../../static/Theme";
 import { CommandTypes } from "../../core/enums/CommandType";
-import { HttpService } from "../../core/services/HttpService";
+import {
+  brawlStarsControllerGetProfile,
+  brawlStarsControllerSaveProfile,
+  brawlStarsControllerUpdateProfile,
+} from "../../client";
 
 export interface BrawlStarsUser {
   user_id: string;
@@ -66,19 +70,26 @@ export default new Command({
         ephemeral: true,
       });
 
-    const userProfile = await HttpService.instance.get<
-      BrawlStarsUser | undefined
-    >(`/brawl-stars/profile/${interaction.user.id}`);
+    const response = await brawlStarsControllerGetProfile({
+      path: {
+        userId: interaction.user.id,
+      },
+    });
+    const userProfile = response.data;
 
     if (!userProfile) {
-      await HttpService.instance.post("/brawl-stars/save", {
-        user_id: interaction.user.id,
-        tag: hashedTag,
+      await brawlStarsControllerSaveProfile({
+        body: {
+          userId: interaction.user.id,
+          tag: hashedTag,
+        },
       });
     } else {
-      await HttpService.instance.put("/brawl-stars/update", {
-        user_id: interaction.user.id,
-        tag: hashedTag,
+      await brawlStarsControllerUpdateProfile({
+        body: {
+          userId: interaction.user.id,
+          tag: hashedTag,
+        },
       });
     }
 
