@@ -3,13 +3,21 @@ import { IYoutubeService } from '../interfaces/youtube';
 import { YoutubeChannel } from '../../utils/entities/YoutubeChannel';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import axios, { AxiosInstance } from 'axios';
+import { YoutubeVideoDto } from '../dto/YoutubeVideo.dto';
 
 @Injectable()
 export class YoutubeService implements IYoutubeService {
+  private readonly axios: AxiosInstance;
+
   constructor(
     @InjectRepository(YoutubeChannel)
     private readonly youtubeRepository: Repository<YoutubeChannel>,
-  ) {}
+  ) {
+    this.axios = axios.create({
+      baseURL: 'https://www.googleapis.com/youtube/v3',
+    });
+  }
 
   async createChannel(youtubeChannel: YoutubeChannel): Promise<YoutubeChannel> {
     return this.youtubeRepository.save(youtubeChannel);
@@ -33,5 +41,20 @@ export class YoutubeService implements IYoutubeService {
     return this.youtubeRepository.findOneBy({
       guildId: guildId,
     });
+  }
+
+  async searchLatestVideo(channel: YoutubeChannel): Promise<YoutubeVideoDto> {
+    const response = await this.axios.get('/search', {
+      params: {
+        key: channel.apiKey,
+        channelId: channel.channelId,
+        part: 'snippet',
+        order: 'date',
+        type: 'video',
+        maxResults: 1,
+      },
+    });
+
+    return response.data.items[0];
   }
 }

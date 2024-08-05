@@ -14,6 +14,8 @@ import { IYoutubeService } from '../interfaces/youtube';
 import { YoutubeChannel } from '../../utils/entities/YoutubeChannel';
 import { TokenGuard } from '../../auth/utils/Guards';
 import { MultipleAuthorizeGuard } from '../../auth/utils/MultipleGuardsReference';
+import { YoutubeVideoDto } from '../dto/YoutubeVideo.dto';
+import { YoutubeChannelDto } from '../dto/YoutubeChannel.dto';
 
 @Controller(Routes.YOUTUBE)
 @ApiTags('YouTube')
@@ -31,11 +33,18 @@ export class YoutubeController {
   }
 
   @Get('/channels')
-  @ApiResponse({ type: [YoutubeChannel] })
+  @ApiResponse({ type: [YoutubeChannelDto] })
   @UseGuards(TokenGuard)
   async getChannels() {
     const channels = await this.youtubeService.getChannels();
-    return channels.filter((channel) => channel.isActive);
+    const activeChannels = channels.filter((channel) => channel.isActive);
+
+    return activeChannels.map((channel) => ({
+      guildId: channel.guildId,
+      guildChannelId: channel.guildChannelId,
+      latestVideoDateTime: channel.latestVideoDateTime,
+      roleId: channel.roleId,
+    }));
   }
 
   @Get(':guildId')
@@ -55,5 +64,14 @@ export class YoutubeController {
       guildId,
       new Date(latestVideoDateTime),
     );
+  }
+
+  @Get('/:guildId/search-latest-video')
+  @UseGuards(TokenGuard)
+  @ApiResponse({ type: YoutubeVideoDto })
+  async searchLatestVideo(@Param('guildId') guildId: string) {
+    const channel = await this.youtubeService.getChannel(guildId);
+
+    return this.youtubeService.searchLatestVideo(channel);
   }
 }

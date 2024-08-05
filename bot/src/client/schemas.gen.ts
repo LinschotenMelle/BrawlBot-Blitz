@@ -140,6 +140,96 @@ export const $YoutubeChannel = {
     required: ['guildId', 'apiKey', 'channelId', 'guildChannelId', 'roleId', 'latestVideoDateTime', 'isActive']
 } as const;
 
+export const $YoutubeChannelDto = {
+    type: 'object',
+    properties: {
+        guildId: {
+            type: 'string'
+        },
+        guildChannelId: {
+            type: 'string'
+        },
+        latestVideoDateTime: {
+            type: 'string'
+        },
+        roleId: {
+            type: 'string'
+        }
+    },
+    required: ['guildId', 'guildChannelId', 'latestVideoDateTime', 'roleId']
+} as const;
+
+export const $YoutubeVideoIdDto = {
+    type: 'object',
+    properties: {
+        videoId: {
+            type: 'string'
+        }
+    },
+    required: ['videoId']
+} as const;
+
+export const $YoutubeHighThumbnailDto = {
+    type: 'object',
+    properties: {
+        url: {
+            type: 'string'
+        }
+    },
+    required: ['url']
+} as const;
+
+export const $YoutubeThumbnailsDto = {
+    type: 'object',
+    properties: {
+        high: {
+            '$ref': '#/components/schemas/YoutubeHighThumbnailDto'
+        }
+    },
+    required: ['high']
+} as const;
+
+export const $YoutubeSnippetDto = {
+    type: 'object',
+    properties: {
+        publishedAt: {
+            type: 'string'
+        },
+        published: {
+            type: 'string'
+        },
+        channelTitle: {
+            type: 'string'
+        },
+        channelId: {
+            type: 'string'
+        },
+        title: {
+            type: 'string'
+        },
+        description: {
+            type: 'string'
+        },
+        thumbnails: {
+            '$ref': '#/components/schemas/YoutubeThumbnailsDto'
+        }
+    },
+    required: ['publishedAt', 'published', 'channelTitle', 'channelId', 'title', 'thumbnails']
+} as const;
+
+export const $YoutubeVideoDto = {
+    type: 'object',
+    properties: {
+        id: {
+            '$ref': '#/components/schemas/YoutubeVideoIdDto'
+        },
+        snippet: {
+            '$ref': '#/components/schemas/YoutubeSnippetDto'
+        }
+    },
+    required: ['id', 'snippet']
+} as const;
+
 export const $CreateImageDto = {
     type: 'object',
     properties: {

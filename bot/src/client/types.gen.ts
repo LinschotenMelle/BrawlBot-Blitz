@@ -50,6 +50,40 @@ export type YoutubeChannel = {
     isActive: boolean;
 };
 
+export type YoutubeChannelDto = {
+    guildId: string;
+    guildChannelId: string;
+    latestVideoDateTime: string;
+    roleId: string;
+};
+
+export type YoutubeVideoIdDto = {
+    videoId: string;
+};
+
+export type YoutubeHighThumbnailDto = {
+    url: string;
+};
+
+export type YoutubeThumbnailsDto = {
+    high: YoutubeHighThumbnailDto;
+};
+
+export type YoutubeSnippetDto = {
+    publishedAt: string;
+    published: string;
+    channelTitle: string;
+    channelId: string;
+    title: string;
+    description?: string;
+    thumbnails: YoutubeThumbnailsDto;
+};
+
+export type YoutubeVideoDto = {
+    id: YoutubeVideoIdDto;
+    snippet: YoutubeSnippetDto;
+};
+
 export type CreateImageDto = {
     prompt: string;
 };
@@ -196,7 +230,7 @@ export type YoutubeControllerGetChannelsData = {
     };
 };
 
-export type YoutubeControllerGetChannelsResponse = Array<YoutubeChannel>;
+export type YoutubeControllerGetChannelsResponse = Array<YoutubeChannelDto>;
 
 export type YoutubeControllerGetChannelsError = unknown;
 
@@ -225,6 +259,19 @@ export type YoutubeControllerUpdateChannelData = {
 export type YoutubeControllerUpdateChannelResponse = unknown;
 
 export type YoutubeControllerUpdateChannelError = unknown;
+
+export type YoutubeControllerSearchLatestVideoData = {
+    headers?: {
+        token?: unknown;
+    };
+    path: {
+        guildId: string;
+    };
+};
+
+export type YoutubeControllerSearchLatestVideoResponse = YoutubeVideoDto;
+
+export type YoutubeControllerSearchLatestVideoError = unknown;
 
 export type OpenaiControllerCreateImageData = {
     body: CreateImageDto;
@@ -363,7 +410,7 @@ export type $OpenApiTs = {
         get: {
             req: YoutubeControllerGetChannelsData;
             res: {
-                default: Array<YoutubeChannel>;
+                default: Array<YoutubeChannelDto>;
             };
         };
     };
@@ -380,6 +427,14 @@ export type $OpenApiTs = {
             req: YoutubeControllerUpdateChannelData;
             res: {
                 '200': unknown;
+            };
+        };
+    };
+    '/api/youtube/{guildId}/search-latest-video': {
+        get: {
+            req: YoutubeControllerSearchLatestVideoData;
+            res: {
+                default: YoutubeVideoDto;
             };
         };
     };

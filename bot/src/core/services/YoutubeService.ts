@@ -3,7 +3,9 @@ import { discordClient } from "../..";
 import { EmbedBuilder, NewsChannel, TextChannel } from "discord.js";
 import {
   YoutubeChannel,
+  YoutubeChannelDto,
   youtubeControllerGetChannels,
+  youtubeControllerSearchLatestVideo,
   youtubeControllerUpdateChannel,
 } from "../../client";
 
@@ -28,7 +30,7 @@ export class YoutubeService {
   }
 
   private async search(): Promise<void> {
-    let activeChannels: YoutubeChannel[] = [];
+    let activeChannels: YoutubeChannelDto[] = [];
 
     try {
       const response = await youtubeControllerGetChannels();
@@ -38,14 +40,9 @@ export class YoutubeService {
     }
 
     for (const channel of activeChannels) {
-      const response = await this.axios.get("/search", {
-        params: {
-          key: channel.apiKey,
-          channelId: channel.channelId,
-          part: "snippet",
-          order: "date",
-          type: "video",
-          maxResults: 1,
+      const response = await youtubeControllerSearchLatestVideo({
+        path: {
+          guildId: channel.guildId,
         },
       });
 
@@ -61,7 +58,7 @@ export class YoutubeService {
         return;
       }
 
-      const latestVideo = response.data.items[0];
+      const latestVideo = response.data;
 
       const latestVideoDate = new Date(latestVideo.snippet.publishedAt);
       const channelDate = new Date(channel.latestVideoDateTime ?? "");
