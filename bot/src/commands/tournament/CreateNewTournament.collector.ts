@@ -6,11 +6,11 @@ import {
   ThreadChannel,
 } from "discord.js";
 import { RegisteredTeam } from "./CreateNewTournament";
-import { BrawlStarsService } from "../../core/services/Brawlstars-service";
 import { ColorCodes } from "../../static/Theme";
 import axios from "axios";
 import * as Sentry from "@sentry/browser";
 import { Moment } from "moment";
+import { brawlStarsControllerGetProfileByTag } from "../../client";
 
 interface ImageToTextResponse {
   annotations: string[];
@@ -161,9 +161,13 @@ export async function handleTeamRegistrations(
 
       const users = await Promise.all(
         tags.map(async (tag) => {
-          const user = await BrawlStarsService.instance.getProfileByTag(
-            `%23${tag}`
-          );
+          const response = await brawlStarsControllerGetProfileByTag({
+            path: {
+              tag: `%23${tag}`,
+            },
+          });
+          const user = response.data;
+
           if (!user) {
             throw new Error(`User with tag ${tag} not found.`);
           }

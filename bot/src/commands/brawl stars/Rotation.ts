@@ -27,16 +27,18 @@
  */
 
 import { Command } from "../../structures/Command";
-import { BrawlStarsService } from "../../core/services/Brawlstars-service";
 import { EmbedBuilder } from "discord.js";
 import { ColorCodes } from "../../static/Theme";
 import { ErrorMessages } from "../../static/Error";
 import { Converters } from "../../static/Converters";
 import { discordClient } from "../..";
 import moment = require("moment-timezone");
-import { BrawlStarsMapDto } from "../../core/dto/brawlstars/Map.dto";
 import { Constants } from "../../static/Contants";
 import { CommandTypes } from "../../core/enums/CommandType";
+import {
+  brawlStarsControllerGetRotation,
+  BrawlStarsMapDto,
+} from "../../client";
 
 function createEmbed(
   title: string,
@@ -84,7 +86,8 @@ export default new Command({
   description: "Check Brawl Stars Rotation of Maps",
   category: CommandTypes.BRAWL_STARS,
   run: async ({ interaction }) => {
-    const brawlStarsMaps = await BrawlStarsService.instance.getRotation();
+    const respones = await brawlStarsControllerGetRotation();
+    const brawlStarsMaps = respones.data;
     var embeds: EmbedBuilder[] = [];
 
     if (brawlStarsMaps.length < 1) {

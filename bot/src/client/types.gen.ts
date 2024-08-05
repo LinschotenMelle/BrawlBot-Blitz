@@ -97,6 +97,60 @@ export type BrawlStarsUser = {
     tag: string;
 };
 
+export type BrawlStarsEventDto = {
+    id: string;
+    mode: string;
+    map: string;
+};
+
+export type BrawlStarsMapDto = {
+    startTime: string;
+    endTime: string;
+    slotId: number;
+    event: BrawlStarsEventDto;
+};
+
+export type Icon = {
+    id: number;
+};
+
+export type Club = {
+    tag: string;
+    name: string;
+};
+
+export type Brawler = {
+    id: number;
+    name: string;
+    power: number;
+    rank: number;
+    trophies: number;
+    highestTrophies: number;
+    gears: Array<(string)>;
+    starPowers: Array<(string)>;
+    gadgets: Array<(string)>;
+};
+
+export type BrawlStarsPlayer = {
+    tag: string;
+    name: string;
+    nameColor: string;
+    icon: Icon;
+    trophies: number;
+    highestTrophies: number;
+    highestPowerPlayPoints: number;
+    expLevel: number;
+    expPoints: number;
+    isQualifiedFromChampionshipChallenge: boolean;
+    '3vs3Victories': number;
+    soloVictories: number;
+    duoVictories: number;
+    bestRoboRumbleTime: number;
+    bestTimeAsBigBrawler: number;
+    club: Club;
+    brawlers: Array<Brawler>;
+};
+
 export type AuthControllerLoginData = {
     headers?: {
         token?: unknown;
@@ -306,6 +360,16 @@ export type BrawlStarsControllerUpdateProfileResponse = BrawlStarsUser;
 
 export type BrawlStarsControllerUpdateProfileError = unknown;
 
+export type BrawlStarsControllerGetRotationData = {
+    headers?: {
+        token?: unknown;
+    };
+};
+
+export type BrawlStarsControllerGetRotationResponse = Array<BrawlStarsMapDto>;
+
+export type BrawlStarsControllerGetRotationError = unknown;
+
 export type BrawlStarsControllerGetProfileData = {
     headers?: {
         token?: unknown;
@@ -315,9 +379,32 @@ export type BrawlStarsControllerGetProfileData = {
     };
 };
 
-export type BrawlStarsControllerGetProfileResponse = BrawlStarsUser;
+export type BrawlStarsControllerGetProfileResponse = BrawlStarsPlayer;
 
 export type BrawlStarsControllerGetProfileError = unknown;
+
+export type BrawlStarsControllerGetProfileByTagData = {
+    headers?: {
+        token?: unknown;
+    };
+    path: {
+        tag: string;
+    };
+};
+
+export type BrawlStarsControllerGetProfileByTagResponse = BrawlStarsPlayer;
+
+export type BrawlStarsControllerGetProfileByTagError = unknown;
+
+export type BrawlStarsControllerGetBrawlersData = {
+    headers?: {
+        token?: unknown;
+    };
+};
+
+export type BrawlStarsControllerGetBrawlersResponse = Array<Brawler>;
+
+export type BrawlStarsControllerGetBrawlersError = unknown;
 
 export type $OpenApiTs = {
     '/api/auth/login': {
@@ -462,11 +549,35 @@ export type $OpenApiTs = {
             };
         };
     };
+    '/api/brawl-stars/rotation': {
+        get: {
+            req: BrawlStarsControllerGetRotationData;
+            res: {
+                default: Array<BrawlStarsMapDto>;
+            };
+        };
+    };
     '/api/brawl-stars/profile/{userId}': {
         get: {
             req: BrawlStarsControllerGetProfileData;
             res: {
-                default: BrawlStarsUser;
+                default: BrawlStarsPlayer;
+            };
+        };
+    };
+    '/api/brawl-stars/profile/{tag}': {
+        get: {
+            req: BrawlStarsControllerGetProfileByTagData;
+            res: {
+                default: BrawlStarsPlayer;
+            };
+        };
+    };
+    '/api/brawl-stars/brawlers': {
+        get: {
+            req: BrawlStarsControllerGetBrawlersData;
+            res: {
+                default: Array<Brawler>;
             };
         };
     };

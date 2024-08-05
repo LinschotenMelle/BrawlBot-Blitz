@@ -26,7 +26,6 @@ import {
   ComponentType,
   EmbedBuilder,
 } from "discord.js";
-import { BrawlStarsService } from "../../core/services/Brawlstars-service";
 import { ErrorMessages } from "../../static/Error";
 import { Command } from "../../structures/Command";
 import { ColorCodes } from "../../static/Theme";
@@ -35,7 +34,12 @@ import { Emojis } from "../../static/Emojis";
 import { discordClient } from "../..";
 import { BBEmbedButton } from "../../core/classes/embed-button";
 import { CommandTypes } from "../../core/enums/CommandType";
-import { brawlStarsControllerGetProfile } from "../../client";
+import {
+  brawlStarsControllerGetBrawlers,
+  brawlStarsControllerGetProfile,
+  brawlStarsControllerGetProfileByTag,
+} from "../../client";
+import { paginatedBrawlersEmbed } from "./Profile.brawlers";
 
 export default new Command({
   name: "profile",
@@ -53,35 +57,39 @@ export default new Command({
     const emojis = Emojis.getInstance(discordClient);
     let tag = interaction.options.get("tag")?.value?.toString();
 
-    if (!tag) {
-      const response = await brawlStarsControllerGetProfile({
-        path: { userId: interaction.user.id },
+    const response = await brawlStarsControllerGetProfile({
+      path: { userId: interaction.user.id },
+    });
+    var profile = response.data;
+
+    if (!tag && !profile) {
+      return interaction.followUp({
+        embeds: [
+          ErrorMessages.getDefaultErrorEmbeddedMessage(
+            "Your account has not been registered yet..."
+          ),
+        ],
+        ephemeral: true,
       });
-      const user = response.data;
+    }
 
-      if (!user)
-        return interaction.followUp({
-          embeds: [
-            ErrorMessages.getDefaultErrorEmbeddedMessage(
-              "Your account has not been registered yet..."
-            ),
-          ],
-          ephemeral: true,
-        });
-
-      tag = user.tag;
-    } else {
-      if (tag[0] != "#")
+    if (tag) {
+      if (tag[0] != "#") {
         return interaction.followUp({
           embeds: [ErrorMessages.getDefaultInvalidTypeEmbeddedMessage()],
           ephemeral: true,
         });
+      }
 
       tag = tag.replace("#", "%23").trim();
+      const response = await brawlStarsControllerGetProfileByTag({
+        path: { tag: tag },
+      });
+      profile = response.data;
     }
 
-    const profile = await BrawlStarsService.instance.getProfileByTag(`${tag}`);
-    const brawlers = await BrawlStarsService.instance.getBrawlers();
+    const resp = await brawlStarsControllerGetBrawlers();
+    const brawlers = resp.data;
 
     if (!profile)
       return interaction.followUp({
@@ -195,7 +203,6 @@ export default new Command({
       let page = 0;
       const pageSize = 24;
       const totalPages = Math.ceil(profile.brawlers.length / pageSize);
-      const brawlStarsService = BrawlStarsService.instance;
       collector.on("collect", async (i) => {
         const id = brawlersButton.customId.split("_")[0];
 
@@ -212,12 +219,7 @@ export default new Command({
         ) {
           await i.update({
             embeds: [
-              brawlStarsService.paginatedBrawlersEmbed(
-                profile,
-                page,
-                pageSize,
-                totalPages
-              ),
+              paginatedBrawlersEmbed(profile, page, pageSize, totalPages),
             ],
             components: [
               new ActionRowBuilder<ButtonBuilder>().addComponents(
@@ -242,12 +244,7 @@ export default new Command({
           maxButton.enabled(true);
           await i.update({
             embeds: [
-              brawlStarsService.paginatedBrawlersEmbed(
-                profile,
-                page,
-                pageSize,
-                totalPages
-              ),
+              paginatedBrawlersEmbed(profile, page, pageSize, totalPages),
             ],
             components: [
               new ActionRowBuilder<ButtonBuilder>().addComponents(
@@ -272,12 +269,7 @@ export default new Command({
           maxButton.enabled(page != totalPages - 1);
           await i.update({
             embeds: [
-              brawlStarsService.paginatedBrawlersEmbed(
-                profile,
-                page,
-                pageSize,
-                totalPages
-              ),
+              paginatedBrawlersEmbed(profile, page, pageSize, totalPages),
             ],
             components: [
               new ActionRowBuilder<ButtonBuilder>().addComponents(
@@ -302,12 +294,7 @@ export default new Command({
           maxButton.enabled(page != totalPages - 1);
           await i.update({
             embeds: [
-              brawlStarsService.paginatedBrawlersEmbed(
-                profile,
-                page,
-                pageSize,
-                totalPages
-              ),
+              paginatedBrawlersEmbed(profile, page, pageSize, totalPages),
             ],
             components: [
               new ActionRowBuilder<ButtonBuilder>().addComponents(
@@ -332,12 +319,7 @@ export default new Command({
           maxButton.enabled(false);
           await i.update({
             embeds: [
-              brawlStarsService.paginatedBrawlersEmbed(
-                profile,
-                page,
-                pageSize,
-                totalPages
-              ),
+              paginatedBrawlersEmbed(profile, page, pageSize, totalPages),
             ],
             components: [
               new ActionRowBuilder<ButtonBuilder>().addComponents(

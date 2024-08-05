@@ -262,3 +262,165 @@ export const $BrawlStarsUser = {
     },
     required: ['userId', 'tag']
 } as const;
+
+export const $BrawlStarsEventDto = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'string'
+        },
+        mode: {
+            type: 'string'
+        },
+        map: {
+            type: 'string'
+        }
+    },
+    required: ['id', 'mode', 'map']
+} as const;
+
+export const $BrawlStarsMapDto = {
+    type: 'object',
+    properties: {
+        startTime: {
+            type: 'string'
+        },
+        endTime: {
+            type: 'string'
+        },
+        slotId: {
+            type: 'number'
+        },
+        event: {
+            '$ref': '#/components/schemas/BrawlStarsEventDto'
+        }
+    },
+    required: ['startTime', 'endTime', 'slotId', 'event']
+} as const;
+
+export const $Icon = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'number'
+        }
+    },
+    required: ['id']
+} as const;
+
+export const $Club = {
+    type: 'object',
+    properties: {
+        tag: {
+            type: 'string'
+        },
+        name: {
+            type: 'string'
+        }
+    },
+    required: ['tag', 'name']
+} as const;
+
+export const $Brawler = {
+    type: 'object',
+    properties: {
+        id: {
+            type: 'number'
+        },
+        name: {
+            type: 'string'
+        },
+        power: {
+            type: 'number'
+        },
+        rank: {
+            type: 'number'
+        },
+        trophies: {
+            type: 'number'
+        },
+        highestTrophies: {
+            type: 'number'
+        },
+        gears: {
+            type: 'array',
+            items: {
+                type: 'string'
+            }
+        },
+        starPowers: {
+            type: 'array',
+            items: {
+                type: 'string'
+            }
+        },
+        gadgets: {
+            type: 'array',
+            items: {
+                type: 'string'
+            }
+        }
+    },
+    required: ['id', 'name', 'power', 'rank', 'trophies', 'highestTrophies', 'gears', 'starPowers', 'gadgets']
+} as const;
+
+export const $BrawlStarsPlayer = {
+    type: 'object',
+    properties: {
+        tag: {
+            type: 'string'
+        },
+        name: {
+            type: 'string'
+        },
+        nameColor: {
+            type: 'string'
+        },
+        icon: {
+            '$ref': '#/components/schemas/Icon'
+        },
+        trophies: {
+            type: 'number'
+        },
+        highestTrophies: {
+            type: 'number'
+        },
+        highestPowerPlayPoints: {
+            type: 'number'
+        },
+        expLevel: {
+            type: 'number'
+        },
+        expPoints: {
+            type: 'number'
+        },
+        isQualifiedFromChampionshipChallenge: {
+            type: 'boolean'
+        },
+        '3vs3Victories': {
+            type: 'number'
+        },
+        soloVictories: {
+            type: 'number'
+        },
+        duoVictories: {
+            type: 'number'
+        },
+        bestRoboRumbleTime: {
+            type: 'number'
+        },
+        bestTimeAsBigBrawler: {
+            type: 'number'
+        },
+        club: {
+            '$ref': '#/components/schemas/Club'
+        },
+        brawlers: {
+            type: 'array',
+            items: {
+                '$ref': '#/components/schemas/Brawler'
+            }
+        }
+    },
+    required: ['tag', 'name', 'nameColor', 'icon', 'trophies', 'highestTrophies', 'highestPowerPlayPoints', 'expLevel', 'expPoints', 'isQualifiedFromChampionshipChallenge', '3vs3Victories', 'soloVictories', 'duoVictories', 'bestRoboRumbleTime', 'bestTimeAsBigBrawler', 'club', 'brawlers']
+} as const;

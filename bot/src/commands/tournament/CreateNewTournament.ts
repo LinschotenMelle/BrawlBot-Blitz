@@ -15,12 +15,12 @@ import { Command } from "../../structures/Command";
 import { ColorCodes } from "../../static/Theme";
 import { discordClient } from "../..";
 import { Constants } from "../../static/Contants";
-import { BrawlStarsPlayer } from "../../core/dto/brawlstars/Player.dto";
 import moment = require("moment");
 import humanizeDuration = require("humanize-duration");
 import * as Sentry from "@sentry/browser";
 import { handleTeamRegistrations } from "./CreateNewTournament.collector";
 import { createBracket } from "./CreateNewTournament.bracket";
+import { BrawlStarsPlayer } from "../../client";
 
 export class RegisteredTeam {
   public teamName!: string;

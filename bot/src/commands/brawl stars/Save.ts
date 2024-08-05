@@ -21,11 +21,11 @@
 import { ApplicationCommandOptionType, EmbedBuilder } from "discord.js";
 import { Command } from "../../structures/Command";
 import { ErrorMessages } from "../../static/Error";
-import { BrawlStarsService } from "../../core/services/Brawlstars-service";
 import { ColorCodes } from "../../static/Theme";
 import { CommandTypes } from "../../core/enums/CommandType";
 import {
   brawlStarsControllerGetProfile,
+  brawlStarsControllerGetProfileByTag,
   brawlStarsControllerSaveProfile,
   brawlStarsControllerUpdateProfile,
 } from "../../client";
@@ -58,7 +58,12 @@ export default new Command({
 
     const hashedTag = tag.replace("#", "%23").trim();
 
-    const profile = await BrawlStarsService.instance.getProfileByTag(hashedTag);
+    const resp = await brawlStarsControllerGetProfileByTag({
+      path: {
+        tag: hashedTag,
+      },
+    });
+    const profile = resp.data;
 
     if (!profile)
       return interaction.followUp({

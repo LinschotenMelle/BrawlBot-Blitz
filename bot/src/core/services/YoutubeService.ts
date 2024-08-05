@@ -40,12 +40,6 @@ export class YoutubeService {
     }
 
     for (const channel of activeChannels) {
-      const response = await youtubeControllerSearchLatestVideo({
-        path: {
-          guildId: channel.guildId,
-        },
-      });
-
       const guild = discordClient.guilds.cache.find(
         (guild) => guild.id === channel.guildId
       );
@@ -57,6 +51,12 @@ export class YoutubeService {
       if (!selectedchannel) {
         return;
       }
+
+      const response = await youtubeControllerSearchLatestVideo({
+        path: {
+          guildId: channel.guildId,
+        },
+      });
 
       const latestVideo = response.data;
 

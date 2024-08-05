@@ -4,6 +4,7 @@ import {
   Body,
   Controller,
   Get,
+  Head,
   Inject,
   Param,
   Post,
@@ -13,6 +14,9 @@ import {
 import { TokenGuard } from '../auth/utils/Guards';
 import { IBrawlStarsService } from './brawl-stars.service';
 import { BrawlStarsUser } from '../utils/entities/BrawlStarsUser';
+import { BrawlStarsMapDto } from './dto/Map.dto';
+import { BrawlStarsPlayer } from './dto/Player.dto';
+import { Brawler } from './dto/Brawler.dto';
 
 @Controller(Routes.BRAWL_STARS)
 @ApiTags('Brawl Stars')
@@ -37,10 +41,31 @@ export class BrawlStarsController {
     return this.brawlStarsService.saveProfile(user);
   }
 
+  @Get('rotation')
+  @UseGuards(TokenGuard)
+  @ApiResponse({ type: [BrawlStarsMapDto] })
+  async getRotation() {
+    return this.brawlStarsService.getRotation();
+  }
+
   @Get('profile/:userId')
   @UseGuards(TokenGuard)
-  @ApiResponse({ type: BrawlStarsUser })
+  @ApiResponse({ type: BrawlStarsPlayer })
   async getProfile(@Param('userId') userId: string) {
-    return this.brawlStarsService.getProfile(userId);
+    return this.brawlStarsService.getProfileByUserId(userId);
+  }
+
+  @Get('profile/:tag')
+  @UseGuards(TokenGuard)
+  @ApiResponse({ type: BrawlStarsPlayer })
+  async getProfileByTag(@Param('tag') tag: string) {
+    return this.brawlStarsService.getProfileByTag(tag);
+  }
+
+  @Get('brawlers')
+  @UseGuards(TokenGuard)
+  @ApiResponse({ type: [Brawler] })
+  async getBrawlers() {
+    return this.brawlStarsService.getBrawlers();
   }
 }
