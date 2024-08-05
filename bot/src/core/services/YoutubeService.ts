@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from "axios";
-import { client } from "../..";
+import { discordClient } from "../..";
 import { EmbedBuilder, NewsChannel, TextChannel } from "discord.js";
 import { YoutubeChannel } from "../dto/youtube/YoutubeChannel.dto";
 import { HttpService } from "./HttpService";
@@ -48,7 +48,7 @@ export class YoutubeService {
         },
       });
 
-      const guild = client.guilds.cache.find(
+      const guild = discordClient.guilds.cache.find(
         (guild) => guild.id === channel.guildId
       );
 

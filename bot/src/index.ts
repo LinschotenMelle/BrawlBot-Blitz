@@ -9,10 +9,11 @@ Sentry.init({
   tracesSampleRate: 1.0,
   profilesSampleRate: 1.0,
 });
-export const client = new ExtendedClient();
+
+export const discordClient = new ExtendedClient();
 export const analytics = new DiscordAnalytics({
-  client: client,
+  client: discordClient,
   apiToken: process.env.ANALYTICS_TOKEN ?? "",
   sharded: false,
 });
-client.start();
+discordClient.start();

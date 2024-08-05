@@ -1,5 +1,5 @@
 import { CommandInteractionOptionResolver } from "discord.js";
-import { client } from "..";
+import { discordClient } from "..";
 import { Event } from "../structures/Event";
 import { ExtendedInteraction } from "../typings/Command";
 import * as Sentry from "@sentry/browser";
@@ -7,7 +7,7 @@ import * as Sentry from "@sentry/browser";
 export default new Event("interactionCreate", async (interaction) => {
   if (interaction.isCommand()) {
     await interaction.deferReply();
-    const command = client.commands.get(interaction.commandName);
+    const command = discordClient.commands.get(interaction.commandName);
 
     if (!command) {
       return interaction.followUp("You have used a non existent command");
@@ -35,7 +35,7 @@ export default new Event("interactionCreate", async (interaction) => {
     try {
       command.run({
         args: interaction.options as CommandInteractionOptionResolver,
-        client,
+        client: discordClient,
         interaction: interaction as ExtendedInteraction,
       });
     } catch (error) {

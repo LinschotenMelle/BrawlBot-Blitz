@@ -1,24 +1,57 @@
-import { Role } from "./Role";
+import { ApiProperty } from '@nestjs/swagger';
+import { Role } from './Role';
 
-export type Guild = {
+export class Guild {
+  @ApiProperty()
   id: string;
+
+  @ApiProperty()
   name: string;
+
+  @ApiProperty()
   icon: string | null;
-  description: string | null;
-  splash: string | null;
-  owner: boolean;
-  permissions: number;
-  features: string[];
-  isActive: boolean;
-  roles: Role[];
-};
 
-export type PartialGuild = {
-  id: string;
-  name: string;
-  icon: string;
+  @ApiProperty()
+  description: string | null;
+
+  @ApiProperty()
+  splash: string | null;
+
+  @ApiProperty()
   owner: boolean;
+
+  @ApiProperty()
   permissions: number;
+
+  @ApiProperty()
   features: string[];
+
+  @ApiProperty()
   isActive: boolean;
-};
+
+  @ApiProperty()
+  roles: Role[];
+}
+
+export class PartialGuild {
+  @ApiProperty()
+  id: string;
+
+  @ApiProperty()
+  name: string;
+
+  @ApiProperty()
+  icon: string;
+
+  @ApiProperty()
+  owner: boolean;
+
+  @ApiProperty()
+  permissions: number;
+
+  @ApiProperty()
+  features: string[];
+
+  @ApiProperty()
+  isActive: boolean;
+}

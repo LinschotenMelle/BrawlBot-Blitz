@@ -40,6 +40,7 @@ export class YoutubeController {
 
   @Get(':guildId')
   @UseGuards(TokenGuard)
+  @ApiResponse({ type: YoutubeChannel })
   async getChannel(@Param('guildId') guildId: string) {
     return this.youtubeService.getChannel(guildId);
   }

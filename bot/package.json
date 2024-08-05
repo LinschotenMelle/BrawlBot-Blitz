@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
-    "start": "node ."
+    "start": "node .",
+    "generate-client": "ts-node openapi-ts.ts"
   },
   "keywords": [],
   "author": "",
@@ -15,6 +16,7 @@
     "@canvas-fonts/arial": "^1.0.4",
     "@canvas-fonts/helveticaneue": "^1.0.4",
     "@datastax/astra-db-ts": "^0.1.4",
+    "@hey-api/client-axios": "^0.2.0",
     "@sentry/browser": "^8.20.0",
     "@sentry/node": "^8.20.0",
     "add-font": "^1.0.2",
@@ -32,9 +34,11 @@
     "moment-timezone": "^0.5.45"
   },
   "devDependencies": {
+    "@hey-api/openapi-ts": "^0.52.0",
     "@types/humanize-duration": "^3.27.4",
     "@types/node": "^20.12.2",
     "@types/tesseract.js": "^2.0.0",
+    "ts-node": "^10.9.2",
     "tsx": "^4.7.1"
   }
 }

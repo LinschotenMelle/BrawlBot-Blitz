@@ -32,7 +32,7 @@ import { EmbedBuilder } from "discord.js";
 import { ColorCodes } from "../../static/Theme";
 import { ErrorMessages } from "../../static/Error";
 import { Converters } from "../../static/Converters";
-import { client } from "../..";
+import { discordClient } from "../..";
 import moment = require("moment-timezone");
 import { BrawlStarsMapDto } from "../../core/dto/brawlstars/Map.dto";
 import { Constants } from "../../static/Contants";
@@ -52,7 +52,7 @@ function createEmbed(
 
   maps.forEach((map) => {
     let name = Converters.capitalizeFirstLetter(map.event.map);
-    const emoji = client.emojis.cache.find(
+    const emoji = discordClient.emojis.cache.find(
       (e) => e.name === map.event.mode.toUpperCase()
     );
     if (emoji) name = `${emoji} ${name}`;

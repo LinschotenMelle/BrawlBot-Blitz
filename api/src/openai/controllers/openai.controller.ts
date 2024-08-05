@@ -1,12 +1,9 @@
-import { Body, Controller, Get, Inject, Post, UseGuards } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Inject, Post, UseGuards } from '@nestjs/common';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Routes, Services } from '../../utils/constants';
 import { OpenaiService } from '../services/openai.service';
 import { TokenGuard } from '../../auth/utils/Guards';
-
-export class CreateImageDto {
-  prompt: string;
-}
+import { CreateImageDto, ImageDto } from '../dto/image.dto';
 
 @Controller(Routes.OPENAI)
 @ApiTags('OpenAI')
@@ -18,7 +15,8 @@ export class OpenaiController {
 
   @Post('/generate-image')
   @UseGuards(TokenGuard)
-  async getChannels(@Body() { prompt }: CreateImageDto) {
+  @ApiResponse({ type: ImageDto })
+  async createImage(@Body() { prompt }: CreateImageDto) {
     return this.openAIService.createImage(prompt);
   }
 }

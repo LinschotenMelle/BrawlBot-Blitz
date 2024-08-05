@@ -1,8 +1,8 @@
 import { ApplicationCommandOptionType, EmbedBuilder } from "discord.js";
 import { CommandTypes } from "../../core/enums/CommandType";
 import { Command } from "../../structures/Command";
-import { HttpService } from "../../core/services/HttpService";
 import { ColorCodes } from "../../static/Theme";
+import { openaiControllerCreateImage } from "../../client";
 
 interface OpenAIResponse {
   url: string;
@@ -34,21 +34,21 @@ export default new Command({
       "Generating the image, this may take a few seconds..."
     );
 
-    const response = await HttpService.instance.post<OpenAIResponse>(
-      "/openai/generate-image",
-      {
+    const response = await openaiControllerCreateImage({
+      body: {
         prompt: prompt,
-      }
-    );
+      },
+    });
+    const image = response.data;
 
-    if (!response) {
+    if (!image) {
       return interaction.editReply({
         content: "There was an error generating the image!",
       });
     }
 
     const embed = new EmbedBuilder()
-      .setImage(response.url)
+      .setImage(image.url)
       .setTitle(`Generated Image: '${prompt}'`)
       .setColor(ColorCodes.primaryColor)
       .setFooter({

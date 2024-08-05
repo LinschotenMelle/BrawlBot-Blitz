@@ -5,7 +5,7 @@ import { Brawler, BrawlerResponse } from "../dto/brawlstars/Brawler.dto";
 import { EmbedBuilder } from "discord.js";
 import { ColorCodes } from "../../static/Theme";
 import { Constants } from "../../static/Contants";
-import { client } from "../..";
+import { discordClient } from "../..";
 import { Converters } from "../../static/Converters";
 
 export class BrawlStarsService {
@@ -137,7 +137,7 @@ export class BrawlStarsService {
       .slice(page * pageSize, page * pageSize + pageSize);
 
     paginatedBralwers.forEach((brawler) => {
-      const brawlerEmoji = client.emojis.cache.find(
+      const brawlerEmoji = discordClient.emojis.cache.find(
         (e) => e.name === brawler.name.replace(/[ &-.]/g, "")
       );
       const convertedName = Converters.capitalizeFirstLetter(brawler.name);
@@ -145,7 +145,7 @@ export class BrawlStarsService {
         ? `${brawlerEmoji} ${convertedName}`
         : convertedName;
 
-      const rankEmoji = client.emojis.cache.find(
+      const rankEmoji = discordClient.emojis.cache.find(
         (e) => e.name === `Rank_${this.calculateRank(brawler.highestTrophies)}`
       );
 

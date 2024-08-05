@@ -1,4 +1,4 @@
-import { ApiOAuth2, ApiTags } from '@nestjs/swagger';
+import { ApiOAuth2, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Routes, Services } from '../utils/constants';
 import {
   Body,
@@ -25,18 +25,21 @@ export class BrawlStarsController {
 
   @Post('/save')
   @UseGuards(TokenGuard)
+  @ApiResponse({ type: BrawlStarsUser })
   async saveProfile(@Body() user: BrawlStarsUser) {
     return this.brawlStarsService.saveProfile(user);
   }
 
   @Put('/update')
   @UseGuards(TokenGuard)
+  @ApiResponse({ type: BrawlStarsUser })
   async updateProfile(@Body() user: BrawlStarsUser) {
     return this.brawlStarsService.saveProfile(user);
   }
 
   @Get('profile/:userId')
   @UseGuards(TokenGuard)
+  @ApiResponse({ type: BrawlStarsUser })
   async getProfile(@Param('userId') userId: string) {
     return this.brawlStarsService.getProfile(userId);
   }

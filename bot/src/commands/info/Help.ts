@@ -8,7 +8,7 @@ import { Command } from "../../structures/Command";
 import { ColorCodes } from "../../static/Theme";
 import { CommandTypes } from "../../core/enums/CommandType";
 import { BBEmbedButton } from "../../core/classes/embed-button";
-import { client } from "../..";
+import { discordClient } from "../..";
 
 export default new Command({
   name: "help",
@@ -62,7 +62,9 @@ export default new Command({
             })
             .setTimestamp();
 
-          const commands = client.commands.filter((c) => c.category == id);
+          const commands = discordClient.commands.filter(
+            (c) => c.category == id
+          );
           commands.map((m) => {
             var name = `/${m.name}`;
             if (

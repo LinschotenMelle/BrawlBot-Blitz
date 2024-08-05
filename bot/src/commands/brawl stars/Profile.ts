@@ -32,11 +32,12 @@ import { Command } from "../../structures/Command";
 import { ColorCodes } from "../../static/Theme";
 import { Constants } from "../../static/Contants";
 import { Emojis } from "../../static/Emojis";
-import { client } from "../..";
+import { discordClient } from "../..";
 import { BBEmbedButton } from "../../core/classes/embed-button";
 import { CommandTypes } from "../../core/enums/CommandType";
 import { HttpService } from "../../core/services/HttpService";
 import { BrawlStarsUser } from "./Save";
+import { brawlStarsControllerGetProfile } from "../../client";
 
 export default new Command({
   name: "profile",
@@ -51,13 +52,14 @@ export default new Command({
   description:
     "Check Your Brawl Stars Profile based of your saved tag or the tag you provide.",
   run: async ({ interaction }) => {
-    const emojis = Emojis.getInstance(client);
+    const emojis = Emojis.getInstance(discordClient);
     let tag = interaction.options.get("tag")?.value?.toString();
 
     if (!tag) {
-      const user = await HttpService.instance.get<BrawlStarsUser | undefined>(
-        `/brawl-stars/profile/${interaction.user.id}`
-      );
+      const response = await brawlStarsControllerGetProfile({
+        path: { userId: interaction.user.id },
+      });
+      const user = response.data;
 
       if (!user)
         return interaction.followUp({

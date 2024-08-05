@@ -11,7 +11,8 @@ import { CommandType } from "../typings/Command";
 import { globSync } from "glob";
 import { RegisterCommandsOptions } from "../typings/Client";
 import { Event } from "./Event";
-import { analytics, client } from "..";
+import { analytics, discordClient } from "..";
+import { client } from "../client";
 
 export class ExtendedClient extends Client {
   commands: Collection<string, CommandType> = new Collection();
@@ -28,6 +29,7 @@ export class ExtendedClient extends Client {
 
   start() {
     this.registerModules();
+    this.setHttpClientConfig();
     analytics.trackEvents();
     this.login(process.env.TOKEN);
   }
@@ -68,7 +70,7 @@ export class ExtendedClient extends Client {
       setInterval(() => {
         const randomCommand =
           commandsArray[Math.floor(Math.random() * commandsArray.length)];
-        client.user?.setActivity(`/${randomCommand.name}`, {
+        discordClient.user?.setActivity(`/${randomCommand.name}`, {
           type: ActivityType.Playing,
         });
       }, 30000);
@@ -79,6 +81,15 @@ export class ExtendedClient extends Client {
     eventFiles.forEach(async (filePath) => {
       const event: Event<keyof ClientEvents> = await this.importFile(filePath);
       this.on(event.event, event.run);
+    });
+  }
+
+  async setHttpClientConfig() {
+    client.setConfig({
+      baseURL: process.env.HTTP_API_URL,
+      headers: {
+        token: process.env.TOKEN,
+      },
     });
   }
 }

@@ -1,3 +1,5 @@
+import { ApiProperty } from '@nestjs/swagger';
+
 export type UserDetails = {
   discordId: string;
   accessToken: string;
@@ -14,7 +16,10 @@ export type User = {
   username: string;
 };
 
-export type UpdateUserDetails = {
+export class UpdateUserDetails {
+  @ApiProperty()
   accessToken: string;
+
+  @ApiProperty()
   refreshToken: string;
-};
+}

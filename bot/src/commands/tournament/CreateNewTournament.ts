@@ -13,7 +13,7 @@ import {
 import { CommandTypes } from "../../core/enums/CommandType";
 import { Command } from "../../structures/Command";
 import { ColorCodes } from "../../static/Theme";
-import { client } from "../..";
+import { discordClient } from "../..";
 import { Constants } from "../../static/Contants";
 import { BrawlStarsPlayer } from "../../core/dto/brawlstars/Player.dto";
 import moment = require("moment");
@@ -103,7 +103,7 @@ export default new Command({
       const desc = descResponse.content;
       await descResponse.delete();
 
-      const guild = client.guilds.cache.get(interaction.guildId ?? "");
+      const guild = discordClient.guilds.cache.get(interaction.guildId ?? "");
       if (!guild) {
         await interaction.followUp({
           content: "Guild not found.",
