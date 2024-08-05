@@ -7,9 +7,6 @@
       "path": "dashboard"
     },
     {
-      "path": "common"
-    },
-    {
       "path": "api"
     }
   ],
