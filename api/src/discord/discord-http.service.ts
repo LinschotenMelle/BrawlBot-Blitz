@@ -8,6 +8,7 @@ import { WelcomeMessage } from '../utils/entities/WelcomeMessage';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { GuildMemberCount } from '../utils/entities/GuildMemberCount';
+import { ConfigService } from '@nestjs/config';
 
 export interface IDiscordHttpService {
   fetchUserGuilds(accessToken: string): Promise<AxiosResponse<PartialGuild[]>>;
@@ -29,6 +30,7 @@ export class DiscordHttpService implements IDiscordHttpService {
     private readonly welcomeRepository: Repository<WelcomeMessage>,
     @InjectRepository(GuildMemberCount)
     private readonly guildMemberCountRepository: Repository<GuildMemberCount>,
+    private readonly configService: ConfigService,
   ) {
     this.userAxios = setupCache(
       axios.create({
@@ -39,7 +41,7 @@ export class DiscordHttpService implements IDiscordHttpService {
       axios.create({
         baseURL: 'https://discord.com/api',
         headers: {
-          Authorization: `Bot ${process.env.DISCORD_TOKEN}`,
+          Authorization: `Bot ${this.configService.getOrThrow('DISCORD_TOKEN')}`,
         },
       }),
     );

@@ -6,6 +6,7 @@ import { BrawlStarsMapDto } from './dto/Map.dto';
 import axios, { AxiosInstance } from 'axios';
 import { BrawlStarsPlayer } from './dto/Player.dto';
 import { Brawler, BrawlerResponse } from './dto/Brawler.dto';
+import { ConfigService } from '@nestjs/config';
 
 export interface IBrawlStarsService {
   saveProfile(user: BrawlStarsUser): Promise<BrawlStarsUser>;
@@ -22,6 +23,7 @@ export class BrawlStarsService implements IBrawlStarsService {
   constructor(
     @InjectRepository(BrawlStarsUser)
     private readonly brawlStarsUserRepository: Repository<BrawlStarsUser>,
+    private readonly configService: ConfigService,
   ) {
     this.initialize();
   }
@@ -30,13 +32,13 @@ export class BrawlStarsService implements IBrawlStarsService {
     const response = await axios.post(
       'https://developer.brawlstars.com/api/login',
       {
-        email: process.env.BRAWL_STARS_API_EMAIL,
-        password: process.env.BRAWL_STARS_API_PASSWORD,
+        email: this.configService.getOrThrow('BRAWL_STARS_API_EMAIL'),
+        password: this.configService.getOrThrow('BRAWL_STARS_API_PASSWORD'),
       },
     );
 
     this.axios = axios.create({
-      baseURL: process.env.BRAWL_STARS_API_URL,
+      baseURL: this.configService.getOrThrow('BRAWL_STARS_API_URL'),
       headers: { Authorization: `Bearer ${response.data.temporaryAPIToken}` },
     });
   }
