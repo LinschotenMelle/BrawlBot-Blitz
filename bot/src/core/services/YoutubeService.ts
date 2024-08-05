@@ -1,8 +1,8 @@
 import axios, { AxiosInstance } from "axios";
 import { discordClient } from "../..";
 import { EmbedBuilder, NewsChannel, TextChannel } from "discord.js";
-import { YoutubeChannel } from "../dto/youtube/YoutubeChannel.dto";
 import {
+  YoutubeChannel,
   youtubeControllerGetChannels,
   youtubeControllerUpdateChannel,
 } from "../../client";
