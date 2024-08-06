@@ -70,11 +70,19 @@ export class BrawlStarsController {
     return this.brawlStarsService.getBrawlers();
   }
 
-  @Get('/clubs')
+  @Get('clubs')
   @UseGuards(TokenGuard)
   @ApiResponse({ type: [Club] })
   async getClubs(@Query('countryCode') countryCode?: string) {
     const language = countryCode ?? 'NL';
     return this.brawlStarsService.getClubs(language);
+  }
+
+  @Get('players')
+  @UseGuards(TokenGuard)
+  @ApiResponse({ type: [BrawlStarsPlayer] })
+  async getPlayers(@Query('countryCode') countryCode?: string) {
+    const language = countryCode ?? 'NL';
+    return this.brawlStarsService.getPlayers(language);
   }
 }

@@ -4,8 +4,8 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BrawlStarsMapDto } from './dto/Map.dto';
 import axios, { AxiosInstance } from 'axios';
-import { BrawlStarsPlayer, Club, ClubResponse } from './dto/Player.dto';
-import { Brawler, BrawlerResponse } from './dto/Brawler.dto';
+import { BrawlStarsPlayer, Club, BrawlStarsResponse } from './dto/Player.dto';
+import { Brawler } from './dto/Brawler.dto';
 import { ConfigService } from '@nestjs/config';
 
 export interface IBrawlStarsService {
@@ -15,6 +15,7 @@ export interface IBrawlStarsService {
   getProfileByTag(tag: string): Promise<BrawlStarsPlayer | undefined>;
   getBrawlers(): Promise<Brawler[]>;
   getClubs(countryCode: string): Promise<Club[]>;
+  getPlayers(countryCode: string): Promise<BrawlStarsPlayer[]>;
 }
 
 @Injectable()
@@ -105,7 +106,7 @@ export class BrawlStarsService implements IBrawlStarsService {
 
     while (retries < 2) {
       try {
-        const response = await this.axios.get<BrawlerResponse>('/brawlers');
+        const response = await this.axios.get<BrawlStarsResponse>('/brawlers');
         return response?.data.items ?? [];
       } catch (e) {
         await this.initialize();
@@ -121,8 +122,36 @@ export class BrawlStarsService implements IBrawlStarsService {
 
     while (retries < 2) {
       try {
-        const response = await this.axios.get<ClubResponse>(
+        const response = await this.axios.get<BrawlStarsResponse>(
           `/rankings/${countryCode}/clubs`,
+          {
+            params: {
+              limit: 25,
+            },
+          },
+        );
+        return response?.data.items ?? [];
+      } catch (e) {
+        await this.initialize();
+        retries++;
+      }
+    }
+
+    return [];
+  }
+
+  async getPlayers(countryCode: string): Promise<BrawlStarsPlayer[]> {
+    let retries = 0;
+
+    while (retries < 2) {
+      try {
+        const response = await this.axios.get<BrawlStarsResponse>(
+          `/rankings/${countryCode}/players`,
+          {
+            params: {
+              limit: 25,
+            },
+          },
         );
         return response?.data.items ?? [];
       } catch (e) {

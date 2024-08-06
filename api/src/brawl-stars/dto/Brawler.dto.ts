@@ -1,9 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class BrawlerResponse {
-  items!: Brawler[];
-}
-
 export class Gear {
   @ApiProperty()
   id: number;

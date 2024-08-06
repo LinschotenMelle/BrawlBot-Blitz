@@ -434,5 +434,5 @@ export const $BrawlStarsPlayer = {
             }
         }
     },
-    required: ['tag', 'name', 'nameColor', 'icon', 'trophies', 'highestTrophies', 'highestPowerPlayPoints', 'expLevel', 'expPoints', 'isQualifiedFromChampionshipChallenge', '3vs3Victories', 'soloVictories', 'duoVictories', 'bestRoboRumbleTime', 'bestTimeAsBigBrawler', 'club', 'brawlers']
+    required: ['tag', 'name', 'nameColor', 'icon', 'trophies']
 } as const;

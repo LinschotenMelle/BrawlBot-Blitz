@@ -141,18 +141,18 @@ export type BrawlStarsPlayer = {
     nameColor: string;
     icon: Icon;
     trophies: number;
-    highestTrophies: number;
-    highestPowerPlayPoints: number;
-    expLevel: number;
-    expPoints: number;
-    isQualifiedFromChampionshipChallenge: boolean;
-    '3vs3Victories': number;
-    soloVictories: number;
-    duoVictories: number;
-    bestRoboRumbleTime: number;
-    bestTimeAsBigBrawler: number;
-    club: Club;
-    brawlers: Array<Brawler>;
+    highestTrophies?: number;
+    highestPowerPlayPoints?: number;
+    expLevel?: number;
+    expPoints?: number;
+    isQualifiedFromChampionshipChallenge?: boolean;
+    '3vs3Victories'?: number;
+    soloVictories?: number;
+    duoVictories?: number;
+    bestRoboRumbleTime?: number;
+    bestTimeAsBigBrawler?: number;
+    club?: Club;
+    brawlers?: Array<Brawler>;
 };
 
 export type AuthControllerLoginData = {
@@ -423,6 +423,19 @@ export type BrawlStarsControllerGetClubsResponse = Array<Club>;
 
 export type BrawlStarsControllerGetClubsError = unknown;
 
+export type BrawlStarsControllerGetPlayersData = {
+    headers?: {
+        token?: unknown;
+    };
+    query: {
+        countryCode: string;
+    };
+};
+
+export type BrawlStarsControllerGetPlayersResponse = Array<BrawlStarsPlayer>;
+
+export type BrawlStarsControllerGetPlayersError = unknown;
+
 export type $OpenApiTs = {
     '/api/auth/login': {
         get: {
@@ -603,6 +616,14 @@ export type $OpenApiTs = {
             req: BrawlStarsControllerGetClubsData;
             res: {
                 default: Array<Club>;
+            };
+        };
+    };
+    '/api/brawl-stars/players': {
+        get: {
+            req: BrawlStarsControllerGetPlayersData;
+            res: {
+                default: Array<BrawlStarsPlayer>;
             };
         };
     };

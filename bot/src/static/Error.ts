@@ -27,4 +27,5 @@ export class ErrorMessages {
   }
 
   static noClubsFound = "No clubs found for this country code";
+  static noPlayersFound = "No players found for this country code";
 }

@@ -6,8 +6,8 @@ export class Icon {
   id!: number;
 }
 
-export class ClubResponse {
-  items!: Club[];
+export class BrawlStarsResponse {
+  items!: any[];
 }
 
 export class Club {
@@ -46,41 +46,41 @@ export class BrawlStarsPlayer {
   @ApiProperty()
   trophies!: number;
 
-  @ApiProperty()
-  highestTrophies!: number;
+  @ApiPropertyOptional()
+  highestTrophies?: number;
 
-  @ApiProperty()
-  highestPowerPlayPoints!: number;
+  @ApiPropertyOptional()
+  highestPowerPlayPoints?: number;
 
-  @ApiProperty()
-  expLevel!: number;
+  @ApiPropertyOptional()
+  expLevel?: number;
 
-  @ApiProperty()
-  expPoints!: number;
+  @ApiPropertyOptional()
+  expPoints?: number;
 
-  @ApiProperty()
-  isQualifiedFromChampionshipChallenge!: boolean;
+  @ApiPropertyOptional()
+  isQualifiedFromChampionshipChallenge?: boolean;
 
-  @ApiProperty()
-  '3vs3Victories'!: number;
+  @ApiPropertyOptional()
+  '3vs3Victories'?: number;
 
-  @ApiProperty()
-  soloVictories!: number;
+  @ApiPropertyOptional()
+  soloVictories?: number;
 
-  @ApiProperty()
-  duoVictories!: number;
+  @ApiPropertyOptional()
+  duoVictories?: number;
 
-  @ApiProperty()
-  bestRoboRumbleTime!: number;
+  @ApiPropertyOptional()
+  bestRoboRumbleTime?: number;
 
-  @ApiProperty()
-  bestTimeAsBigBrawler!: number;
+  @ApiPropertyOptional()
+  bestTimeAsBigBrawler?: number;
 
-  @ApiProperty({ type: Club })
+  @ApiPropertyOptional({ type: Club })
   club?: Club;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: [Brawler],
   })
-  brawlers!: Brawler[];
+  brawlers?: Brawler[];
 }
