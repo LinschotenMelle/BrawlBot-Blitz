@@ -316,6 +316,18 @@ export const $Club = {
         },
         name: {
             type: 'string'
+        },
+        badgeId: {
+            type: 'number'
+        },
+        trophies: {
+            type: 'number'
+        },
+        rank: {
+            type: 'number'
+        },
+        memberCount: {
+            type: 'number'
         }
     },
     required: ['tag', 'name']

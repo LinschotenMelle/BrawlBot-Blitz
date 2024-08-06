@@ -1,7 +1,9 @@
 import {
   ApplicationCommandOptionType,
   AttachmentBuilder,
+  CacheType,
   ChannelType,
+  CommandInteraction,
   EmbedBuilder,
   Guild,
   Message,
@@ -21,6 +23,7 @@ import * as Sentry from "@sentry/browser";
 import { handleTeamRegistrations } from "./CreateNewTournament.collector";
 import { createBracket } from "./CreateNewTournament.bracket";
 import { BrawlStarsPlayer } from "../../client";
+import { collectMessage } from "../../static/Converters";
 
 export class RegisteredTeam {
   public teamName!: string;
@@ -36,7 +39,7 @@ export default new Command({
   name: "create-new-tournament",
   description: "Create a new tournament",
   userPermission: [PermissionFlagsBits.ManageGuild],
-  category: CommandTypes.OTHER,
+  category: CommandTypes.BRAWL_STARS,
   options: [
     {
       name: "name",
@@ -100,8 +103,8 @@ export default new Command({
       const membersPerTeam = interaction.options.get("type-team")?.value;
 
       const descResponse = await collectMessage(interaction);
-      const desc = descResponse.content;
-      await descResponse.delete();
+      const desc = descResponse?.content ?? "skip";
+      await descResponse?.delete();
 
       const guild = discordClient.guilds.cache.get(interaction.guildId ?? "");
       if (!guild) {
@@ -208,17 +211,6 @@ export default new Command({
     }
   },
 });
-
-async function collectMessage(interaction: any): Promise<Message> {
-  const filter = (response: Message) =>
-    response.author.id === interaction.user.id;
-  const collected = await interaction.channel.awaitMessages({
-    filter,
-    max: 1,
-    time: 30000,
-  });
-  return collected.first();
-}
 
 async function createTimer(
   formattedDate: moment.Moment,

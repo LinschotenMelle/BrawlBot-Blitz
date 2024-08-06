@@ -9,13 +9,14 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { TokenGuard } from '../auth/utils/Guards';
 import { IBrawlStarsService } from './brawl-stars.service';
 import { BrawlStarsUser } from '../utils/entities/BrawlStarsUser';
 import { BrawlStarsMapDto } from './dto/Map.dto';
-import { BrawlStarsPlayer } from './dto/Player.dto';
+import { BrawlStarsPlayer, Club } from './dto/Player.dto';
 import { Brawler } from './dto/Brawler.dto';
 
 @Controller(Routes.BRAWL_STARS)
@@ -67,5 +68,13 @@ export class BrawlStarsController {
   @ApiResponse({ type: [Brawler] })
   async getBrawlers() {
     return this.brawlStarsService.getBrawlers();
+  }
+
+  @Get('/clubs')
+  @UseGuards(TokenGuard)
+  @ApiResponse({ type: [Club] })
+  async getClubs(@Query('countryCode') countryCode?: string) {
+    const language = countryCode ?? 'NL';
+    return this.brawlStarsService.getClubs(language);
   }
 }

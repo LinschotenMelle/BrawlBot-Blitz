@@ -25,4 +25,6 @@ export class ErrorMessages {
       )
       .setTimestamp();
   }
+
+  static noClubsFound = "No clubs found for this country code";
 }

@@ -1,9 +1,13 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Brawler } from './Brawler.dto';
 
 export class Icon {
   @ApiProperty()
   id!: number;
+}
+
+export class ClubResponse {
+  items!: Club[];
 }
 
 export class Club {
@@ -12,6 +16,18 @@ export class Club {
 
   @ApiProperty()
   name!: string;
+
+  @ApiPropertyOptional()
+  badgeId?: number;
+
+  @ApiPropertyOptional()
+  trophies?: number;
+
+  @ApiPropertyOptional()
+  rank?: number;
+
+  @ApiPropertyOptional()
+  memberCount?: number;
 }
 
 export class BrawlStarsPlayer {

@@ -37,4 +37,8 @@ export class BBEmbedButton {
   public get customId(): string {
     return this._customId;
   }
+
+  public get displayName(): string {
+    return this.name;
+  }
 }

@@ -16,7 +16,7 @@ export default new Command({
   category: CommandTypes.OTHER,
   run: async ({ interaction }) => {
     const commandButtons = Object.values(CommandTypes).map((type) => {
-      return new BBEmbedButton(type.toString(), interaction.id);
+      return new BBEmbedButton(type.toString(), type.toString());
     });
 
     // Limit buttons to 5
@@ -65,6 +65,7 @@ export default new Command({
           const commands = discordClient.commands.filter(
             (c) => c.category == id
           );
+
           commands.map((m) => {
             var name = `/${m.name}`;
             if (

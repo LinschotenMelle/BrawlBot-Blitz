@@ -117,6 +117,10 @@ export type Icon = {
 export type Club = {
     tag: string;
     name: string;
+    badgeId?: number;
+    trophies?: number;
+    rank?: number;
+    memberCount?: number;
 };
 
 export type Brawler = {
@@ -406,6 +410,19 @@ export type BrawlStarsControllerGetBrawlersResponse = Array<Brawler>;
 
 export type BrawlStarsControllerGetBrawlersError = unknown;
 
+export type BrawlStarsControllerGetClubsData = {
+    headers?: {
+        token?: unknown;
+    };
+    query: {
+        countryCode: string;
+    };
+};
+
+export type BrawlStarsControllerGetClubsResponse = Array<Club>;
+
+export type BrawlStarsControllerGetClubsError = unknown;
+
 export type $OpenApiTs = {
     '/api/auth/login': {
         get: {
@@ -578,6 +595,14 @@ export type $OpenApiTs = {
             req: BrawlStarsControllerGetBrawlersData;
             res: {
                 default: Array<Brawler>;
+            };
+        };
+    };
+    '/api/brawl-stars/clubs': {
+        get: {
+            req: BrawlStarsControllerGetClubsData;
+            res: {
+                default: Array<Club>;
             };
         };
     };

@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BrawlStarsMapDto } from './dto/Map.dto';
 import axios, { AxiosInstance } from 'axios';
-import { BrawlStarsPlayer } from './dto/Player.dto';
+import { BrawlStarsPlayer, Club, ClubResponse } from './dto/Player.dto';
 import { Brawler, BrawlerResponse } from './dto/Brawler.dto';
 import { ConfigService } from '@nestjs/config';
 
@@ -14,6 +14,7 @@ export interface IBrawlStarsService {
   getProfileByUserId(userId: string): Promise<BrawlStarsPlayer | undefined>;
   getProfileByTag(tag: string): Promise<BrawlStarsPlayer | undefined>;
   getBrawlers(): Promise<Brawler[]>;
+  getClubs(countryCode: string): Promise<Club[]>;
 }
 
 @Injectable()
@@ -105,6 +106,24 @@ export class BrawlStarsService implements IBrawlStarsService {
     while (retries < 2) {
       try {
         const response = await this.axios.get<BrawlerResponse>('/brawlers');
+        return response?.data.items ?? [];
+      } catch (e) {
+        await this.initialize();
+        retries++;
+      }
+    }
+
+    return [];
+  }
+
+  async getClubs(countryCode: string): Promise<Club[]> {
+    let retries = 0;
+
+    while (retries < 2) {
+      try {
+        const response = await this.axios.get<ClubResponse>(
+          `/rankings/${countryCode}/clubs`,
+        );
         return response?.data.items ?? [];
       } catch (e) {
         await this.initialize();

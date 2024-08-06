@@ -135,7 +135,6 @@ export async function handleTeamRegistrations(
 ): Promise<void> {
   const filter = (msg: Message) => !msg.author.bot;
   const time = dateTime.diff(Date.now(), "milliseconds");
-  console.log(time);
   const collector = createdChannel.createMessageCollector({
     filter,
     time,
