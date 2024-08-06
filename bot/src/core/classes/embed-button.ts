@@ -38,6 +38,10 @@ export class BBEmbedButton {
     return this._customId;
   }
 
+  public get id(): string {
+    return this._customId.split("_")[0];
+  }
+
   public get displayName(): string {
     return this.name;
   }

@@ -51,7 +51,7 @@ export default new Command({
           (cb) => cb.customId == buttonInteraction.customId
         );
 
-        const id = buttonPressed?.customId.split("_")[0];
+        const id = buttonPressed?.id;
 
         if (id) {
           const commandEmbed = new EmbedBuilder()

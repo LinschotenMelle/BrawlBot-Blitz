@@ -43,4 +43,28 @@ export class Emojis {
   get info() {
     return this.list.find((e) => e.id === "1227367122880172132");
   }
+
+  get barBlueOne() {
+    return this.list.find((e) => e.id === "1270358282648948776");
+  }
+
+  get barBlueTwo() {
+    return this.list.find((e) => e.id === "1270365630381691014");
+  }
+
+  get barBlueThree() {
+    return this.list.find((e) => e.id === "1270365773012926485");
+  }
+
+  get barRedOne() {
+    return this.list.find((e) => e.id === "1270365580268146710");
+  }
+
+  get barRedTwo() {
+    return this.list.find((e) => e.id === "1270365629257486397");
+  }
+
+  get barRedThree() {
+    return this.list.find((e) => e.id === "1270365771662495826");
+  }
 }

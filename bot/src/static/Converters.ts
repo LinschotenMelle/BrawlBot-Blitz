@@ -15,7 +15,7 @@ export class Converters {
   }
 }
 
-export async function collectMessage(
+export async function collectFirstMessageOfUser(
   interaction: CommandInteraction<CacheType>
 ): Promise<Message | undefined> {
   const filter = (response: Message) =>

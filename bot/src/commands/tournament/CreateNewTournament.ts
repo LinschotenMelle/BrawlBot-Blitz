@@ -23,7 +23,7 @@ import * as Sentry from "@sentry/browser";
 import { handleTeamRegistrations } from "./CreateNewTournament.collector";
 import { createBracket } from "./CreateNewTournament.bracket";
 import { BrawlStarsPlayer } from "../../client";
-import { collectMessage } from "../../static/Converters";
+import { collectFirstMessageOfUser } from "../../static/Converters";
 
 export class RegisteredTeam {
   public teamName!: string;
@@ -102,7 +102,7 @@ export default new Command({
 
       const membersPerTeam = interaction.options.get("type-team")?.value;
 
-      const descResponse = await collectMessage(interaction);
+      const descResponse = await collectFirstMessageOfUser(interaction);
       const desc = descResponse?.content ?? "skip";
       await descResponse?.delete();
 

@@ -204,9 +204,7 @@ export default new Command({
       const pageSize = 24;
       const totalPages = Math.ceil(profile.brawlers.length / pageSize);
       collector.on("collect", async (i) => {
-        const id = brawlersButton.customId.split("_")[0];
-
-        if (i.user.id !== id) {
+        if (i.user.id !== brawlersButton.id) {
           await i.reply({
             content: "You are not allowed to interact with this message.",
             ephemeral: true,
