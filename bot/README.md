@@ -18,10 +18,6 @@ Follow these steps to set up the bot on your Discord server:
 - Run the commmand `npm run dev` in your terminal
 - **And your bot is running!!!**
 
-### Database:
-
-We use DataStax in our project with the `AstraDB` package
-
 ## Commands
 
 Here are the commands available for use with this bot:
