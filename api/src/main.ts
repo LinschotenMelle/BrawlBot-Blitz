@@ -33,16 +33,26 @@ async function bootstrap() {
 
   const options = new DocumentBuilder()
     .addCookieAuth('connect.sid')
-    .setTitle('Nest-js Swagger Example API')
+    .setTitle('BrawlBot Blitz API')
     .setDescription('Swagger Example API API description')
-    .setVersion('1.0')
-    .addGlobalParameters({
-      name: 'token',
-      in: 'header',
-    })
+    .setVersion('1.1')
+    .addApiKey({ type: 'apiKey', name: 'token', in: 'header' }, 'token')
     .build();
   const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup(`${prefix}/docs`, app, document);
+  SwaggerModule.setup(`${prefix}/docs`, app, document, {
+    swaggerOptions: {
+      authAction: {
+        token: {
+          name: 'token',
+          schema: {
+            type: 'apiKey',
+            in: 'header',
+            name: 'token',
+          },
+        },
+      },
+    },
+  });
 
   app.enableCors({
     origin: configService.getOrThrow('CORS_ORIGIN'),

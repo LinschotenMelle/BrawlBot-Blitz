@@ -159,60 +159,27 @@ export type PlayerDto = {
     brawlers?: Array<BrawlerDto>;
 };
 
-export type AuthControllerLoginData = {
-    headers?: {
-        token?: unknown;
-    };
-};
-
 export type AuthControllerLoginResponse = unknown;
 
 export type AuthControllerLoginError = unknown;
-
-export type AuthControllerRedirectData = {
-    headers?: {
-        token?: unknown;
-    };
-};
 
 export type AuthControllerRedirectResponse = unknown;
 
 export type AuthControllerRedirectError = unknown;
 
-export type AuthControllerMeData = {
-    headers?: {
-        token?: unknown;
-    };
-};
-
 export type AuthControllerMeResponse = User;
 
 export type AuthControllerMeError = unknown;
 
-export type AuthControllerLogoutData = {
-    headers?: {
-        token?: unknown;
-    };
-};
-
 export type AuthControllerLogoutResponse = unknown;
 
 export type AuthControllerLogoutError = unknown;
-
-export type DiscordControllerGetGuildsData = {
-    headers?: {
-        token?: unknown;
-    };
-};
 
 export type DiscordControllerGetGuildsResponse = Array<PartialGuild>;
 
 export type DiscordControllerGetGuildsError = unknown;
 
 export type DiscordControllerGetGuildDetailsData = {
-    headers?: {
-        token?: unknown;
-    };
     path: {
         guildId: string;
     };
@@ -223,9 +190,6 @@ export type DiscordControllerGetGuildDetailsResponse = PartialGuild;
 export type DiscordControllerGetGuildDetailsError = unknown;
 
 export type DiscordControllerGetGuildChannelsData = {
-    headers?: {
-        token?: unknown;
-    };
     path: {
         guildId: string;
     };
@@ -236,9 +200,6 @@ export type DiscordControllerGetGuildChannelsResponse = Array<GuildChannel>;
 export type DiscordControllerGetGuildChannelsError = unknown;
 
 export type DiscordControllerGetWelcomeMessageData = {
-    headers?: {
-        token?: unknown;
-    };
     path: {
         guildId: string;
     };
@@ -250,9 +211,6 @@ export type DiscordControllerGetWelcomeMessageError = unknown;
 
 export type DiscordControllerPostMemberCountData = {
     body: CreateMemberCount;
-    headers?: {
-        token?: unknown;
-    };
     path: {
         guildId: string;
     };
@@ -263,9 +221,6 @@ export type DiscordControllerPostMemberCountResponse = GuildMemberCount;
 export type DiscordControllerPostMemberCountError = unknown;
 
 export type DiscordControllerGetMemberCountData = {
-    headers?: {
-        token?: unknown;
-    };
     path: {
         guildId: string;
     };
@@ -277,29 +232,17 @@ export type DiscordControllerGetMemberCountError = unknown;
 
 export type YoutubeControllerCreateChannelData = {
     body: YoutubeChannel;
-    headers?: {
-        token?: unknown;
-    };
 };
 
 export type YoutubeControllerCreateChannelResponse = YoutubeChannel;
 
 export type YoutubeControllerCreateChannelError = unknown;
 
-export type YoutubeControllerGetChannelsData = {
-    headers?: {
-        token?: unknown;
-    };
-};
-
 export type YoutubeControllerGetChannelsResponse = Array<YoutubeChannelDto>;
 
 export type YoutubeControllerGetChannelsError = unknown;
 
 export type YoutubeControllerGetChannelData = {
-    headers?: {
-        token?: unknown;
-    };
     path: {
         guildId: string;
     };
@@ -310,9 +253,6 @@ export type YoutubeControllerGetChannelResponse = YoutubeChannel;
 export type YoutubeControllerGetChannelError = unknown;
 
 export type YoutubeControllerUpdateChannelData = {
-    headers?: {
-        token?: unknown;
-    };
     path: {
         guildId: string;
     };
@@ -323,9 +263,6 @@ export type YoutubeControllerUpdateChannelResponse = unknown;
 export type YoutubeControllerUpdateChannelError = unknown;
 
 export type YoutubeControllerSearchLatestVideoData = {
-    headers?: {
-        token?: unknown;
-    };
     path: {
         guildId: string;
     };
@@ -337,9 +274,6 @@ export type YoutubeControllerSearchLatestVideoError = unknown;
 
 export type OpenaiControllerCreateImageData = {
     body: CreateImageDto;
-    headers?: {
-        token?: unknown;
-    };
 };
 
 export type OpenaiControllerCreateImageResponse = ImageDto;
@@ -348,9 +282,6 @@ export type OpenaiControllerCreateImageError = unknown;
 
 export type BrawlStarsControllerSaveProfileData = {
     body: UpsertBrawlStarsUserDto;
-    headers?: {
-        token?: unknown;
-    };
 };
 
 export type BrawlStarsControllerSaveProfileResponse = BrawlStarsUserDto;
@@ -359,29 +290,17 @@ export type BrawlStarsControllerSaveProfileError = unknown;
 
 export type BrawlStarsControllerUpdateProfileData = {
     body: UpsertBrawlStarsUserDto;
-    headers?: {
-        token?: unknown;
-    };
 };
 
 export type BrawlStarsControllerUpdateProfileResponse = BrawlStarsUserDto;
 
 export type BrawlStarsControllerUpdateProfileError = unknown;
 
-export type BrawlStarsControllerGetRotationData = {
-    headers?: {
-        token?: unknown;
-    };
-};
-
 export type BrawlStarsControllerGetRotationResponse = Array<BrawlStarsMapDto>;
 
 export type BrawlStarsControllerGetRotationError = unknown;
 
 export type BrawlStarsControllerGetProfileData = {
-    headers?: {
-        token?: unknown;
-    };
     path: {
         userId: string;
     };
@@ -392,9 +311,6 @@ export type BrawlStarsControllerGetProfileResponse = PlayerDto;
 export type BrawlStarsControllerGetProfileError = unknown;
 
 export type BrawlStarsControllerGetProfileByTagData = {
-    headers?: {
-        token?: unknown;
-    };
     path: {
         tag: string;
     };
@@ -404,20 +320,11 @@ export type BrawlStarsControllerGetProfileByTagResponse = PlayerDto;
 
 export type BrawlStarsControllerGetProfileByTagError = unknown;
 
-export type BrawlStarsControllerGetBrawlersData = {
-    headers?: {
-        token?: unknown;
-    };
-};
-
 export type BrawlStarsControllerGetBrawlersResponse = Array<BrawlerDto>;
 
 export type BrawlStarsControllerGetBrawlersError = unknown;
 
 export type BrawlStarsControllerGetClubsData = {
-    headers?: {
-        token?: unknown;
-    };
     query: {
         countryCode: string;
     };
@@ -428,9 +335,6 @@ export type BrawlStarsControllerGetClubsResponse = Array<ClubDto>;
 export type BrawlStarsControllerGetClubsError = unknown;
 
 export type BrawlStarsControllerGetPlayersData = {
-    headers?: {
-        token?: unknown;
-    };
     query: {
         countryCode: string;
     };
@@ -443,7 +347,6 @@ export type BrawlStarsControllerGetPlayersError = unknown;
 export type $OpenApiTs = {
     '/api/auth/login': {
         get: {
-            req: AuthControllerLoginData;
             res: {
                 '200': unknown;
             };
@@ -451,7 +354,6 @@ export type $OpenApiTs = {
     };
     '/api/auth/redirect': {
         get: {
-            req: AuthControllerRedirectData;
             res: {
                 '200': unknown;
             };
@@ -459,7 +361,6 @@ export type $OpenApiTs = {
     };
     '/api/auth/me': {
         get: {
-            req: AuthControllerMeData;
             res: {
                 default: User;
             };
@@ -467,7 +368,6 @@ export type $OpenApiTs = {
     };
     '/api/auth/logout': {
         post: {
-            req: AuthControllerLogoutData;
             res: {
                 '201': unknown;
             };
@@ -475,7 +375,6 @@ export type $OpenApiTs = {
     };
     '/api/discord/guilds': {
         get: {
-            req: DiscordControllerGetGuildsData;
             res: {
                 default: Array<PartialGuild>;
             };
@@ -529,7 +428,6 @@ export type $OpenApiTs = {
     };
     '/api/youtube/channels': {
         get: {
-            req: YoutubeControllerGetChannelsData;
             res: {
                 default: Array<YoutubeChannelDto>;
             };
@@ -585,7 +483,6 @@ export type $OpenApiTs = {
     };
     '/api/brawl-stars/rotation': {
         get: {
-            req: BrawlStarsControllerGetRotationData;
             res: {
                 default: Array<BrawlStarsMapDto>;
             };
@@ -609,7 +506,6 @@ export type $OpenApiTs = {
     };
     '/api/brawl-stars/brawlers': {
         get: {
-            req: BrawlStarsControllerGetBrawlersData;
             res: {
                 default: Array<BrawlerDto>;
             };
