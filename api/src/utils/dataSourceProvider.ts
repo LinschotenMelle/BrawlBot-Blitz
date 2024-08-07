@@ -6,7 +6,7 @@ import { WelcomeMessage } from '../discord/entities/WelcomeMessage';
 import { GuildMemberCount } from '../discord/entities/GuildMemberCount';
 import { BrawlStarsUser } from '../brawl-stars/entities/BrawlStarsUser';
 import { Session } from '../auth/entities/Session';
-import { User } from '../auth/entities/User';
+import { User } from '../user/entities/User';
 
 export const DataSourceProvider: Provider = {
   provide: 'DataSource',

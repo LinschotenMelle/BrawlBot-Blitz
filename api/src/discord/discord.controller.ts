@@ -16,7 +16,7 @@ import { GuildMemberCount } from './entities/GuildMemberCount';
 import { IDiscordService } from './discord.service';
 import { WelcomeMessage } from './entities/WelcomeMessage';
 import { GuildChannelDto } from './dto/GuildChannel.dto';
-import { User } from '../auth/entities/User';
+import { User } from '../user/entities/User';
 import { PartialGuildDto } from './dto/Guild.dto';
 
 @Controller(Routes.DISCORD)

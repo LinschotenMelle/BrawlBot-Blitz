@@ -1,8 +1,8 @@
 import { PassportSerializer } from '@nestjs/passport';
 import { Inject } from '@nestjs/common';
-import { IUserService } from '../../user/interfaces/user';
 import { Services } from '../../utils/constants';
-import { User } from '../entities/User';
+import { User } from '../../user/entities/User';
+import { IUserService } from '../../user/user.service';
 
 export type Done = (error: Error, user: User) => void;
 

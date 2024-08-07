@@ -1,9 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { IUserService } from '../../user/interfaces/user';
-import { Services } from '../../utils/constants';
-import { IAuthService } from '../interfaces/auth';
-import { UserDetailsDto } from '../../user/dto/User.dto';
-import { User } from '../entities/User';
+import { Services } from '../utils/constants';
+import { UserDetailsDto } from '../user/dto/User.dto';
+import { User } from '../user/entities/User';
+import { IUserService } from '../user/user.service';
+
+export interface IAuthService {
+  validateUser(details: UserDetailsDto): Promise<User>;
+}
 
 @Injectable()
 export class AuthService implements IAuthService {

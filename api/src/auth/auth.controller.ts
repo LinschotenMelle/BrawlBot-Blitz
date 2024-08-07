@@ -1,10 +1,10 @@
 import { Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
-import { Routes } from '../../utils/constants';
-import { AuthenticatedGuard, DiscordAuthGuard } from '../utils/Guards';
 import { Response } from 'express';
-import { AuthUser } from '../../utils/decorators';
 import { ApiOAuth2, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { User } from '../entities/User';
+import { AuthenticatedGuard, DiscordAuthGuard } from './utils/Guards';
+import { Routes } from '../utils/constants';
+import { User } from '../user/entities/User';
+import { AuthUser } from '../utils/decorators';
 
 @Controller(Routes.AUTH)
 @ApiTags('Auth')

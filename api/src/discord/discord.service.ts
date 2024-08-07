@@ -4,7 +4,7 @@ import { GuildMemberCount } from './entities/GuildMemberCount';
 import { GuildChannelDto } from './dto/GuildChannel.dto';
 import { WelcomeMessage } from './entities/WelcomeMessage';
 import { IDiscordHttpService } from './discord-http.service';
-import { User } from '../auth/entities/User';
+import { User } from '../user/entities/User';
 import { PartialGuildDto } from './dto/Guild.dto';
 
 export interface IDiscordService {
