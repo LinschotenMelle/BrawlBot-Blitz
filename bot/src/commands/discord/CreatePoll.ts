@@ -8,7 +8,7 @@ import {
   GuildEmoji,
   TextChannel,
 } from "discord.js";
-import { CommandTypes } from "../../core/enums/CommandType";
+import { CommandTypes } from "../../typings/Command";
 import { Command } from "../../structures/Command";
 import { collectFirstMessageOfUser } from "../../static/Converters";
 import { BBEmbedButton } from "../../core/classes/embed-button";

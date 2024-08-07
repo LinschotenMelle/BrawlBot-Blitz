@@ -2,8 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { IUserService } from '../../user/interfaces/user';
 import { Services } from '../../utils/constants';
 import { IAuthService } from '../interfaces/auth';
-import { User } from '../../utils/typeorm/entities/User';
-import { UserDetails } from '../../utils/types/User';
+import { UserDetailsDto } from '../../user/dto/User.dto';
+import { User } from '../entities/User';
 
 @Injectable()
 export class AuthService implements IAuthService {
@@ -11,7 +11,7 @@ export class AuthService implements IAuthService {
     @Inject(Services.USER_SERVICE) private readonly userService: IUserService,
   ) {}
 
-  async validateUser(details: UserDetails): Promise<User> {
+  async validateUser(details: UserDetailsDto): Promise<User> {
     const user = await this.userService.findUser(details.discordId);
     const { discordId, ...rest } = details;
     return user

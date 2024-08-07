@@ -22,7 +22,7 @@ import { ApplicationCommandOptionType, EmbedBuilder } from "discord.js";
 import { Command } from "../../structures/Command";
 import { ErrorMessages } from "../../static/Error";
 import { ColorCodes } from "../../static/Theme";
-import { CommandTypes } from "../../core/enums/CommandType";
+import { CommandTypes } from "../../typings/Command";
 import {
   brawlStarsControllerGetProfile,
   brawlStarsControllerGetProfileByTag,

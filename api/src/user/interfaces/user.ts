@@ -1,8 +1,9 @@
-import { User } from '../../utils/typeorm/entities/User';
-import { UpdateUserDetails, UserDetails } from '../../utils/types/User';
+import { User } from '../../auth/entities/User';
+import { UpdateUserDetailsDto } from '../dto/UpdateUserDetails.dto';
+import { UserDetailsDto } from '../dto/User.dto';
 
 export interface IUserService {
-  createUser(details: UserDetails): Promise<User>;
+  createUser(details: UserDetailsDto): Promise<User>;
   findUser(discordId: string): Promise<User | undefined>;
-  updateUser(user: User, details: UpdateUserDetails): Promise<User>;
+  updateUser(user: User, details: UpdateUserDetailsDto): Promise<User>;
 }

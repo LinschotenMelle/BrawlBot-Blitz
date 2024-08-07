@@ -33,7 +33,7 @@ import { Constants } from "../../static/Contants";
 import { Emojis } from "../../static/Emojis";
 import { discordClient } from "../..";
 import { BBEmbedButton } from "../../core/classes/embed-button";
-import { CommandTypes } from "../../core/enums/CommandType";
+import { CommandTypes } from "../../typings/Command";
 import {
   brawlStarsControllerGetBrawlers,
   brawlStarsControllerGetProfile,

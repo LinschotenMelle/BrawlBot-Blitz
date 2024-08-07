@@ -3,10 +3,10 @@ import { DiscordController } from './discord.controller';
 import { DiscordService } from './discord.service';
 import { Services } from '../utils/constants';
 import { DiscordHttpService } from './discord-http.service';
-import { WelcomeMessage } from '../utils/entities/WelcomeMessage';
+import { WelcomeMessage } from './entities/WelcomeMessage';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthenticatedGuard, TokenGuard } from '../auth/utils/Guards';
-import { GuildMemberCount } from '../utils/entities/GuildMemberCount';
+import { GuildMemberCount } from './entities/GuildMemberCount';
 
 @Module({
   imports: [TypeOrmModule.forFeature([WelcomeMessage, GuildMemberCount])],

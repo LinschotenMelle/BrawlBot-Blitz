@@ -2,7 +2,6 @@ import axios, { AxiosInstance } from "axios";
 import { discordClient } from "../..";
 import { EmbedBuilder, NewsChannel, TextChannel } from "discord.js";
 import {
-  YoutubeChannel,
   YoutubeChannelDto,
   youtubeControllerGetChannels,
   youtubeControllerSearchLatestVideo,

@@ -1,4 +1,4 @@
-import { YoutubeChannel } from '../../utils/entities/YoutubeChannel';
+import { YoutubeChannel } from '../entities/YoutubeChannel';
 import { YoutubeVideoDto } from '../dto/YoutubeVideo.dto';
 
 export interface IYoutubeService {

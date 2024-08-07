@@ -2,11 +2,11 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as session from 'express-session';
 import { TypeormStore } from 'connect-typeorm';
-import { Session } from './utils/typeorm/entities/Session';
 import * as passport from 'passport';
 import { DataSource } from 'typeorm';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
+import { Session } from './auth/entities/Session';
 
 async function bootstrap() {
   const prefix = 'api';

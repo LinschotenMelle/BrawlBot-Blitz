@@ -9,15 +9,15 @@ import {
 } from '@nestjs/common';
 import { Routes, Services } from '../utils/constants';
 import { AuthUser } from '../utils/decorators';
-import { User } from '../utils/typeorm/entities/User';
 import { AuthenticatedGuard, TokenGuard } from '../auth/utils/Guards';
 import { ApiOAuth2, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { CreateMemberCount } from '../utils/types/CreateMemberCount';
-import { GuildMemberCount } from '../utils/entities/GuildMemberCount';
+import { CreateMemberCountDto } from './dto/CreateMemberCount.dto';
+import { GuildMemberCount } from './entities/GuildMemberCount';
 import { IDiscordService } from './discord.service';
-import { PartialGuild } from '../utils/types/discord';
-import { WelcomeMessage } from '../utils/entities/WelcomeMessage';
-import { GuildChannel } from '../utils/types/GuildChannel';
+import { WelcomeMessage } from './entities/WelcomeMessage';
+import { GuildChannelDto } from './dto/GuildChannel.dto';
+import { User } from '../auth/entities/User';
+import { PartialGuildDto } from './dto/Guild.dto';
 
 @Controller(Routes.DISCORD)
 @ApiTags('Discord')
@@ -30,38 +30,38 @@ export class DiscordController {
 
   @Get('/guilds')
   @UseGuards(AuthenticatedGuard)
-  @ApiResponse({ type: [PartialGuild] })
+  @ApiResponse({ type: [PartialGuildDto] })
   async getGuilds(@AuthUser() user: User) {
     return this.discordService.getActiveGuilds(user);
   }
 
   @Get('/guilds/:guildId')
   @UseGuards(AuthenticatedGuard)
-  @ApiResponse({ type: PartialGuild })
-  getGuildDetails(@Param('guildId') guildId: string) {
+  @ApiResponse({ type: PartialGuildDto })
+  async getGuildDetails(@Param('guildId') guildId: string) {
     return this.discordService.getGuildDetails(guildId);
   }
 
   @Get('/guilds/:guildId/channels')
   @UseGuards(AuthenticatedGuard)
-  @ApiResponse({ type: [GuildChannel] })
-  getGuildChannels(@Param('guildId') guildId: string) {
+  @ApiResponse({ type: [GuildChannelDto] })
+  async getGuildChannels(@Param('guildId') guildId: string) {
     return this.discordService.getGuildChannels(guildId);
   }
 
   @Get('/guilds/:guildId/welcome-message')
   @UseGuards(TokenGuard)
   @ApiResponse({ type: WelcomeMessage })
-  getWelcomeMessage(@Param('guildId') guildId: string) {
+  async getWelcomeMessage(@Param('guildId') guildId: string) {
     return this.discordService.getWelcomeMessage(guildId);
   }
 
   @Post('/guilds/:guildId/member-count')
   @ApiResponse({ type: GuildMemberCount })
   @UseGuards(TokenGuard)
-  postMemberCount(
+  async postMemberCount(
     @Param('guildId') guildId: string,
-    @Body() { channelId }: CreateMemberCount,
+    @Body() { channelId }: CreateMemberCountDto,
   ) {
     return this.discordService.postMemberCount(guildId, channelId);
   }
@@ -69,7 +69,13 @@ export class DiscordController {
   @Get('/guilds/:guildId/member-count')
   @ApiResponse({ type: GuildMemberCount })
   @UseGuards(TokenGuard)
-  getMemberCount(@Param('guildId') guildId: string) {
+  async getMemberCount(@Param('guildId') guildId: string) {
     return this.discordService.getMemberCount(guildId);
   }
+
+  // @Post('/guilds/:guildId/ticket-system')
+  // @UseGuards(TokenGuard)
+  // async createTicketSystem() {
+  //   return this.discordService.createTicketSystem();
+  // }
 }

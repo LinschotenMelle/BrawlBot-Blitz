@@ -1,16 +1,16 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Services } from '../utils/constants';
-import { User } from '../utils/typeorm/entities/User';
-import { PartialGuild } from '../utils/types/discord';
-import { GuildMemberCount } from '../utils/entities/GuildMemberCount';
-import { GuildChannel } from '../utils/types/GuildChannel';
-import { WelcomeMessage } from '../utils/entities/WelcomeMessage';
+import { GuildMemberCount } from './entities/GuildMemberCount';
+import { GuildChannelDto } from './dto/GuildChannel.dto';
+import { WelcomeMessage } from './entities/WelcomeMessage';
 import { IDiscordHttpService } from './discord-http.service';
+import { User } from '../auth/entities/User';
+import { PartialGuildDto } from './dto/Guild.dto';
 
 export interface IDiscordService {
-  getActiveGuilds(user: User): Promise<PartialGuild[]>;
-  getGuildDetails(guildId: string): Promise<PartialGuild>;
-  getGuildChannels(guildId: string): Promise<GuildChannel[]>;
+  getActiveGuilds(user: User): Promise<PartialGuildDto[]>;
+  getGuildDetails(guildId: string): Promise<PartialGuildDto>;
+  getGuildChannels(guildId: string): Promise<GuildChannelDto[]>;
   getWelcomeMessage(guildId: string): Promise<WelcomeMessage>;
   postMemberCount(guildId: string, channelId: string): Promise<void>;
   getMemberCount(guildId: string): Promise<GuildMemberCount>;
@@ -22,7 +22,7 @@ export class DiscordService implements IDiscordService {
     @Inject(Services.DISCORD_HTTP_SERVICE)
     private readonly discordHttpService: IDiscordHttpService,
   ) {}
-  async getActiveGuilds(user: User): Promise<PartialGuild[]> {
+  async getActiveGuilds(user: User): Promise<PartialGuildDto[]> {
     const { data: userGuilds } = await this.discordHttpService.fetchUserGuilds(
       user.accessToken,
     );

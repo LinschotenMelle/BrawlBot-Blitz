@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { BrawlStarsUser } from '../utils/entities/BrawlStarsUser';
+import { BrawlStarsUser } from './entities/BrawlStarsUser';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BrawlStarsMapDto } from './dto/Map.dto';

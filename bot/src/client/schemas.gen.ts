@@ -28,7 +28,7 @@ export const $User = {
     required: ['id', 'discordId', 'accessToken', 'refreshToken', 'username', 'discriminator', 'avatar']
 } as const;
 
-export const $PartialGuild = {
+export const $PartialGuildDto = {
     type: 'object',
     properties: {
         id: {
@@ -59,7 +59,7 @@ export const $PartialGuild = {
     required: ['id', 'name', 'icon', 'owner', 'permissions', 'features', 'isActive']
 } as const;
 
-export const $GuildChannel = {
+export const $GuildChannelDto = {
     type: 'object',
     properties: {
         id: {
@@ -88,7 +88,7 @@ export const $WelcomeMessage = {
     required: ['guildId', 'channelId']
 } as const;
 
-export const $CreateMemberCount = {
+export const $CreateMemberCountDto = {
     type: 'object',
     properties: {
         channelId: {

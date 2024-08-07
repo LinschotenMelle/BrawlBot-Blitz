@@ -10,7 +10,7 @@ export type User = {
     avatar: string;
 };
 
-export type PartialGuild = {
+export type PartialGuildDto = {
     id: string;
     name: string;
     icon: string;
@@ -20,7 +20,7 @@ export type PartialGuild = {
     isActive: boolean;
 };
 
-export type GuildChannel = {
+export type GuildChannelDto = {
     id: string;
     name: string;
     type: number;
@@ -31,7 +31,7 @@ export type WelcomeMessage = {
     channelId: string;
 };
 
-export type CreateMemberCount = {
+export type CreateMemberCountDto = {
     channelId: string;
 };
 
@@ -175,7 +175,7 @@ export type AuthControllerLogoutResponse = unknown;
 
 export type AuthControllerLogoutError = unknown;
 
-export type DiscordControllerGetGuildsResponse = Array<PartialGuild>;
+export type DiscordControllerGetGuildsResponse = Array<PartialGuildDto>;
 
 export type DiscordControllerGetGuildsError = unknown;
 
@@ -185,7 +185,7 @@ export type DiscordControllerGetGuildDetailsData = {
     };
 };
 
-export type DiscordControllerGetGuildDetailsResponse = PartialGuild;
+export type DiscordControllerGetGuildDetailsResponse = PartialGuildDto;
 
 export type DiscordControllerGetGuildDetailsError = unknown;
 
@@ -195,7 +195,7 @@ export type DiscordControllerGetGuildChannelsData = {
     };
 };
 
-export type DiscordControllerGetGuildChannelsResponse = Array<GuildChannel>;
+export type DiscordControllerGetGuildChannelsResponse = Array<GuildChannelDto>;
 
 export type DiscordControllerGetGuildChannelsError = unknown;
 
@@ -210,7 +210,7 @@ export type DiscordControllerGetWelcomeMessageResponse = WelcomeMessage;
 export type DiscordControllerGetWelcomeMessageError = unknown;
 
 export type DiscordControllerPostMemberCountData = {
-    body: CreateMemberCount;
+    body: CreateMemberCountDto;
     path: {
         guildId: string;
     };
@@ -376,7 +376,7 @@ export type $OpenApiTs = {
     '/api/discord/guilds': {
         get: {
             res: {
-                default: Array<PartialGuild>;
+                default: Array<PartialGuildDto>;
             };
         };
     };
@@ -384,7 +384,7 @@ export type $OpenApiTs = {
         get: {
             req: DiscordControllerGetGuildDetailsData;
             res: {
-                default: PartialGuild;
+                default: PartialGuildDto;
             };
         };
     };
@@ -392,7 +392,7 @@ export type $OpenApiTs = {
         get: {
             req: DiscordControllerGetGuildChannelsData;
             res: {
-                default: Array<GuildChannel>;
+                default: Array<GuildChannelDto>;
             };
         };
     };

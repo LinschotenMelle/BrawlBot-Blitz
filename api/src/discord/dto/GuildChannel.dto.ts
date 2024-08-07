@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class GuildChannel {
+export class GuildChannelDto {
   @ApiProperty()
   id: string;
 

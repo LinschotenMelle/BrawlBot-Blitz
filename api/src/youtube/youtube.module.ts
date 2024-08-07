@@ -3,7 +3,7 @@ import { YoutubeController } from './controllers/youtube.controller';
 import { Services } from '../utils/constants';
 import { YoutubeService } from './services/youtube.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { YoutubeChannel } from '../utils/entities/YoutubeChannel';
+import { YoutubeChannel } from './entities/YoutubeChannel';
 import { AuthenticatedGuard } from '../auth/utils/Guards';
 
 @Module({

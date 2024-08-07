@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Role } from './Role';
+import { RoleDto } from './Role.dto';
 
-export class Guild {
+export class GuildDto {
   @ApiProperty()
   id: string;
 
@@ -30,10 +30,10 @@ export class Guild {
   isActive: boolean;
 
   @ApiProperty()
-  roles: Role[];
+  roles: RoleDto[];
 }
 
-export class PartialGuild {
+export class PartialGuildDto {
   @ApiProperty()
   id: string;
 

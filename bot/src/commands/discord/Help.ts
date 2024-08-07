@@ -6,7 +6,7 @@ import {
 } from "discord.js";
 import { Command } from "../../structures/Command";
 import { ColorCodes } from "../../static/Theme";
-import { CommandTypes } from "../../core/enums/CommandType";
+import { CommandTypes } from "../../typings/Command";
 import { BBEmbedButton } from "../../core/classes/embed-button";
 import { discordClient } from "../..";
 

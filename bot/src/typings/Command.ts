@@ -1,4 +1,3 @@
-import { CommandTypes } from "../core/enums/CommandType";
 import {
   ChatInputApplicationCommandData,
   CommandInteraction,
@@ -7,6 +6,12 @@ import {
   PermissionResolvable,
 } from "discord.js";
 import { ExtendedClient } from "../structures/Client";
+
+export enum CommandTypes {
+  BRAWL_STARS = "Brawl Stars",
+  INFO = "Info",
+  OTHER = "Other",
+}
 
 /**
  * {

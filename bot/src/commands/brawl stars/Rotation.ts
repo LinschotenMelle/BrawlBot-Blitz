@@ -34,7 +34,7 @@ import { Converters } from "../../static/Converters";
 import { discordClient } from "../..";
 import moment = require("moment-timezone");
 import { Constants } from "../../static/Contants";
-import { CommandTypes } from "../../core/enums/CommandType";
+import { CommandTypes } from "../../typings/Command";
 import {
   brawlStarsControllerGetRotation,
   BrawlStarsMapDto,

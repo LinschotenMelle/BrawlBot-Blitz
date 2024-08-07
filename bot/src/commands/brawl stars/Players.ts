@@ -1,5 +1,5 @@
 import { ApplicationCommandOptionType, EmbedBuilder } from "discord.js";
-import { CommandTypes } from "../../core/enums/CommandType";
+import { CommandTypes } from "../../typings/Command";
 import { Command } from "../../structures/Command";
 import {
   brawlStarsControllerGetClubs,

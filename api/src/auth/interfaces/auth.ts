@@ -1,6 +1,6 @@
-import { User } from '../../utils/typeorm/entities/User';
-import { UserDetails } from '../../utils/types/User';
+import { UserDetailsDto } from '../../user/dto/User.dto';
+import { User } from '../entities/User';
 
 export interface IAuthService {
-  validateUser(details: UserDetails): Promise<User>;
+  validateUser(details: UserDetailsDto): Promise<User>;
 }

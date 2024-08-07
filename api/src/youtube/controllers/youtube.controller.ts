@@ -11,9 +11,8 @@ import {
 import { Routes, Services } from '../../utils/constants';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { IYoutubeService } from '../interfaces/youtube';
-import { YoutubeChannel } from '../../utils/entities/YoutubeChannel';
+import { YoutubeChannel } from '../entities/YoutubeChannel';
 import { TokenGuard } from '../../auth/utils/Guards';
-import { MultipleAuthorizeGuard } from '../../auth/utils/MultipleGuardsReference';
 import { YoutubeVideoDto } from '../dto/YoutubeVideo.dto';
 import { YoutubeChannelDto } from '../dto/YoutubeChannel.dto';
 
@@ -27,7 +26,6 @@ export class YoutubeController {
 
   @Post()
   @ApiResponse({ type: YoutubeChannel })
-  @UseGuards(MultipleAuthorizeGuard)
   async createChannel(@Body() youtubeChannel: YoutubeChannel) {
     return this.youtubeService.createChannel(youtubeChannel);
   }

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { IYoutubeService } from '../interfaces/youtube';
-import { YoutubeChannel } from '../../utils/entities/YoutubeChannel';
+import { YoutubeChannel } from '../entities/YoutubeChannel';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import axios, { AxiosInstance } from 'axios';

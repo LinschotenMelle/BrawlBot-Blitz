@@ -1,20 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import axios, { AxiosResponse } from 'axios';
 import { AxiosCacheInstance, setupCache } from 'axios-cache-interceptor';
-import { PartialGuild } from '../utils/types/discord';
-import { Guild } from '../utils/types/Guild';
-import { GuildChannel } from '../utils/types/GuildChannel';
-import { WelcomeMessage } from '../utils/entities/WelcomeMessage';
+import { GuildDto, PartialGuildDto } from './dto/Guild.dto';
+import { GuildChannelDto } from './dto/GuildChannel.dto';
+import { WelcomeMessage } from './entities/WelcomeMessage';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { GuildMemberCount } from '../utils/entities/GuildMemberCount';
+import { GuildMemberCount } from './entities/GuildMemberCount';
 import { ConfigService } from '@nestjs/config';
 
 export interface IDiscordHttpService {
-  fetchUserGuilds(accessToken: string): Promise<AxiosResponse<PartialGuild[]>>;
-  fetchBotGuilds(): Promise<AxiosResponse<PartialGuild[]>>;
-  fetchGuildDetails(guildId: string): Promise<AxiosResponse<Guild>>;
-  fetchGuildChannels(guildId: string): Promise<AxiosResponse<GuildChannel[]>>;
+  fetchUserGuilds(
+    accessToken: string,
+  ): Promise<AxiosResponse<PartialGuildDto[]>>;
+  fetchBotGuilds(): Promise<AxiosResponse<PartialGuildDto[]>>;
+  fetchGuildDetails(guildId: string): Promise<AxiosResponse<GuildDto>>;
+  fetchGuildChannels(
+    guildId: string,
+  ): Promise<AxiosResponse<GuildChannelDto[]>>;
   getWelcomeMessage(guildId: string): Promise<WelcomeMessage>;
   postMemberCount(guildId: string, channelId: string): Promise<void>;
   getMemberCount(guildId: string): Promise<GuildMemberCount>;
@@ -48,11 +51,11 @@ export class DiscordHttpService implements IDiscordHttpService {
   }
 
   fetchBotGuilds() {
-    return this.botAxios.get<PartialGuild[]>('/users/@me/guilds');
+    return this.botAxios.get<PartialGuildDto[]>('/users/@me/guilds');
   }
 
   fetchUserGuilds(accessToken: string) {
-    return this.userAxios.get<PartialGuild[]>('/users/@me/guilds', {
+    return this.userAxios.get<PartialGuildDto[]>('/users/@me/guilds', {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -60,11 +63,11 @@ export class DiscordHttpService implements IDiscordHttpService {
   }
 
   fetchGuildDetails(guildId: string) {
-    return this.botAxios.get<Guild>(`/guilds/${guildId}`);
+    return this.botAxios.get<GuildDto>(`/guilds/${guildId}`);
   }
 
   fetchGuildChannels(guildId: string) {
-    return this.botAxios.get<GuildChannel[]>(`/guilds/${guildId}/channels`);
+    return this.botAxios.get<GuildChannelDto[]>(`/guilds/${guildId}/channels`);
   }
 
   getWelcomeMessage(guildId: string): Promise<WelcomeMessage> {

@@ -9,7 +9,7 @@ import {
   ThreadAutoArchiveDuration,
   ThreadChannel,
 } from "discord.js";
-import { CommandTypes } from "../../core/enums/CommandType";
+import { CommandTypes } from "../../typings/Command";
 import { Command } from "../../structures/Command";
 import { ColorCodes } from "../../static/Theme";
 import { discordClient } from "../..";
@@ -168,6 +168,7 @@ export default new Command({
 
       if (endDateRegister) {
         const timer = new EmbedBuilder();
+        timer.setThumbnail(Constants.timerGif);
         timer.setTitle(
           `Registration ends at: ${formattedDate.toLocaleString()}`
         );

@@ -1,13 +1,12 @@
 import { Provider } from '@nestjs/common';
-import { GuildConfiguration } from './entities/GuildConfiguration';
-import { Session } from './entities/Session';
-import { User } from './entities/User';
 import { ConfigService } from '@nestjs/config';
 import { DataSource, DataSourceOptions } from 'typeorm';
-import { YoutubeChannel } from '../entities/YoutubeChannel';
-import { WelcomeMessage } from '../entities/WelcomeMessage';
-import { GuildMemberCount } from '../entities/GuildMemberCount';
-import { BrawlStarsUser } from '../entities/BrawlStarsUser';
+import { YoutubeChannel } from '../youtube/entities/YoutubeChannel';
+import { WelcomeMessage } from '../discord/entities/WelcomeMessage';
+import { GuildMemberCount } from '../discord/entities/GuildMemberCount';
+import { BrawlStarsUser } from '../brawl-stars/entities/BrawlStarsUser';
+import { Session } from '../auth/entities/Session';
+import { User } from '../auth/entities/User';
 
 export const DataSourceProvider: Provider = {
   provide: 'DataSource',
@@ -28,7 +27,6 @@ export const DataSourceProvider: Provider = {
 };
 
 export const entities = [
-  GuildConfiguration,
   User,
   Session,
   YoutubeChannel,

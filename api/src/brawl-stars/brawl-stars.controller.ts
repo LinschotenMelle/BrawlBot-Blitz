@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 import { TokenGuard } from '../auth/utils/Guards';
 import { IBrawlStarsService } from './brawl-stars.service';
-import { BrawlStarsUser } from '../utils/entities/BrawlStarsUser';
+import { BrawlStarsUser } from './entities/BrawlStarsUser';
 import { BrawlStarsMapDto } from './dto/Map.dto';
 import { PlayerDto, ClubDto } from './dto/Player.dto';
 import { BrawlerDto } from './dto/Brawler.dto';

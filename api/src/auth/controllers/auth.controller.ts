@@ -3,8 +3,8 @@ import { Routes } from '../../utils/constants';
 import { AuthenticatedGuard, DiscordAuthGuard } from '../utils/Guards';
 import { Response } from 'express';
 import { AuthUser } from '../../utils/decorators';
-import { User } from '../../utils/typeorm/entities/User';
 import { ApiOAuth2, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { User } from '../entities/User';
 
 @Controller(Routes.AUTH)
 @ApiTags('Auth')
