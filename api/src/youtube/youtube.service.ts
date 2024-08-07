@@ -1,10 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { IYoutubeService } from '../interfaces/youtube';
-import { YoutubeChannel } from '../entities/YoutubeChannel';
+import { YoutubeChannel } from './entities/YoutubeChannel';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import axios, { AxiosInstance } from 'axios';
-import { YoutubeVideoDto } from '../dto/YoutubeVideo.dto';
+import { YoutubeVideoDto } from './dto/YoutubeVideo.dto';
+
+export interface IYoutubeService {
+  createChannel(youtubeChannel: YoutubeChannel): Promise<YoutubeChannel>;
+  getChannels(): Promise<YoutubeChannel[]>;
+  updateChannel(guildId: string, dateTime: Date): Promise<void>;
+  getChannel(guildId: string): Promise<YoutubeChannel>;
+  searchLatestVideo(channel: YoutubeChannel): Promise<YoutubeVideoDto>;
+}
 
 @Injectable()
 export class YoutubeService implements IYoutubeService {

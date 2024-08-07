@@ -8,13 +8,13 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { Routes, Services } from '../../utils/constants';
+import { Routes, Services } from '../utils/constants';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
-import { IYoutubeService } from '../interfaces/youtube';
-import { YoutubeChannel } from '../entities/YoutubeChannel';
-import { TokenGuard } from '../../auth/utils/Guards';
-import { YoutubeVideoDto } from '../dto/YoutubeVideo.dto';
-import { YoutubeChannelDto } from '../dto/YoutubeChannel.dto';
+import { YoutubeChannel } from './entities/YoutubeChannel';
+import { TokenGuard } from '../auth/utils/Guards';
+import { YoutubeVideoDto } from './dto/YoutubeVideo.dto';
+import { YoutubeChannelDto } from './dto/YoutubeChannel.dto';
+import { IYoutubeService } from './youtube.service';
 
 @Controller(Routes.YOUTUBE)
 @ApiTags('YouTube')

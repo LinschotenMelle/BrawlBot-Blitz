@@ -1,10 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { IUserService } from '../interfaces/user';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { UserDetailsDto } from '../dto/User.dto';
-import { UpdateUserDetailsDto } from '../dto/UpdateUserDetails.dto';
-import { User } from '../../auth/entities/User';
+import { UserDetailsDto } from './dto/User.dto';
+import { User } from '../auth/entities/User';
+import { UpdateUserDetailsDto } from './dto/UpdateUserDetails.dto';
+
+export interface IUserService {
+  createUser(details: UserDetailsDto): Promise<User>;
+  findUser(discordId: string): Promise<User | undefined>;
+  updateUser(user: User, details: UpdateUserDetailsDto): Promise<User>;
+}
 
 @Injectable()
 export class UserService implements IUserService {

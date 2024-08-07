@@ -1,9 +1,9 @@
 import { Body, Controller, Inject, Post, UseGuards } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Routes, Services } from '../../utils/constants';
-import { OpenaiService } from '../services/openai.service';
-import { TokenGuard } from '../../auth/utils/Guards';
-import { CreateImageDto, ImageDto } from '../dto/image.dto';
+import { Routes, Services } from '../utils/constants';
+import { OpenaiService } from './openai.service';
+import { TokenGuard } from '../auth/utils/Guards';
+import { CreateImageDto, ImageDto } from './dto/image.dto';
 
 @Controller(Routes.OPENAI)
 @ApiTags('OpenAI')
