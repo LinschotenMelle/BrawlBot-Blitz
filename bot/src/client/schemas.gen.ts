@@ -250,7 +250,7 @@ export const $ImageDto = {
     required: ['url']
 } as const;
 
-export const $BrawlStarsUser = {
+export const $UpsertBrawlStarsUserDto = {
     type: 'object',
     properties: {
         userId: {
@@ -261,6 +261,16 @@ export const $BrawlStarsUser = {
         }
     },
     required: ['userId', 'tag']
+} as const;
+
+export const $BrawlStarsUserDto = {
+    type: 'object',
+    properties: {
+        tag: {
+            type: 'number'
+        }
+    },
+    required: ['tag']
 } as const;
 
 export const $BrawlStarsEventDto = {
@@ -298,7 +308,7 @@ export const $BrawlStarsMapDto = {
     required: ['startTime', 'endTime', 'slotId', 'event']
 } as const;
 
-export const $Icon = {
+export const $IconDto = {
     type: 'object',
     properties: {
         id: {
@@ -308,7 +318,7 @@ export const $Icon = {
     required: ['id']
 } as const;
 
-export const $Club = {
+export const $ClubDto = {
     type: 'object',
     properties: {
         tag: {
@@ -333,7 +343,7 @@ export const $Club = {
     required: ['tag', 'name']
 } as const;
 
-export const $Brawler = {
+export const $BrawlerDto = {
     type: 'object',
     properties: {
         id: {
@@ -376,7 +386,7 @@ export const $Brawler = {
     required: ['id', 'name', 'power', 'rank', 'trophies', 'highestTrophies', 'gears', 'starPowers', 'gadgets']
 } as const;
 
-export const $BrawlStarsPlayer = {
+export const $PlayerDto = {
     type: 'object',
     properties: {
         tag: {
@@ -389,7 +399,7 @@ export const $BrawlStarsPlayer = {
             type: 'string'
         },
         icon: {
-            '$ref': '#/components/schemas/Icon'
+            '$ref': '#/components/schemas/IconDto'
         },
         trophies: {
             type: 'number'
@@ -425,12 +435,12 @@ export const $BrawlStarsPlayer = {
             type: 'number'
         },
         club: {
-            '$ref': '#/components/schemas/Club'
+            '$ref': '#/components/schemas/ClubDto'
         },
         brawlers: {
             type: 'array',
             items: {
-                '$ref': '#/components/schemas/Brawler'
+                '$ref': '#/components/schemas/BrawlerDto'
             }
         }
     },

@@ -16,8 +16,12 @@ import { TokenGuard } from '../auth/utils/Guards';
 import { IBrawlStarsService } from './brawl-stars.service';
 import { BrawlStarsUser } from '../utils/entities/BrawlStarsUser';
 import { BrawlStarsMapDto } from './dto/Map.dto';
-import { BrawlStarsPlayer, Club } from './dto/Player.dto';
-import { Brawler } from './dto/Brawler.dto';
+import { PlayerDto, ClubDto } from './dto/Player.dto';
+import { BrawlerDto } from './dto/Brawler.dto';
+import {
+  BrawlStarsUserDto,
+  UpsertBrawlStarsUserDto,
+} from './dto/BrawlStarsUser.dto';
 
 @Controller(Routes.BRAWL_STARS)
 @ApiTags('Brawl Stars')
@@ -30,15 +34,15 @@ export class BrawlStarsController {
 
   @Post('/save')
   @UseGuards(TokenGuard)
-  @ApiResponse({ type: BrawlStarsUser })
-  async saveProfile(@Body() user: BrawlStarsUser) {
+  @ApiResponse({ type: BrawlStarsUserDto })
+  async saveProfile(@Body() user: UpsertBrawlStarsUserDto) {
     return this.brawlStarsService.saveProfile(user);
   }
 
   @Put('/update')
   @UseGuards(TokenGuard)
-  @ApiResponse({ type: BrawlStarsUser })
-  async updateProfile(@Body() user: BrawlStarsUser) {
+  @ApiResponse({ type: BrawlStarsUserDto })
+  async updateProfile(@Body() user: UpsertBrawlStarsUserDto) {
     return this.brawlStarsService.saveProfile(user);
   }
 
@@ -51,28 +55,28 @@ export class BrawlStarsController {
 
   @Get('profile/:userId')
   @UseGuards(TokenGuard)
-  @ApiResponse({ type: BrawlStarsPlayer })
+  @ApiResponse({ type: PlayerDto })
   async getProfile(@Param('userId') userId: string) {
     return this.brawlStarsService.getProfileByUserId(userId);
   }
 
   @Get('profile/:tag')
   @UseGuards(TokenGuard)
-  @ApiResponse({ type: BrawlStarsPlayer })
+  @ApiResponse({ type: PlayerDto })
   async getProfileByTag(@Param('tag') tag: string) {
     return this.brawlStarsService.getProfileByTag(tag);
   }
 
   @Get('brawlers')
   @UseGuards(TokenGuard)
-  @ApiResponse({ type: [Brawler] })
+  @ApiResponse({ type: [BrawlerDto] })
   async getBrawlers() {
     return this.brawlStarsService.getBrawlers();
   }
 
   @Get('clubs')
   @UseGuards(TokenGuard)
-  @ApiResponse({ type: [Club] })
+  @ApiResponse({ type: [ClubDto] })
   async getClubs(@Query('countryCode') countryCode?: string) {
     const language = countryCode ?? 'NL';
     return this.brawlStarsService.getClubs(language);
@@ -80,7 +84,7 @@ export class BrawlStarsController {
 
   @Get('players')
   @UseGuards(TokenGuard)
-  @ApiResponse({ type: [BrawlStarsPlayer] })
+  @ApiResponse({ type: [PlayerDto] })
   async getPlayers(@Query('countryCode') countryCode?: string) {
     const language = countryCode ?? 'NL';
     return this.brawlStarsService.getPlayers(language);

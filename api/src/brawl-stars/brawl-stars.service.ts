@@ -4,18 +4,19 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BrawlStarsMapDto } from './dto/Map.dto';
 import axios, { AxiosInstance } from 'axios';
-import { BrawlStarsPlayer, Club, BrawlStarsResponse } from './dto/Player.dto';
-import { Brawler } from './dto/Brawler.dto';
+import { PlayerDto, ClubDto, BrawlStarsResponse } from './dto/Player.dto';
+import { BrawlerDto } from './dto/Brawler.dto';
 import { ConfigService } from '@nestjs/config';
+import { UpsertBrawlStarsUserDto } from './dto/BrawlStarsUser.dto';
 
 export interface IBrawlStarsService {
-  saveProfile(user: BrawlStarsUser): Promise<BrawlStarsUser>;
+  saveProfile(user: UpsertBrawlStarsUserDto): Promise<BrawlStarsUser>;
   getRotation(): Promise<BrawlStarsMapDto[]>;
-  getProfileByUserId(userId: string): Promise<BrawlStarsPlayer | undefined>;
-  getProfileByTag(tag: string): Promise<BrawlStarsPlayer | undefined>;
-  getBrawlers(): Promise<Brawler[]>;
-  getClubs(countryCode: string): Promise<Club[]>;
-  getPlayers(countryCode: string): Promise<BrawlStarsPlayer[]>;
+  getProfileByUserId(userId: string): Promise<PlayerDto | undefined>;
+  getProfileByTag(tag: string): Promise<PlayerDto | undefined>;
+  getBrawlers(): Promise<BrawlerDto[]>;
+  getClubs(countryCode: string): Promise<ClubDto[]>;
+  getPlayers(countryCode: string): Promise<PlayerDto[]>;
 }
 
 @Injectable()
@@ -45,7 +46,12 @@ export class BrawlStarsService implements IBrawlStarsService {
     });
   }
 
-  async saveProfile(user: BrawlStarsUser): Promise<BrawlStarsUser> {
+  async saveProfile(
+    upsertBrawlStarsUserDto: UpsertBrawlStarsUserDto,
+  ): Promise<BrawlStarsUser> {
+    const user = await this.brawlStarsUserRepository.findOne({
+      where: { userId: upsertBrawlStarsUserDto.userId },
+    });
     await this.brawlStarsUserRepository.upsert(user, {
       conflictPaths: ['userId'],
     });
@@ -53,9 +59,7 @@ export class BrawlStarsService implements IBrawlStarsService {
     return user;
   }
 
-  async getProfileByUserId(
-    userId: string,
-  ): Promise<BrawlStarsPlayer | undefined> {
+  async getProfileByUserId(userId: string): Promise<PlayerDto | undefined> {
     const user = await this.brawlStarsUserRepository.findOne({
       where: { userId },
     });
@@ -80,13 +84,11 @@ export class BrawlStarsService implements IBrawlStarsService {
     return [];
   }
 
-  async getProfileByTag(tag: string): Promise<BrawlStarsPlayer | undefined> {
+  async getProfileByTag(tag: string): Promise<PlayerDto | undefined> {
     let retries = 0;
     while (retries < 2) {
       try {
-        const response = await this.axios.get<BrawlStarsPlayer>(
-          `/players/${tag}`,
-        );
+        const response = await this.axios.get<PlayerDto>(`/players/${tag}`);
         return response.data;
       } catch (e) {
         if (axios.isAxiosError(e) && e.response?.status === 403) {
@@ -101,7 +103,7 @@ export class BrawlStarsService implements IBrawlStarsService {
     return undefined;
   }
 
-  async getBrawlers(): Promise<Brawler[]> {
+  async getBrawlers(): Promise<BrawlerDto[]> {
     let retries = 0;
 
     while (retries < 2) {
@@ -117,7 +119,7 @@ export class BrawlStarsService implements IBrawlStarsService {
     return [];
   }
 
-  async getClubs(countryCode: string): Promise<Club[]> {
+  async getClubs(countryCode: string): Promise<ClubDto[]> {
     let retries = 0;
 
     while (retries < 2) {
@@ -140,7 +142,7 @@ export class BrawlStarsService implements IBrawlStarsService {
     return [];
   }
 
-  async getPlayers(countryCode: string): Promise<BrawlStarsPlayer[]> {
+  async getPlayers(countryCode: string): Promise<PlayerDto[]> {
     let retries = 0;
 
     while (retries < 2) {

@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Brawler } from './Brawler.dto';
+import { BrawlerDto } from './Brawler.dto';
 
-export class Icon {
+export class IconDto {
   @ApiProperty()
   id!: number;
 }
@@ -10,7 +10,7 @@ export class BrawlStarsResponse {
   items!: any[];
 }
 
-export class Club {
+export class ClubDto {
   @ApiProperty()
   tag!: string;
 
@@ -30,7 +30,7 @@ export class Club {
   memberCount?: number;
 }
 
-export class BrawlStarsPlayer {
+export class PlayerDto {
   @ApiProperty()
   tag!: string;
 
@@ -41,7 +41,7 @@ export class BrawlStarsPlayer {
   nameColor!: string;
 
   @ApiProperty()
-  icon!: Icon;
+  icon!: IconDto;
 
   @ApiProperty()
   trophies!: number;
@@ -76,11 +76,11 @@ export class BrawlStarsPlayer {
   @ApiPropertyOptional()
   bestTimeAsBigBrawler?: number;
 
-  @ApiPropertyOptional({ type: Club })
-  club?: Club;
+  @ApiPropertyOptional({ type: ClubDto })
+  club?: ClubDto;
 
   @ApiPropertyOptional({
-    type: [Brawler],
+    type: [BrawlerDto],
   })
-  brawlers?: Brawler[];
+  brawlers?: BrawlerDto[];
 }

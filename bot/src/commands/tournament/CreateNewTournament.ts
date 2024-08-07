@@ -1,12 +1,9 @@
 import {
   ApplicationCommandOptionType,
   AttachmentBuilder,
-  CacheType,
   ChannelType,
-  CommandInteraction,
   EmbedBuilder,
   Guild,
-  Message,
   PermissionFlagsBits,
   TextChannel,
   ThreadAutoArchiveDuration,
@@ -22,7 +19,7 @@ import humanizeDuration = require("humanize-duration");
 import * as Sentry from "@sentry/browser";
 import { handleTeamRegistrations } from "./CreateNewTournament.collector";
 import { createBracket } from "./CreateNewTournament.bracket";
-import { BrawlStarsPlayer } from "../../client";
+import { PlayerDto } from "../../client";
 import { collectFirstMessageOfUser } from "../../static/Converters";
 
 export class RegisteredTeam {
@@ -32,7 +29,7 @@ export class RegisteredTeam {
 
 export class RegisteredUser {
   public member!: string;
-  public user!: BrawlStarsPlayer;
+  public user!: PlayerDto;
 }
 
 export default new Command({

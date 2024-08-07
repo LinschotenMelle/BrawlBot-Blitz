@@ -92,9 +92,13 @@ export type ImageDto = {
     url: string;
 };
 
-export type BrawlStarsUser = {
+export type UpsertBrawlStarsUserDto = {
     userId: string;
     tag: string;
+};
+
+export type BrawlStarsUserDto = {
+    tag: number;
 };
 
 export type BrawlStarsEventDto = {
@@ -110,11 +114,11 @@ export type BrawlStarsMapDto = {
     event: BrawlStarsEventDto;
 };
 
-export type Icon = {
+export type IconDto = {
     id: number;
 };
 
-export type Club = {
+export type ClubDto = {
     tag: string;
     name: string;
     badgeId?: number;
@@ -123,7 +127,7 @@ export type Club = {
     memberCount?: number;
 };
 
-export type Brawler = {
+export type BrawlerDto = {
     id: number;
     name: string;
     power: number;
@@ -135,11 +139,11 @@ export type Brawler = {
     gadgets: Array<(string)>;
 };
 
-export type BrawlStarsPlayer = {
+export type PlayerDto = {
     tag: string;
     name: string;
     nameColor: string;
-    icon: Icon;
+    icon: IconDto;
     trophies: number;
     highestTrophies?: number;
     highestPowerPlayPoints?: number;
@@ -151,8 +155,8 @@ export type BrawlStarsPlayer = {
     duoVictories?: number;
     bestRoboRumbleTime?: number;
     bestTimeAsBigBrawler?: number;
-    club?: Club;
-    brawlers?: Array<Brawler>;
+    club?: ClubDto;
+    brawlers?: Array<BrawlerDto>;
 };
 
 export type AuthControllerLoginData = {
@@ -343,24 +347,24 @@ export type OpenaiControllerCreateImageResponse = ImageDto;
 export type OpenaiControllerCreateImageError = unknown;
 
 export type BrawlStarsControllerSaveProfileData = {
-    body: BrawlStarsUser;
+    body: UpsertBrawlStarsUserDto;
     headers?: {
         token?: unknown;
     };
 };
 
-export type BrawlStarsControllerSaveProfileResponse = BrawlStarsUser;
+export type BrawlStarsControllerSaveProfileResponse = BrawlStarsUserDto;
 
 export type BrawlStarsControllerSaveProfileError = unknown;
 
 export type BrawlStarsControllerUpdateProfileData = {
-    body: BrawlStarsUser;
+    body: UpsertBrawlStarsUserDto;
     headers?: {
         token?: unknown;
     };
 };
 
-export type BrawlStarsControllerUpdateProfileResponse = BrawlStarsUser;
+export type BrawlStarsControllerUpdateProfileResponse = BrawlStarsUserDto;
 
 export type BrawlStarsControllerUpdateProfileError = unknown;
 
@@ -383,7 +387,7 @@ export type BrawlStarsControllerGetProfileData = {
     };
 };
 
-export type BrawlStarsControllerGetProfileResponse = BrawlStarsPlayer;
+export type BrawlStarsControllerGetProfileResponse = PlayerDto;
 
 export type BrawlStarsControllerGetProfileError = unknown;
 
@@ -396,7 +400,7 @@ export type BrawlStarsControllerGetProfileByTagData = {
     };
 };
 
-export type BrawlStarsControllerGetProfileByTagResponse = BrawlStarsPlayer;
+export type BrawlStarsControllerGetProfileByTagResponse = PlayerDto;
 
 export type BrawlStarsControllerGetProfileByTagError = unknown;
 
@@ -406,7 +410,7 @@ export type BrawlStarsControllerGetBrawlersData = {
     };
 };
 
-export type BrawlStarsControllerGetBrawlersResponse = Array<Brawler>;
+export type BrawlStarsControllerGetBrawlersResponse = Array<BrawlerDto>;
 
 export type BrawlStarsControllerGetBrawlersError = unknown;
 
@@ -419,7 +423,7 @@ export type BrawlStarsControllerGetClubsData = {
     };
 };
 
-export type BrawlStarsControllerGetClubsResponse = Array<Club>;
+export type BrawlStarsControllerGetClubsResponse = Array<ClubDto>;
 
 export type BrawlStarsControllerGetClubsError = unknown;
 
@@ -432,7 +436,7 @@ export type BrawlStarsControllerGetPlayersData = {
     };
 };
 
-export type BrawlStarsControllerGetPlayersResponse = Array<BrawlStarsPlayer>;
+export type BrawlStarsControllerGetPlayersResponse = Array<PlayerDto>;
 
 export type BrawlStarsControllerGetPlayersError = unknown;
 
@@ -567,7 +571,7 @@ export type $OpenApiTs = {
         post: {
             req: BrawlStarsControllerSaveProfileData;
             res: {
-                default: BrawlStarsUser;
+                default: BrawlStarsUserDto;
             };
         };
     };
@@ -575,7 +579,7 @@ export type $OpenApiTs = {
         put: {
             req: BrawlStarsControllerUpdateProfileData;
             res: {
-                default: BrawlStarsUser;
+                default: BrawlStarsUserDto;
             };
         };
     };
@@ -591,7 +595,7 @@ export type $OpenApiTs = {
         get: {
             req: BrawlStarsControllerGetProfileData;
             res: {
-                default: BrawlStarsPlayer;
+                default: PlayerDto;
             };
         };
     };
@@ -599,7 +603,7 @@ export type $OpenApiTs = {
         get: {
             req: BrawlStarsControllerGetProfileByTagData;
             res: {
-                default: BrawlStarsPlayer;
+                default: PlayerDto;
             };
         };
     };
@@ -607,7 +611,7 @@ export type $OpenApiTs = {
         get: {
             req: BrawlStarsControllerGetBrawlersData;
             res: {
-                default: Array<Brawler>;
+                default: Array<BrawlerDto>;
             };
         };
     };
@@ -615,7 +619,7 @@ export type $OpenApiTs = {
         get: {
             req: BrawlStarsControllerGetClubsData;
             res: {
-                default: Array<Club>;
+                default: Array<ClubDto>;
             };
         };
     };
@@ -623,7 +627,7 @@ export type $OpenApiTs = {
         get: {
             req: BrawlStarsControllerGetPlayersData;
             res: {
-                default: Array<BrawlStarsPlayer>;
+                default: Array<PlayerDto>;
             };
         };
     };

@@ -108,6 +108,12 @@ export default new Command({
       )})`;
     }
 
+    if (!profile.brawlers) {
+      return interaction.followUp({
+        content: "No brawlers found!",
+      });
+    }
+
     const embed = new EmbedBuilder()
       .setColor(ColorCodes.primaryColor)
       .setTitle(`${profile.name} - ${profile.tag}`)

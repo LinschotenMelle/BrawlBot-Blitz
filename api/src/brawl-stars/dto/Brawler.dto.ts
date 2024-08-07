@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class Gear {
+export class GearDto {
   @ApiProperty()
   id: number;
 
@@ -11,7 +11,7 @@ export class Gear {
   level: number;
 }
 
-export class StarPower {
+export class StarPowerDto {
   @ApiProperty()
   id: number;
 
@@ -19,7 +19,7 @@ export class StarPower {
   name: string;
 }
 
-export class Gadget {
+export class GadgetDto {
   @ApiProperty()
   id: number;
 
@@ -27,7 +27,7 @@ export class Gadget {
   name: string;
 }
 
-export class Brawler {
+export class BrawlerDto {
   @ApiProperty()
   id!: number;
 
@@ -47,11 +47,11 @@ export class Brawler {
   highestTrophies!: number;
 
   @ApiProperty()
-  gears!: Gear[];
+  gears!: GearDto[];
 
   @ApiProperty()
-  starPowers!: StarPower[];
+  starPowers!: StarPowerDto[];
 
   @ApiProperty()
-  gadgets!: Gadget[];
+  gadgets!: GadgetDto[];
 }

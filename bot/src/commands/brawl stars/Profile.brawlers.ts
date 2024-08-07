@@ -1,12 +1,12 @@
 import { EmbedBuilder } from "discord.js";
-import { BrawlStarsPlayer } from "../../client";
+import { PlayerDto } from "../../client";
 import { ColorCodes } from "../../static/Theme";
 import { Constants } from "../../static/Contants";
 import { discordClient } from "../..";
 import { Converters } from "../../static/Converters";
 
 export function paginatedBrawlersEmbed(
-  profile: BrawlStarsPlayer,
+  profile: PlayerDto,
   page: number,
   pageSize: number,
   totalPages: number
@@ -17,6 +17,10 @@ export function paginatedBrawlersEmbed(
     .setThumbnail(Constants.logo.name)
     .setFooter({ text: "Page: " + (page + 1) + "/" + totalPages })
     .setTimestamp();
+
+  if (!profile.brawlers) {
+    return brawlersEmbed.setDescription("No brawlers found!");
+  }
 
   const paginatedBralwers = profile.brawlers
     .sort((a, b) => b.trophies - a.trophies)
