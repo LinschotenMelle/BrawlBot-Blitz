@@ -15,6 +15,9 @@ import { TokenGuard } from '../auth/utils/Guards';
 import { YoutubeVideoDto } from './dto/YoutubeVideo.dto';
 import { YoutubeChannelDto } from './dto/YoutubeChannel.dto';
 import { IYoutubeService } from './youtube.service';
+import { InjectMapper } from '../common/decorators/inject-mapper.decorator';
+import { Mapper } from '@automapper/core';
+import { CreateYoutubeChannelDto } from './dto/CreateYoutubeChannel.dto';
 
 @Controller(Routes.YOUTUBE)
 @ApiTags('YouTube')
@@ -22,12 +25,16 @@ export class YoutubeController {
   constructor(
     @Inject(Services.YOUTUBE_SERVICE)
     private readonly youtubeService: IYoutubeService,
+    @InjectMapper()
+    private readonly mapper: Mapper,
   ) {}
 
   @Post()
-  @ApiResponse({ type: YoutubeChannel })
-  async createChannel(@Body() youtubeChannel: YoutubeChannel) {
-    return this.youtubeService.createChannel(youtubeChannel);
+  @ApiResponse({ type: YoutubeChannelDto })
+  async createChannel(@Body() youtubeChannel: CreateYoutubeChannelDto) {
+    const channel = await this.youtubeService.createChannel(youtubeChannel);
+
+    return this.mapper.map(channel, YoutubeChannel, YoutubeChannelDto);
   }
 
   @Get('/channels')
@@ -37,19 +44,20 @@ export class YoutubeController {
     const channels = await this.youtubeService.getChannels();
     const activeChannels = channels.filter((channel) => channel.isActive);
 
-    return activeChannels.map((channel) => ({
-      guildId: channel.guildId,
-      guildChannelId: channel.guildChannelId,
-      latestVideoDateTime: channel.latestVideoDateTime,
-      roleId: channel.roleId,
-    }));
+    return this.mapper.mapArray(
+      activeChannels,
+      YoutubeChannel,
+      YoutubeChannelDto,
+    );
   }
 
   @Get(':guildId')
   @UseGuards(TokenGuard)
-  @ApiResponse({ type: YoutubeChannel })
+  @ApiResponse({ type: YoutubeChannelDto })
   async getChannel(@Param('guildId') guildId: string) {
-    return this.youtubeService.getChannel(guildId);
+    const channel = await this.youtubeService.getChannel(guildId);
+
+    return this.mapper.map(channel, YoutubeChannel, YoutubeChannelDto);
   }
 
   @Put('/channels/:guildId')

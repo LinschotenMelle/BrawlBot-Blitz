@@ -5,11 +5,19 @@ import { AuthenticatedGuard, DiscordAuthGuard } from './utils/Guards';
 import { Routes } from '../utils/constants';
 import { User } from '../user/entities/User';
 import { AuthUser } from '../utils/decorators';
+import { InjectMapper } from '../common/decorators/inject-mapper.decorator';
+import { Mapper } from '@automapper/core';
+import { UserDto } from '../user/dto/User.dto';
 
 @Controller(Routes.AUTH)
 @ApiTags('Auth')
 @ApiOAuth2([])
 export class AuthController {
+  constructor(
+    @InjectMapper()
+    private readonly mapper: Mapper,
+  ) {}
+
   @Get('login')
   @UseGuards(DiscordAuthGuard)
   login() {
@@ -24,9 +32,9 @@ export class AuthController {
 
   @Get('me')
   @UseGuards(AuthenticatedGuard)
-  @ApiResponse({ type: User })
-  me(@AuthUser() user: User): User {
-    return user;
+  @ApiResponse({ type: UserDto })
+  me(@AuthUser() user: User) {
+    return this.mapper.map(user, User, UserDto);
   }
 
   @Post('logout')

@@ -1,12 +1,12 @@
 import axios, { AxiosInstance } from "axios";
-import { discordClient } from "../..";
+import { discordClient } from "..";
 import { EmbedBuilder, NewsChannel, TextChannel } from "discord.js";
 import {
   YoutubeChannelDto,
   youtubeControllerGetChannels,
   youtubeControllerSearchLatestVideo,
   youtubeControllerUpdateChannel,
-} from "../../client";
+} from "../client";
 
 export class YoutubeService {
   private static instance?: YoutubeService;

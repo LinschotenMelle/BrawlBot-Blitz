@@ -7,7 +7,7 @@ import {
 import { Command } from "../../structures/Command";
 import { ColorCodes } from "../../static/Theme";
 import { CommandTypes } from "../../typings/Command";
-import { BBEmbedButton } from "../../core/classes/embed-button";
+import { BBEmbedButton } from "../../static/embed-button";
 import { discordClient } from "../..";
 
 export default new Command({

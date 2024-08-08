@@ -32,7 +32,7 @@ import { ColorCodes } from "../../static/Theme";
 import { Constants } from "../../static/Contants";
 import { Emojis } from "../../static/Emojis";
 import { discordClient } from "../..";
-import { BBEmbedButton } from "../../core/classes/embed-button";
+import { BBEmbedButton } from "../../static/embed-button";
 import { CommandTypes } from "../../typings/Command";
 import {
   brawlStarsControllerGetBrawlers,

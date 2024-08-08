@@ -5,6 +5,7 @@ import { YoutubeService } from './youtube.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { YoutubeChannel } from './entities/YoutubeChannel';
 import { AuthenticatedGuard } from '../auth/utils/Guards';
+import { YoutubeMapper } from './youtube.mapper';
 
 @Module({
   imports: [TypeOrmModule.forFeature([YoutubeChannel])],
@@ -15,6 +16,7 @@ import { AuthenticatedGuard } from '../auth/utils/Guards';
       useClass: YoutubeService,
     },
     AuthenticatedGuard,
+    YoutubeMapper,
   ],
 })
 export class YoutubeModule {}

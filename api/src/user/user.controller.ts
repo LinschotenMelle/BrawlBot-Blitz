@@ -13,6 +13,9 @@ import { UserService } from './user.service';
 import { TokenGuard } from '../auth/utils/Guards';
 import { UpdateWalletBalanceDto } from './dto/UpdateWalletBalance.dto';
 import { WalletDto } from './dto/Wallet.dto';
+import { InjectMapper } from '../common/decorators/inject-mapper.decorator';
+import { Mapper } from '@automapper/core';
+import { UserWallet } from './entities/UserWallet';
 
 @Controller(Routes.USER)
 @ApiTags('User')
@@ -20,6 +23,8 @@ export class UserController {
   constructor(
     @Inject(Services.USER_SERVICE)
     private readonly userService: UserService,
+    @InjectMapper()
+    private readonly mapper: Mapper,
   ) {}
 
   @Put('/:userId/balance')
@@ -35,12 +40,7 @@ export class UserController {
       powerpoints,
     );
 
-    return {
-      userId: wallet.userId,
-      coins: wallet.coins,
-      powerpoints: wallet.powerpoints,
-      collectables: wallet.collectables,
-    };
+    return this.mapper.map(wallet, UserWallet, WalletDto);
   }
 
   @Get('/:userId/balance')
@@ -49,11 +49,6 @@ export class UserController {
   async getWalletBalance(@Param('userId') userId: string) {
     const wallet = await this.userService.getWalletBalance(userId);
 
-    return {
-      userId: wallet.userId,
-      coins: wallet.coins,
-      powerpoints: wallet.powerpoints,
-      collectables: wallet.collectables,
-    };
+    return this.mapper.map(wallet, UserWallet, WalletDto);
   }
 }

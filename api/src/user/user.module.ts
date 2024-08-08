@@ -5,6 +5,7 @@ import { User } from './entities/User';
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
 import { UserWallet } from './entities/UserWallet';
+import { UserMapper } from './user.mapper';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User, UserWallet])],
@@ -14,6 +15,7 @@ import { UserWallet } from './entities/UserWallet';
       provide: Services.USER_SERVICE,
       useClass: UserService,
     },
+    UserMapper,
   ],
   exports: [
     {

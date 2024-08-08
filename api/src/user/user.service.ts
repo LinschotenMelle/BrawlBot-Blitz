@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { UserDetailsDto } from './dto/User.dto';
+import { UserDto } from './dto/User.dto';
 import { User } from './entities/User';
 import { UpdateUserDetailsDto } from './dto/UpdateUserDetails.dto';
 import { UserWallet } from './entities/UserWallet';
 
 export interface IUserService {
-  createUser(details: UserDetailsDto): Promise<User>;
+  createUser(details: UserDto): Promise<User>;
   findUser(discordId: string): Promise<User | undefined>;
   updateUser(user: User, details: UpdateUserDetailsDto): Promise<User>;
   updateWalletBalance(
@@ -26,7 +26,7 @@ export class UserService implements IUserService {
     private readonly userWalletRepository: Repository<UserWallet>,
   ) {}
 
-  async createUser(details: UserDetailsDto): Promise<User> {
+  async createUser(details: UserDto): Promise<User> {
     const user = this.userRepository.create({ ...details });
     return this.userRepository.save(user);
   }

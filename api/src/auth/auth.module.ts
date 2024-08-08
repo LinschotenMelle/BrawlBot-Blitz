@@ -5,6 +5,7 @@ import { Services } from '../utils/constants';
 import { DiscordStrategy } from './utils/DiscordStrategy';
 import { SessionSerializer } from './utils/SessionSerializer';
 import { AuthController } from './auth.controller';
+import { UserMapper } from '../user/user.mapper';
 
 @Module({
   imports: [UserModule],
@@ -16,6 +17,7 @@ import { AuthController } from './auth.controller';
       provide: Services.AUTH_SERVICE,
       useClass: AuthService,
     },
+    UserMapper,
   ],
 })
 export class AuthModule {}

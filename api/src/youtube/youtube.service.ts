@@ -4,9 +4,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import axios, { AxiosInstance } from 'axios';
 import { YoutubeVideoDto } from './dto/YoutubeVideo.dto';
+import { CreateYoutubeChannelDto } from './dto/CreateYoutubeChannel.dto';
 
 export interface IYoutubeService {
-  createChannel(youtubeChannel: YoutubeChannel): Promise<YoutubeChannel>;
+  createChannel(
+    youtubeChannel: CreateYoutubeChannelDto,
+  ): Promise<YoutubeChannel>;
   getChannels(): Promise<YoutubeChannel[]>;
   updateChannel(guildId: string, dateTime: Date): Promise<void>;
   getChannel(guildId: string): Promise<YoutubeChannel>;
@@ -26,8 +29,16 @@ export class YoutubeService implements IYoutubeService {
     });
   }
 
-  async createChannel(youtubeChannel: YoutubeChannel): Promise<YoutubeChannel> {
-    return this.youtubeRepository.save(youtubeChannel);
+  async createChannel(
+    youtubeChannel: CreateYoutubeChannelDto,
+  ): Promise<YoutubeChannel> {
+    const channel = new YoutubeChannel();
+    Object.assign(channel, {
+      ...youtubeChannel,
+      latestVideoDateTime: Date.parse(youtubeChannel.latestVideoDateTime),
+    });
+
+    return this.youtubeRepository.save(channel);
   }
 
   async getChannels(): Promise<YoutubeChannel[]> {
