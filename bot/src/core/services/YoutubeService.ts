@@ -29,7 +29,7 @@ export class YoutubeService {
   }
 
   private async search(): Promise<void> {
-    let activeChannels: YoutubeChannelDto[] = [];
+    let activeChannels: Array<YoutubeChannelDto>;
 
     try {
       const response = await youtubeControllerGetChannels();

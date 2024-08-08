@@ -10,6 +10,7 @@ import { DiscordModule } from './discord/discord.module';
 import { YoutubeModule } from './youtube/youtube.module';
 import { OpenaiModule } from './openai/openai.module';
 import { BrawlStarsModule } from './brawl-stars/brawl-stars.module';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
@@ -17,26 +18,7 @@ import { BrawlStarsModule } from './brawl-stars/brawl-stars.module';
       envFilePath: '.env',
       isGlobal: true,
     }),
-
-    PassportModule.register({ session: true }),
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: async (
-        configService: ConfigService,
-      ): Promise<DataSourceOptions> => {
-        return {
-          type: 'postgres',
-          host: configService.get('POSTGRES_HOST'),
-          port: parseInt(configService.get('POSTGRES_PORT')),
-          username: configService.get('POSTGRES_USER'),
-          password: configService.get('POSTGRES_PASSWORD'),
-          database: configService.get('POSTGRES_DB'),
-          entities: entities,
-          synchronize: true,
-        };
-      },
-    }),
+    CommonModule,
     AuthModule,
     UserModule,
     DiscordModule,

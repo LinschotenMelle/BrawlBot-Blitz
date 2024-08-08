@@ -22,12 +22,16 @@ import {
   BrawlStarsUserDto,
   UpsertBrawlStarsUserDto,
 } from './dto/BrawlStarsUser.dto';
+import { InjectMapper } from '@timonmasberg/automapper-nestjs';
+import { Mapper } from '@automapper/core';
 
 @Controller(Routes.BRAWL_STARS)
 @ApiTags('Brawl Stars')
 @ApiOAuth2([])
 export class BrawlStarsController {
   constructor(
+    @InjectMapper()
+    private readonly mapper: Mapper,
     @Inject(Services.BRAWL_STARS_SERVICE)
     private readonly brawlStarsService: IBrawlStarsService,
   ) {}
@@ -36,14 +40,18 @@ export class BrawlStarsController {
   @UseGuards(TokenGuard)
   @ApiResponse({ type: BrawlStarsUserDto })
   async saveProfile(@Body() user: UpsertBrawlStarsUserDto) {
-    return this.brawlStarsService.saveProfile(user);
+    const savedUser = await this.brawlStarsService.saveProfile(user);
+
+    return this.mapper.map(savedUser, BrawlStarsUser, BrawlStarsUserDto);
   }
 
   @Put('/update')
   @UseGuards(TokenGuard)
   @ApiResponse({ type: BrawlStarsUserDto })
   async updateProfile(@Body() user: UpsertBrawlStarsUserDto) {
-    return this.brawlStarsService.saveProfile(user);
+    const updatedUser = await this.brawlStarsService.saveProfile(user);
+
+    return this.mapper.map(updatedUser, BrawlStarsUser, BrawlStarsUserDto);
   }
 
   @Get('rotation')

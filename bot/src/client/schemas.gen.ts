@@ -28,6 +28,61 @@ export const $User = {
     required: ['id', 'discordId', 'accessToken', 'refreshToken', 'username', 'discriminator', 'avatar']
 } as const;
 
+export const $UpdateWalletBalanceDto = {
+    type: 'object',
+    properties: {
+        coins: {
+            type: 'number'
+        },
+        powerpoints: {
+            type: 'number'
+        }
+    },
+    required: ['coins', 'powerpoints']
+} as const;
+
+export const $WalletCollectableDto = {
+    type: 'object',
+    properties: {
+        collectableId: {
+            type: 'string'
+        },
+        name: {
+            type: 'string'
+        },
+        price: {
+            type: 'number'
+        },
+        imageUrl: {
+            type: 'string'
+        }
+    },
+    required: ['collectableId', 'name', 'price', 'imageUrl']
+} as const;
+
+export const $WalletDto = {
+    type: 'object',
+    properties: {
+        userId: {
+            type: 'string'
+        },
+        coins: {
+            type: 'number'
+        },
+        powerpoints: {
+            type: 'number'
+        },
+        collectables: {
+            default: [],
+            type: 'array',
+            items: {
+                '$ref': '#/components/schemas/WalletCollectableDto'
+            }
+        }
+    },
+    required: ['userId', 'coins', 'powerpoints', 'collectables']
+} as const;
+
 export const $PartialGuildDto = {
     type: 'object',
     properties: {

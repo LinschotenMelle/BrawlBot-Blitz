@@ -52,6 +52,13 @@ export class BrawlStarsService implements IBrawlStarsService {
     const user = await this.brawlStarsUserRepository.findOne({
       where: { userId: upsertBrawlStarsUserDto.userId },
     });
+
+    if (!user) {
+      return this.brawlStarsUserRepository.save(upsertBrawlStarsUserDto);
+    }
+
+    user.tag = upsertBrawlStarsUserDto.tag;
+
     await this.brawlStarsUserRepository.upsert(user, {
       conflictPaths: ['userId'],
     });

@@ -7,6 +7,8 @@ import { GuildMemberCount } from '../discord/entities/GuildMemberCount';
 import { BrawlStarsUser } from '../brawl-stars/entities/BrawlStarsUser';
 import { Session } from '../auth/entities/Session';
 import { User } from '../user/entities/User';
+import { UserWallet } from '../user/entities/UserWallet';
+import { UserWalletCollectable } from '../user/entities/UserWalletCollectable';
 
 export const DataSourceProvider: Provider = {
   provide: 'DataSource',
@@ -33,4 +35,6 @@ export const entities = [
   WelcomeMessage,
   GuildMemberCount,
   BrawlStarsUser,
+  UserWallet,
+  UserWalletCollectable,
 ];

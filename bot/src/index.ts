@@ -16,4 +16,10 @@ export const analytics = new DiscordAnalytics({
   apiToken: process.env.ANALYTICS_TOKEN ?? "",
   sharded: false,
 });
+
+process.on("uncaughtException", (err: Error) => {
+  Sentry.captureException(err);
+  return;
+});
+
 discordClient.start();

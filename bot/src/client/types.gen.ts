@@ -10,6 +10,25 @@ export type User = {
     avatar: string;
 };
 
+export type UpdateWalletBalanceDto = {
+    coins: number;
+    powerpoints: number;
+};
+
+export type WalletCollectableDto = {
+    collectableId: string;
+    name: string;
+    price: number;
+    imageUrl: string;
+};
+
+export type WalletDto = {
+    userId: string;
+    coins: number;
+    powerpoints: number;
+    collectables: Array<WalletCollectableDto>;
+};
+
 export type PartialGuildDto = {
     id: string;
     name: string;
@@ -174,6 +193,27 @@ export type AuthControllerMeError = unknown;
 export type AuthControllerLogoutResponse = unknown;
 
 export type AuthControllerLogoutError = unknown;
+
+export type UserControllerUpdateWalletBalanceData = {
+    body: UpdateWalletBalanceDto;
+    path: {
+        userId: string;
+    };
+};
+
+export type UserControllerUpdateWalletBalanceResponse = WalletDto;
+
+export type UserControllerUpdateWalletBalanceError = unknown;
+
+export type UserControllerGetWalletBalanceData = {
+    path: {
+        userId: string;
+    };
+};
+
+export type UserControllerGetWalletBalanceResponse = WalletDto;
+
+export type UserControllerGetWalletBalanceError = unknown;
 
 export type DiscordControllerGetGuildsResponse = Array<PartialGuildDto>;
 
@@ -370,6 +410,20 @@ export type $OpenApiTs = {
         post: {
             res: {
                 '201': unknown;
+            };
+        };
+    };
+    '/api/user/{userId}/balance': {
+        put: {
+            req: UserControllerUpdateWalletBalanceData;
+            res: {
+                default: WalletDto;
+            };
+        };
+        get: {
+            req: UserControllerGetWalletBalanceData;
+            res: {
+                default: WalletDto;
             };
         };
     };

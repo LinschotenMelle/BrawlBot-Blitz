@@ -10,6 +10,7 @@ import { ExtendedClient } from "../structures/Client";
 export enum CommandTypes {
   BRAWL_STARS = "Brawl Stars",
   INFO = "Info",
+  ECONOMY = "Economy",
   OTHER = "Other",
 }
 
@@ -38,4 +39,5 @@ export type CommandType = {
   userPermission?: PermissionResolvable[];
   run: RunFunction;
   category: CommandTypes;
+  timeout?: number;
 } & ChatInputApplicationCommandData;

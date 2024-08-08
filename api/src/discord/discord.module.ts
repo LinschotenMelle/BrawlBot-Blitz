@@ -7,6 +7,7 @@ import { WelcomeMessage } from './entities/WelcomeMessage';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthenticatedGuard, TokenGuard } from '../auth/utils/Guards';
 import { GuildMemberCount } from './entities/GuildMemberCount';
+import { DiscordMapper } from './discord.mapper';
 
 @Module({
   imports: [TypeOrmModule.forFeature([WelcomeMessage, GuildMemberCount])],
@@ -21,6 +22,7 @@ import { GuildMemberCount } from './entities/GuildMemberCount';
       useClass: DiscordHttpService,
     },
     TokenGuard,
+    DiscordMapper,
   ],
 })
 export class DiscordModule {}

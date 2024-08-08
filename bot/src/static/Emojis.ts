@@ -67,4 +67,12 @@ export class Emojis {
   get barRedThree() {
     return this.list.find((e) => e.id === "1270365771662495826");
   }
+
+  get coin() {
+    return this.list.find((e) => e.id === "1270813241391710331");
+  }
+
+  get powerpoints() {
+    return this.list.find((e) => e.id === "1270813602923810928");
+  }
 }

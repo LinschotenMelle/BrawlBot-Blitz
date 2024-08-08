@@ -18,6 +18,10 @@ import { WelcomeMessage } from './entities/WelcomeMessage';
 import { GuildChannelDto } from './dto/GuildChannel.dto';
 import { User } from '../user/entities/User';
 import { PartialGuildDto } from './dto/Guild.dto';
+import { InjectMapper } from '../common/decorators/inject-mapper.decorator';
+import { Mapper } from '@automapper/core';
+import { WelcomeMessageDto } from './dto/WelcomeMessage.dto';
+import { GuildMemberCountDto } from './dto/GuildMemberCount.dto';
 
 @Controller(Routes.DISCORD)
 @ApiTags('Discord')
@@ -26,6 +30,8 @@ export class DiscordController {
   constructor(
     @Inject(Services.DISCORD_SERVICE)
     private readonly discordService: IDiscordService,
+    @InjectMapper()
+    private readonly mapper: Mapper,
   ) {}
 
   @Get('/guilds')
@@ -51,26 +57,35 @@ export class DiscordController {
 
   @Get('/guilds/:guildId/welcome-message')
   @UseGuards(TokenGuard)
-  @ApiResponse({ type: WelcomeMessage })
+  @ApiResponse({ type: WelcomeMessageDto })
   async getWelcomeMessage(@Param('guildId') guildId: string) {
-    return this.discordService.getWelcomeMessage(guildId);
+    const welcomeMessage = await this.discordService.getWelcomeMessage(guildId);
+
+    return this.mapper.map(welcomeMessage, WelcomeMessage, WelcomeMessageDto);
   }
 
   @Post('/guilds/:guildId/member-count')
-  @ApiResponse({ type: GuildMemberCount })
+  @ApiResponse({ type: GuildMemberCountDto })
   @UseGuards(TokenGuard)
   async postMemberCount(
     @Param('guildId') guildId: string,
     @Body() { channelId }: CreateMemberCountDto,
   ) {
-    return this.discordService.postMemberCount(guildId, channelId);
+    const memberCount = await this.discordService.postMemberCount(
+      guildId,
+      channelId,
+    );
+
+    return this.mapper.map(memberCount, GuildMemberCount, GuildMemberCountDto);
   }
 
   @Get('/guilds/:guildId/member-count')
-  @ApiResponse({ type: GuildMemberCount })
+  @ApiResponse({ type: GuildMemberCountDto })
   @UseGuards(TokenGuard)
   async getMemberCount(@Param('guildId') guildId: string) {
-    return this.discordService.getMemberCount(guildId);
+    const memberCount = await this.discordService.getMemberCount(guildId);
+
+    return this.mapper.map(memberCount, GuildMemberCount, GuildMemberCountDto);
   }
 
   // @Post('/guilds/:guildId/ticket-system')
