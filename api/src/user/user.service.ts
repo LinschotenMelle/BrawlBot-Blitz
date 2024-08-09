@@ -45,7 +45,7 @@ export class UserService implements IUserService {
     powerpoints: number,
   ): Promise<UserWallet> {
     var wallet = await this.userWalletRepository.findOne({
-      where: { userId },
+      where: { id: userId },
     });
 
     if (!wallet) {
@@ -68,6 +68,21 @@ export class UserService implements IUserService {
   }
 
   async getWalletBalance(userId: string): Promise<UserWallet> {
-    return this.userWalletRepository.findOne({ where: { userId } });
+    const query = this.userWalletRepository
+      .createQueryBuilder('user_wallet')
+      .leftJoinAndSelect('user_wallet.collectables', 'collectables')
+      .select([
+        'user_wallet.id',
+        'user_wallet.coins',
+        'user_wallet.powerpoints',
+        'collectables.id',
+        'collectables.userWalletId',
+        'collectables.collectableId',
+      ])
+      .where('user_wallet.id = :userId', { userId });
+
+    console.log(query.getSql());
+
+    return query.getOne();
   }
 }

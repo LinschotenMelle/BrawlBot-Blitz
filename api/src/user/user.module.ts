@@ -6,9 +6,18 @@ import { UserService } from './user.service';
 import { UserController } from './user.controller';
 import { UserWallet } from './entities/UserWallet';
 import { UserMapper } from './user.mapper';
+import { UserWalletCollectable } from './entities/UserWalletCollectable';
+import { Collectable } from './entities/Collectable';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, UserWallet])],
+  imports: [
+    TypeOrmModule.forFeature([
+      User,
+      UserWallet,
+      UserWalletCollectable,
+      Collectable,
+    ]),
+  ],
   controllers: [UserController],
   providers: [
     {

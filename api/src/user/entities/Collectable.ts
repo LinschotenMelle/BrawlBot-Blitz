@@ -1,27 +1,37 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, JoinTable, OneToMany, PrimaryColumn } from 'typeorm';
-import { UserWalletCollectable } from './UserWalletCollectable';
 import { AutoMap } from '@automapper/classes';
+import { ApiProperty } from '@nestjs/swagger';
+import {
+  Collection,
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { UserWalletCollectable } from './UserWalletCollectable';
 
-@Entity({ name: 'user_wallets' })
-export class UserWallet {
+@Entity({ name: 'collectables' })
+export class Collectable {
   @ApiProperty()
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn()
   @AutoMap()
   id: string;
 
   @ApiProperty()
   @Column()
   @AutoMap()
-  coins: number;
+  name: string;
 
   @ApiProperty()
   @Column()
   @AutoMap()
-  powerpoints: number;
+  price: number;
+
+  @ApiProperty()
+  @Column()
+  @AutoMap()
+  imageUrl: string;
 
   @ApiProperty({ type: () => [UserWalletCollectable] })
-  @JoinTable()
   @OneToMany(
     () => UserWalletCollectable,
     (collectable) => collectable.collectable,

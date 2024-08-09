@@ -10,11 +10,6 @@ export class YoutubeChannel {
   guildId: string;
 
   @ApiProperty()
-  @Column({ unique: true, name: 'api_key' })
-  @AutoMap()
-  apiKey: string;
-
-  @ApiProperty()
   @Column({ name: 'youtube_channel_id', unique: true })
   @AutoMap()
   channelId: string;

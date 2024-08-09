@@ -78,6 +78,10 @@ export class YoutubeController {
   async searchLatestVideo(@Param('guildId') guildId: string) {
     const channel = await this.youtubeService.getChannel(guildId);
 
+    if (!channel || !channel.isActive) {
+      return null;
+    }
+
     return this.youtubeService.searchLatestVideo(channel);
   }
 }

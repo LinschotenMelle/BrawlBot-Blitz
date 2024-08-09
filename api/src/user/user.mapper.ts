@@ -18,21 +18,7 @@ export class UserMapper extends AutomapperProfile {
   override get profile() {
     return (mapper: Mapper) => {
       createMap(mapper, User, UserDto);
-      createMap(
-        mapper,
-        UserWallet,
-        WalletDto,
-        forMember(
-          (w) => w.collectables,
-          mapFrom((u) =>
-            this.mapper.mapArray(
-              u.collectables,
-              UserWalletCollectable,
-              WalletCollectableDto,
-            ),
-          ),
-        ),
-      );
+      createMap(mapper, UserWallet, WalletDto);
       createMap(mapper, UserWalletCollectable, WalletCollectableDto);
     };
   }

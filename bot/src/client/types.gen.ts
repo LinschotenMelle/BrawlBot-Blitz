@@ -75,31 +75,15 @@ export type YoutubeChannelDto = {
     roleId: string;
 };
 
-export type YoutubeVideoIdDto = {
-    videoId: string;
-};
-
-export type YoutubeHighThumbnailDto = {
-    url: string;
-};
-
-export type YoutubeThumbnailsDto = {
-    high: YoutubeHighThumbnailDto;
-};
-
-export type YoutubeSnippetDto = {
+export type YoutubeVideoDto = {
+    id: string;
     publishedAt: string;
-    published: string;
     channelTitle: string;
     channelId: string;
-    title: string;
+    videoTitle: string;
+    videoUrl: string;
+    thumbnailUrl: string;
     description?: string;
-    thumbnails: YoutubeThumbnailsDto;
-};
-
-export type YoutubeVideoDto = {
-    id: YoutubeVideoIdDto;
-    snippet: YoutubeSnippetDto;
 };
 
 export type CreateImageDto = {

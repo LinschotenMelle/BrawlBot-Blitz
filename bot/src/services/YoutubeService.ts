@@ -7,6 +7,7 @@ import {
   youtubeControllerSearchLatestVideo,
   youtubeControllerUpdateChannel,
 } from "../client";
+import { ColorCodes } from "../static/Theme";
 
 export class YoutubeService {
   private static instance?: YoutubeService;
@@ -59,23 +60,25 @@ export class YoutubeService {
 
       const latestVideo = response.data;
 
-      const latestVideoDate = new Date(latestVideo.snippet.publishedAt);
+      const latestVideoDate = new Date(latestVideo.publishedAt);
       const channelDate = new Date(channel.latestVideoDateTime ?? "");
 
-      if (!latestVideo || latestVideoDate.getTime() === channelDate.getTime())
+      if (!latestVideo || latestVideoDate.getTime() <= channelDate.getTime()) {
         return;
+      }
 
       const embed = new EmbedBuilder()
-        .setTitle(latestVideo.snippet.title)
+        .setTitle(latestVideo.channelTitle)
         .setAuthor({
-          name: latestVideo.snippet.channelTitle,
-          url: `https://www.youtube.com/channel/${latestVideo.snippet.channelId}`,
+          name: latestVideo.channelTitle,
+          url: `https://www.youtube.com/channel/${latestVideo.channelId}`,
         })
-        .setImage(latestVideo.snippet.thumbnails.high.url)
-        .setURL(`https://www.youtube.com/watch?v=${latestVideo.id.videoId}`);
+        .setImage(latestVideo.thumbnailUrl)
+        .setColor(ColorCodes.primaryColor)
+        .setURL(latestVideo.videoUrl);
 
-      if (latestVideo.snippet.description) {
-        embed.setDescription(latestVideo.snippet.description);
+      if (latestVideo.description) {
+        embed.setDescription(latestVideo.description);
       }
 
       const role =
@@ -83,7 +86,7 @@ export class YoutubeService {
         guild!.roles.everyone;
 
       selectedchannel.send({
-        content: `${role} ${latestVideo.snippet.channelTitle} heeft zojuist "${latestVideo.snippet.title}" geüpload op YouTube! Bekijk het hier: https://www.youtube.com/watch?v=${latestVideo.id.videoId}`,
+        content: `${role} ${latestVideo.channelTitle} heeft zojuist "${latestVideo.videoTitle}" geüpload op YouTube! Bekijk het hier: ${latestVideo.videoUrl}`,
         embeds: [embed],
       });
 
@@ -93,7 +96,7 @@ export class YoutubeService {
             guildId: channel.guildId,
           },
           body: {
-            latestVideoDateTime: latestVideo.snippet.published,
+            latestVideoDateTime: latestVideo.publishedAt,
           },
         });
       } catch (e) {

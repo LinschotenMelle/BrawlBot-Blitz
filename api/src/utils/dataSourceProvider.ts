@@ -9,6 +9,7 @@ import { Session } from '../auth/entities/Session';
 import { User } from '../user/entities/User';
 import { UserWallet } from '../user/entities/UserWallet';
 import { UserWalletCollectable } from '../user/entities/UserWalletCollectable';
+import { Collectable } from '../user/entities/Collectable';
 
 export const DataSourceProvider: Provider = {
   provide: 'DataSource',
@@ -36,5 +37,6 @@ export const entities = [
   GuildMemberCount,
   BrawlStarsUser,
   UserWallet,
+  Collectable,
   UserWalletCollectable,
 ];

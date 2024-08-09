@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { YoutubeChannel } from './entities/YoutubeChannel';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import axios, { AxiosInstance } from 'axios';
 import { YoutubeVideoDto } from './dto/YoutubeVideo.dto';
 import { CreateYoutubeChannelDto } from './dto/CreateYoutubeChannel.dto';
+import * as Parser from 'rss-parser';
 
 export interface IYoutubeService {
   createChannel(
@@ -18,15 +18,14 @@ export interface IYoutubeService {
 
 @Injectable()
 export class YoutubeService implements IYoutubeService {
-  private readonly axios: AxiosInstance;
+  private readonly baseURL = 'https://www.youtube.com/feeds/videos.xml';
+  private readonly parser: Parser;
 
   constructor(
     @InjectRepository(YoutubeChannel)
     private readonly youtubeRepository: Repository<YoutubeChannel>,
   ) {
-    this.axios = axios.create({
-      baseURL: 'https://www.googleapis.com/youtube/v3',
-    });
+    this.parser = new Parser();
   }
 
   async createChannel(
@@ -62,17 +61,21 @@ export class YoutubeService implements IYoutubeService {
   }
 
   async searchLatestVideo(channel: YoutubeChannel): Promise<YoutubeVideoDto> {
-    const response = await this.axios.get('/search', {
-      params: {
-        key: channel.apiKey,
-        channelId: channel.channelId,
-        part: 'snippet',
-        order: 'date',
-        type: 'video',
-        maxResults: 1,
-      },
-    });
+    const rss = await this.parser.parseURL(
+      `${this.baseURL}?channel_id=${channel.channelId}`,
+    );
 
-    return response.data.items[0];
+    const latestVideo = rss.items[0];
+
+    return {
+      id: latestVideo.id.split(':')[2],
+      videoTitle: latestVideo.title,
+      videoUrl: latestVideo.link,
+      description: latestVideo.content,
+      publishedAt: latestVideo.pubDate,
+      thumbnailUrl: latestVideo.thumbnail,
+      channelId: channel.channelId,
+      channelTitle: rss.title,
+    };
   }
 }

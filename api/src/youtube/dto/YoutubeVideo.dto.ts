@@ -1,26 +1,11 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
-export class YoutubeVideoIdDto {
+export class YoutubeVideoDto {
   @ApiProperty()
-  videoId: string;
-}
+  id: string;
 
-export class YoutubeHighThumbnailDto {
-  @ApiProperty()
-  url: string;
-}
-
-export class YoutubeThumbnailsDto {
-  @ApiProperty()
-  high: YoutubeHighThumbnailDto;
-}
-
-export class YoutubeSnippetDto {
   @ApiProperty()
   publishedAt: string;
-
-  @ApiProperty()
-  published: string;
 
   @ApiProperty()
   channelTitle: string;
@@ -29,19 +14,14 @@ export class YoutubeSnippetDto {
   channelId: string;
 
   @ApiProperty()
-  title: string;
+  videoTitle: string;
+
+  @ApiProperty()
+  videoUrl: string;
+
+  @ApiProperty()
+  thumbnailUrl: string;
 
   @ApiPropertyOptional()
   description: string;
-
-  @ApiProperty()
-  thumbnails: YoutubeThumbnailsDto;
-}
-
-export class YoutubeVideoDto {
-  @ApiProperty()
-  id: YoutubeVideoIdDto;
-
-  @ApiProperty()
-  snippet: YoutubeSnippetDto;
 }
