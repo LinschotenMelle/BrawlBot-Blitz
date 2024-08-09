@@ -26,7 +26,7 @@ export class YoutubeService {
     this.instance = serviceInstance;
     setInterval(async () => {
       await serviceInstance.search();
-    }, 15 * 60 * 1000);
+    }, 1 * 60 * 1000); // 1 minute
   }
 
   private async search(): Promise<void> {
