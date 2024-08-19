@@ -19,7 +19,11 @@ export class YoutubeMapper extends AutomapperProfile {
         YoutubeChannelDto,
         forMember(
           (y) => y.latestVideoDateTime,
-          mapFrom((c) => c.latestVideoDateTime.toISOString()),
+          mapFrom((c) => {
+            if (c.latestVideoDateTime) {
+              return c.latestVideoDateTime.toISOString();
+            }
+          }),
         ),
       );
     };

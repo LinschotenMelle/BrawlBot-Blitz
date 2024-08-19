@@ -71,7 +71,7 @@ export type CreateYoutubeChannelDto = {
 export type YoutubeChannelDto = {
     guildId: string;
     guildChannelId: string;
-    latestVideoDateTime: string;
+    latestVideoDateTime?: string;
     roleId: string;
 };
 

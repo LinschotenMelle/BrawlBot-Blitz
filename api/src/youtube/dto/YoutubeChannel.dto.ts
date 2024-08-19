@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class YoutubeChannelDto {
   @ApiProperty()
@@ -7,7 +7,7 @@ export class YoutubeChannelDto {
   @ApiProperty()
   guildChannelId: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   latestVideoDateTime: string;
 
   @ApiProperty()

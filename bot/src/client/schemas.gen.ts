@@ -207,7 +207,7 @@ export const $YoutubeChannelDto = {
             type: 'string'
         }
     },
-    required: ['guildId', 'guildChannelId', 'latestVideoDateTime', 'roleId']
+    required: ['guildId', 'guildChannelId', 'roleId']
 } as const;
 
 export const $YoutubeVideoDto = {
