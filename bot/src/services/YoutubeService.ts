@@ -11,13 +11,6 @@ import { ColorCodes } from "../static/Theme";
 
 export class YoutubeService {
   private static instance?: YoutubeService;
-  private readonly axios: AxiosInstance;
-
-  constructor() {
-    this.axios = axios.create({
-      baseURL: "https://www.googleapis.com/youtube/v3",
-    });
-  }
 
   static async initialize(): Promise<void> {
     if (this.instance) throw Error("YoutubeService already initialized");
