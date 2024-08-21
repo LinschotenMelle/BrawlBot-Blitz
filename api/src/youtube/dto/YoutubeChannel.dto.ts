@@ -1,3 +1,4 @@
+import { AutoMap } from '@automapper/classes';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class YoutubeChannelDto {
@@ -12,4 +13,8 @@ export class YoutubeChannelDto {
 
   @ApiProperty()
   roleId: string;
+
+  @ApiProperty()
+  @AutoMap()
+  isActive: boolean;
 }

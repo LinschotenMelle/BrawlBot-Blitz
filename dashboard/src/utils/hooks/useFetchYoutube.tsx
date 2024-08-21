@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { Api } from "../api";
-import { YoutubeChannel } from "common/types/YoutubeChannel";
+import { YoutubeChannelDto } from "../../client";
 
 export function useFetchYoutubeData(guildId: string) {
-  const [ytData, setGuilds] = useState<YoutubeChannel>();
+  const [ytData, setGuilds] = useState<YoutubeChannelDto>();
   const [err, setErr] = useState<string>();
   const [loading, setLoading] = useState(false);
 

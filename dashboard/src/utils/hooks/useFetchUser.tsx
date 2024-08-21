@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { Api } from "../api";
-import { User } from "common/types/User";
+import { UserDto } from "../../client";
 
 export function useFetchUser() {
-  const [user, setUser] = useState<User>();
+  const [user, setUser] = useState<UserDto>();
   const [err, setErr] = useState<string>();
   const [loading, setLoading] = useState(false);
 

@@ -31,7 +31,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "generate-client": "npx openapi-generator-cli generate"
   },
   "eslintConfig": {
     "extends": [
@@ -50,5 +51,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^2.13.5"
   }
 }

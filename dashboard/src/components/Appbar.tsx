@@ -11,12 +11,12 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import { useLogoutUser } from "../utils/hooks/useFetchUser";
-import { User } from "common/types/User";
+import { UserDto } from "../client";
 
 const settings = ["Logout"];
 
 interface IResponsiveAppBarProps {
-  user?: User;
+  user?: UserDto;
 }
 
 export function ResponsiveAppBar({ user }: IResponsiveAppBarProps) {

@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { Api } from "../api";
-import { PartialGuild } from "common/types/Guild";
+import { PartialGuildDto } from "../../client";
 
 export function useFetchGuilds() {
-  const [guilds, setGuilds] = useState<PartialGuild[]>();
+  const [guilds, setGuilds] = useState<PartialGuildDto[]>();
   const [err, setErr] = useState<string>();
   const [loading, setLoading] = useState(false);
 

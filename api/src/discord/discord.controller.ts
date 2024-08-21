@@ -17,7 +17,7 @@ import { IDiscordService } from './discord.service';
 import { WelcomeMessage } from './entities/WelcomeMessage';
 import { GuildChannelDto } from './dto/GuildChannel.dto';
 import { User } from '../user/entities/User';
-import { PartialGuildDto } from './dto/Guild.dto';
+import { GuildDto, PartialGuildDto } from './dto/Guild.dto';
 import { InjectMapper } from '../common/decorators/inject-mapper.decorator';
 import { Mapper } from '@automapper/core';
 import { WelcomeMessageDto } from './dto/WelcomeMessage.dto';
@@ -43,7 +43,7 @@ export class DiscordController {
 
   @Get('/guilds/:guildId')
   @UseGuards(AuthenticatedGuard)
-  @ApiResponse({ type: PartialGuildDto })
+  @ApiResponse({ type: GuildDto })
   async getGuildDetails(@Param('guildId') guildId: string) {
     return this.discordService.getGuildDetails(guildId);
   }

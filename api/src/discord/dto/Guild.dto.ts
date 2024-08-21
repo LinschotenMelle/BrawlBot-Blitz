@@ -29,7 +29,10 @@ export class GuildDto {
   @ApiProperty()
   isActive: boolean;
 
-  @ApiProperty()
+  @ApiProperty({
+    type: RoleDto,
+    isArray: true,
+  })
   roles: RoleDto[];
 }
 

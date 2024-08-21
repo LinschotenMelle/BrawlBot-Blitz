@@ -1,5 +1,3 @@
-import { FaDiscord } from "react-icons/fa";
-
 export const NotFoundPage = () => {
   const redirect = () => {
     window.location.href = "/";

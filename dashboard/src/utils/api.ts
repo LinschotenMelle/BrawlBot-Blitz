@@ -1,8 +1,11 @@
 import axios, { Axios } from "axios";
-import { User } from "common/types/User";
-import { Guild, PartialGuild } from "common/types/Guild";
-import { GuildChannel } from "common/types/GuildChannel";
-import { YoutubeChannel } from "common/types/YoutubeChannel";
+import {
+  GuildChannelDto,
+  GuildDto,
+  PartialGuildDto,
+  UserDto,
+  YoutubeChannelDto,
+} from "../client";
 
 export class Api {
   private static _instance = new Api();
@@ -29,20 +32,20 @@ export class Api {
     return Api._instance;
   }
 
-  getAuthStatus = () => this.axios.get<User>("/auth/me");
+  getAuthStatus = () => this.axios.get<UserDto>("/auth/me");
 
   postLogout = () => this.axios.post("/auth/logout");
 
-  getGuilds = () => this.axios.get<PartialGuild[]>("/discord/guilds");
+  getGuilds = () => this.axios.get<PartialGuildDto[]>("/discord/guilds");
 
   getGuildDetails = (guildId: string) =>
-    this.axios.get<Guild>(`/discord/guilds/${guildId}`);
+    this.axios.get<GuildDto>(`/discord/guilds/${guildId}`);
 
   getGuildChannels = (guildId: string) =>
-    this.axios.get<GuildChannel[]>(`/discord/guilds/${guildId}/channels`);
+    this.axios.get<GuildChannelDto[]>(`/discord/guilds/${guildId}/channels`);
 
   getYoutubeData = (guildId: string) =>
-    this.axios.get<YoutubeChannel>(`/youtube/${guildId}`);
+    this.axios.get<YoutubeChannelDto>(`/youtube/${guildId}`);
 
   putYoutubeData = (guildId: string, data: Map<string, string>) =>
     this.axios.put(`/youtube/${guildId}`, data);

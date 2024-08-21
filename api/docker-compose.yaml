@@ -10,8 +10,8 @@ services:
       - DISCORD_CLIENT_ID=1224804703104405595
       - DISCORD_CLIENT_SECRET=vODhZMJfGqJPdOgYCTGsnoFYzzxjq1v8
       - DISCORD_REDIRECT_URL=http://localhost:3000/api/auth/redirect
-      - POSTGRES_HOST=localhost
-      - POSTGRES_PORT=5433
+      - POSTGRES_HOST=0.0.0.0
+      - POSTGRES_PORT=5432
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=schippers
       - POSTGRES_DB=postgres
@@ -24,7 +24,12 @@ services:
       - api_network
 
   postgres:
-    image: postgres:13
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    image: postgres:16-alpine3.18
     container_name: brawl_bot_db
     environment:
       POSTGRES_USER: postgres
@@ -33,7 +38,8 @@ services:
     ports:
       - '5433:5432'
     volumes:
-      - ./data:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
+    restart: always
     networks:
       - api_network
 

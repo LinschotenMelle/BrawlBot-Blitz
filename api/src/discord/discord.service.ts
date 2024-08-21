@@ -5,11 +5,11 @@ import { GuildChannelDto } from './dto/GuildChannel.dto';
 import { WelcomeMessage } from './entities/WelcomeMessage';
 import { IDiscordHttpService } from './discord-http.service';
 import { User } from '../user/entities/User';
-import { PartialGuildDto } from './dto/Guild.dto';
+import { GuildDto, PartialGuildDto } from './dto/Guild.dto';
 
 export interface IDiscordService {
   getActiveGuilds(user: User): Promise<PartialGuildDto[]>;
-  getGuildDetails(guildId: string): Promise<PartialGuildDto>;
+  getGuildDetails(guildId: string): Promise<GuildDto>;
   getGuildChannels(guildId: string): Promise<GuildChannelDto[]>;
   getWelcomeMessage(guildId: string): Promise<WelcomeMessage>;
   postMemberCount(guildId: string, channelId: string): Promise<void>;

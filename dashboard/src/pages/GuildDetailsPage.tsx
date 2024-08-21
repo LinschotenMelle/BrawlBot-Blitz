@@ -8,9 +8,8 @@ import { ExpandableCard } from "../components/ExpandableCard";
 import { FaYoutube } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { GuildChannel } from "common/types/GuildChannel";
-import { Role } from "common/types/Role";
 import { useFetchYoutubeData } from "../utils/hooks/useFetchYoutube";
+import { GuildChannelDto, RoleDto } from "../client";
 
 function GuildDetailPage() {
   const { guildId } = useParams();
@@ -94,15 +93,7 @@ function GuildDetailPage() {
                 <input
                   {...register("id", { required: true })}
                   placeholder="Youtube Channel ID"
-                  value={ytData?.channelId}
-                />
-                <label htmlFor="id">
-                  <Typography variant="body1">Youtube API Key</Typography>
-                </label>
-                <input
-                  {...register("key", { required: true })}
-                  placeholder="Youtube Api Key"
-                  value={ytData?.apiKey}
+                  value={ytData?.guildChannelId}
                 />
                 <label htmlFor="channelId">
                   <Typography variant="body1">Text Channel</Typography>
@@ -111,7 +102,7 @@ function GuildDetailPage() {
                   {...register("channelId")}
                   defaultValue={ytData?.guildChannelId}
                 >
-                  {channels.map((e: GuildChannel) => {
+                  {channels.map((e: GuildChannelDto) => {
                     return (
                       <option key={e.id} value={e.id}>
                         {e.name}
@@ -123,7 +114,7 @@ function GuildDetailPage() {
                   <Typography variant="body1">Role</Typography>
                 </label>
                 <select {...register("roleId")} defaultValue={ytData?.roleId}>
-                  {guild.roles.map((e: Role) => {
+                  {guild.roles.map((e: RoleDto) => {
                     return (
                       <option key={e.id} value={e.id}>
                         {e.name}
