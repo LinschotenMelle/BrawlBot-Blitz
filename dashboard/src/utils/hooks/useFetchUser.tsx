@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Api } from "../api";
-import { UserDto } from "../../client";
+import { AuthApiFp, UserDto } from "../../client";
 
 export function useFetchUser() {
   const [user, setUser] = useState<UserDto>();
@@ -9,9 +9,9 @@ export function useFetchUser() {
 
   useEffect(() => {
     setLoading(true);
-    Api.instance
-      .getAuthStatus()
-      .then(({ data }) => setUser(data))
+    AuthApiFp()
+      .authControllerMe()
+      .then((response) => response.call(null).then(({ data }) => setUser(data)))
       .catch((err) => setErr(err))
       .finally(() => {
         setTimeout(() => {
